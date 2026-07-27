@@ -298,6 +298,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const paywallContent = document.getElementById("paywall-content");
     const mayarIframe = document.getElementById("mayar-iframe");
     const closeCheckoutBtn = document.getElementById("close-checkout-btn");
+    const paywallModalInner = document.getElementById("paywall-modal-inner");
 
     if (paywallModal) {
         paywallTriggers.forEach(btn => {
@@ -312,6 +313,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     checkoutContainer.classList.add("hidden");
                     paywallContent.classList.remove("hidden");
                     if(mayarIframe) mayarIframe.src = "";
+                }
+                if (paywallModalInner) {
+                    paywallModalInner.classList.add("max-w-md");
+                    paywallModalInner.classList.remove("max-w-4xl", "h-[90vh]");
                 }
             });
         });
@@ -330,6 +335,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 paywallContent.classList.add("hidden");
                 checkoutContainer.classList.remove("hidden");
                 checkoutContainer.classList.add("flex");
+                if (paywallModalInner) {
+                    paywallModalInner.classList.remove("max-w-md");
+                    paywallModalInner.classList.add("max-w-4xl", "h-[90vh]");
+                }
                 mayarIframe.src = "https://baimwarunkarsi.myr.id/m/logaritma-umkm-pro-akses-ai-profit-engine";
             });
         }
@@ -340,6 +349,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 checkoutContainer.classList.add("hidden");
                 checkoutContainer.classList.remove("flex");
                 paywallContent.classList.remove("hidden");
+                if (paywallModalInner) {
+                    paywallModalInner.classList.add("max-w-md");
+                    paywallModalInner.classList.remove("max-w-4xl", "h-[90vh]");
+                }
                 mayarIframe.src = ""; // Stop iframe load
             });
         }
