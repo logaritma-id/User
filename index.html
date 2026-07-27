@@ -492,6 +492,19 @@
         </div>
     </section>
 
+    <!-- Error Modal Component -->
+    <div id="error-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-8 relative shadow-2xl">
+            <button id="close-error-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="w-12 h-12 bg-red-900/30 rounded-xl flex items-center justify-center text-red-400 mb-5 border border-red-500/30">⚠️</div>
+            <h3 class="text-xl font-bold font-heading mb-2 text-white">Peringatan</h3>
+            <p class="text-slate-300 text-sm mb-6">Mohon jawab seluruh 5 pertanyaan diagnostik.</p>
+            <button id="ok-error-modal-btn" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white text-center font-bold transition">Oke, Saya Mengerti</button>
+        </div>
+    </div>
+
     <!-- Modal Component -->
     <div id="cta-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-8 relative shadow-2xl">

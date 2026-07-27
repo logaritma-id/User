@@ -40,6 +40,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Error Modal Logic
+    const errorModal = document.getElementById('error-modal');
+    const closeErrorModalBtn = document.getElementById('close-error-modal-btn');
+    const okErrorModalBtn = document.getElementById('ok-error-modal-btn');
+    
+    if (errorModal) {
+        const closeErrorModal = () => {
+            errorModal.classList.add('hidden');
+            errorModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        };
+        
+        if (closeErrorModalBtn) closeErrorModalBtn.addEventListener('click', closeErrorModal);
+        if (okErrorModalBtn) okErrorModalBtn.addEventListener('click', closeErrorModal);
+        
+        errorModal.addEventListener('click', (e) => {
+            if (e.target === errorModal) {
+                closeErrorModal();
+            }
+        });
+    }
+
     // Calculator Logic (Praktisi Page)
     const btnHitung = document.getElementById('btn-hitung-skor');
     if (btnHitung) {
@@ -154,7 +176,14 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             if (answered < 5) {
-                alert("Mohon jawab seluruh 5 pertanyaan diagnostik.");
+                const errorModal = document.getElementById("error-modal");
+                if (errorModal) {
+                    errorModal.classList.remove("hidden");
+                    errorModal.classList.add("flex");
+                    document.body.style.overflow = "hidden";
+                } else {
+                    alert("Mohon jawab seluruh 5 pertanyaan diagnostik.");
+                }
                 return;
             }
 
