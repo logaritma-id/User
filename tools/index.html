@@ -60,9 +60,12 @@
                     <span class="w-2 h-2 rounded-full bg-slate-400"></span>
                     STATUS: FREE PLAN
                 </div>
-                <button class="trigger-paywall flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
+                <button id="btn-top-paywall" class="trigger-paywall flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
                     ⚡ Langganan Premium - Rp99rb/bln
                 </button>
+                <a href="https://baimwarunkarsi.myr.id/pay-membership" target="_blank" id="btn-manage-membership" class="hidden items-center gap-2 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs sm:text-sm font-bold rounded-lg transition-all hover:-translate-y-0.5">
+                    ⚙️ Kelola / Perpanjang Membership
+                </a>
             </div>
         </div>
     </header>
@@ -226,40 +229,56 @@
 
     <!-- Paywall Modal -->
     <div id="paywall-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md relative shadow-2xl overflow-hidden">
-            <!-- Header bg -->
-            <div class="h-32 bg-gradient-to-br from-slate-800 to-slate-950 border-b border-slate-800 relative p-6 flex flex-col justify-end">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-                <button id="close-paywall-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white z-10">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-                <div class="inline-block bg-amber-500 text-black text-[10px] font-bold px-2 py-1 rounded w-max mb-2">PREMIUM FEATURE</div>
-                <h3 class="text-2xl font-bold font-heading text-white relative z-10">Tingkatkan Bisnis Anda</h3>
-            </div>
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md relative shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
-            <div class="p-6">
-                <p class="text-slate-300 text-sm mb-6">Anda sudah pakai semua jatah gratis atau mencoba buka fitur premium. Yuk, aktifkan langganan Premium untuk UMKM.</p>
-                
-                <div class="bg-slate-950 border border-emerald-500/30 rounded-xl p-4 mb-6 shadow-inner relative">
-                    <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-8 bg-emerald-500 rounded-r"></div>
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-xs text-slate-400 font-bold uppercase">Paket UMKM Pro</p>
-                            <p class="text-xl font-bold text-white mt-1">Rp 99.000<span class="text-xs text-slate-500 font-normal">/bln</span></p>
-                        </div>
-                    </div>
-                    <ul class="mt-4 space-y-2 text-xs text-slate-300">
-                        <li class="flex items-center gap-2"><span>✔️</span> Bisa Download Laporan Target Untung Sepuasnya</li>
-                        <li class="flex items-center gap-2"><span>✔️</span> Bisa Bikin Aturan Kerja (SOP) Pakai AI Sepuasnya</li>
-                        <li class="flex items-center gap-2"><span>✔️</span> Akses Fitur Cek Kesehatan Bisnis</li>
-                    </ul>
+            <!-- Paywall Content -->
+            <div id="paywall-content" class="flex flex-col h-full overflow-y-auto">
+                <!-- Header bg -->
+                <div class="h-32 bg-gradient-to-br from-slate-800 to-slate-950 border-b border-slate-800 relative p-6 flex flex-col justify-end shrink-0">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+                    <button id="close-paywall-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white z-10">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    <div class="inline-block bg-amber-500 text-black text-[10px] font-bold px-2 py-1 rounded w-max mb-2">PREMIUM FEATURE</div>
+                    <h3 class="text-2xl font-bold font-heading text-white relative z-10">Tingkatkan Bisnis Anda</h3>
                 </div>
+                
+                <div class="p-6 shrink-0">
+                    <p class="text-slate-300 text-sm mb-6">Anda sudah pakai semua jatah gratis atau mencoba buka fitur premium. Yuk, aktifkan langganan Premium untuk UMKM.</p>
+                    
+                    <div class="bg-slate-950 border border-emerald-500/30 rounded-xl p-4 mb-6 shadow-inner relative">
+                        <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-8 bg-emerald-500 rounded-r"></div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Paket UMKM Pro</p>
+                                <p class="text-xl font-bold text-white mt-1">Rp 99.000<span class="text-xs text-slate-500 font-normal">/bln</span></p>
+                            </div>
+                        </div>
+                        <ul class="mt-4 space-y-2 text-xs text-slate-300">
+                            <li class="flex items-center gap-2"><span>✔️</span> Bisa Download Laporan Target Untung Sepuasnya</li>
+                            <li class="flex items-center gap-2"><span>✔️</span> Bisa Bikin Aturan Kerja (SOP) Pakai AI Sepuasnya</li>
+                            <li class="flex items-center gap-2"><span>✔️</span> Akses Fitur Cek Kesehatan Bisnis</li>
+                        </ul>
+                    </div>
 
-                <a href="https://wa.me/6281234567890?text=Halo%20Admin%20Logaritma%2C%20saya%20ingin%20mengaktifkan%20akun%20Premium%20UMKM%20seharga%20Rp99rb/bln." target="_blank" class="block w-full text-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/20">
-                    Aktifkan Premium via WA Admin
-                </a>
-                <p class="text-[10px] text-center text-slate-500 mt-4">Penyelesaian pembayaran akan dibantu manual oleh tim kami untuk saat ini.</p>
+                    <button id="btn-checkout-mayar" class="w-full text-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/20">
+                        Bayar Instant & Buka Akses Premium
+                    </button>
+                    <p class="text-[10px] text-center text-slate-500 mt-4">Checkout aman didukung oleh Mayar.</p>
+                </div>
             </div>
+
+            <!-- Iframe Checkout Container (Hidden by default) -->
+            <div id="checkout-container" class="hidden flex-col h-full h-[600px] w-full">
+                <div class="flex justify-between items-center bg-slate-950 p-4 border-b border-slate-800 shrink-0">
+                    <span class="text-sm font-bold text-white">Secure Checkout</span>
+                    <button id="close-checkout-btn" class="text-slate-400 hover:text-white transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <iframe id="mayar-iframe" class="w-full flex-1 border-0" src=""></iframe>
+            </div>
+
         </div>
     </div>
 

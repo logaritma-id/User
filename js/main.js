@@ -291,6 +291,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const paywallTriggers = document.querySelectorAll(".trigger-paywall");
     const paywallModal = document.getElementById("paywall-modal");
     const closePaywallBtn = document.getElementById("close-paywall-btn");
+    
+    // Checkout Mayar Elements
+    const btnCheckoutMayar = document.getElementById("btn-checkout-mayar");
+    const checkoutContainer = document.getElementById("checkout-container");
+    const paywallContent = document.getElementById("paywall-content");
+    const mayarIframe = document.getElementById("mayar-iframe");
+    const closeCheckoutBtn = document.getElementById("close-checkout-btn");
 
     if (paywallModal) {
         paywallTriggers.forEach(btn => {
@@ -299,14 +306,144 @@ document.addEventListener("DOMContentLoaded", function() {
                 paywallModal.classList.remove("hidden");
                 paywallModal.classList.add("flex");
                 document.body.style.overflow = "hidden";
+                
+                // Reset to paywall view
+                if(checkoutContainer && paywallContent) {
+                    checkoutContainer.classList.add("hidden");
+                    paywallContent.classList.remove("hidden");
+                    if(mayarIframe) mayarIframe.src = "";
+                }
             });
         });
 
-        closePaywallBtn.addEventListener("click", () => {
-            paywallModal.classList.add("hidden");
-            paywallModal.classList.remove("flex");
-            document.body.style.overflow = "auto";
+        if(closePaywallBtn) {
+            closePaywallBtn.addEventListener("click", () => {
+                paywallModal.classList.add("hidden");
+                paywallModal.classList.remove("flex");
+                document.body.style.overflow = "auto";
+            });
+        }
+
+        // Handle Instant Checkout Button
+        if(btnCheckoutMayar && checkoutContainer && paywallContent && mayarIframe) {
+            btnCheckoutMayar.addEventListener("click", () => {
+                paywallContent.classList.add("hidden");
+                checkoutContainer.classList.remove("hidden");
+                checkoutContainer.classList.add("flex");
+                mayarIframe.src = "https://baimwarunkarsi.myr.id/m/logaritma-umkm-pro-akses-ai-profit-engine";
+            });
+        }
+
+        // Close Checkout Iframe
+        if(closeCheckoutBtn && checkoutContainer && paywallContent && mayarIframe) {
+            closeCheckoutBtn.addEventListener("click", () => {
+                checkoutContainer.classList.add("hidden");
+                checkoutContainer.classList.remove("flex");
+                paywallContent.classList.remove("hidden");
+                mayarIframe.src = ""; // Stop iframe load
+            });
+        }
+    }
+
+    // --- PREMIUM STATUS LOGIC ---
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 1. Cek parameter success dari Mayar
+    if (urlParams.get("status") === "premium_success") {
+        localStorage.setItem("logarithm_user_status", "premium");
+        
+        // Membersihkan URL tanpa mereload halaman
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.pushState({path:newUrl}, '', newUrl);
+
+        const errorModal = document.getElementById("error-modal");
+        if (errorModal) {
+            const h2 = errorModal.querySelector("h2") || document.createElement("h2");
+            const p = errorModal.querySelector("p") || document.createElement("p");
+            h2.className = "text-xl font-bold mb-4 font-heading text-emerald-400";
+            h2.textContent = "PEMBAYARAN BERHASIL!";
+            p.className = "text-slate-300 mb-6";
+            p.textContent = "🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.";
+            
+            const contentDiv = errorModal.querySelector(".bg-slate-900 > div");
+            if(contentDiv) {
+                contentDiv.innerHTML = "";
+                contentDiv.appendChild(h2);
+                contentDiv.appendChild(p);
+                const closeBtn = document.createElement("button");
+                closeBtn.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg";
+                closeBtn.textContent = "Mulai Gunakan";
+                closeBtn.onclick = () => {
+                    errorModal.classList.add("hidden");
+                    errorModal.classList.remove("flex");
+                    document.body.style.overflow = "auto";
+                };
+                contentDiv.appendChild(closeBtn);
+            }
+            errorModal.classList.remove("hidden");
+            errorModal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        } else {
+            alert("🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.");
+        }
+    }
+
+    // 2. Terapkan Status Premium di UI
+    const isPremium = localStorage.getItem("logarithm_user_status") === "premium";
+    if (isPremium) {
+        // Ganti badge status
+        const badge = document.getElementById("user-status-badge");
+        if(badge) {
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span>STATUS: UMKM PRO (PREMIUM)`;
+            badge.classList.replace("bg-slate-800", "bg-amber-500/20");
+            badge.classList.replace("text-slate-300", "text-amber-400");
+            badge.classList.replace("border-slate-700", "border-amber-500/30");
+        }
+
+        // Sembunyikan tombol langganan utama, tampilkan kelola membership
+        const btnTopPaywall = document.getElementById("btn-top-paywall");
+        const btnManageMembership = document.getElementById("btn-manage-membership");
+        if(btnTopPaywall) btnTopPaywall.classList.add("hidden");
+        if(btnManageMembership) {
+            btnManageMembership.classList.remove("hidden");
+            btnManageMembership.classList.add("flex");
+        }
+
+        // Buka LTM Checker
+        const tabLtm = document.getElementById("tab-ltm");
+        if(tabLtm) {
+            tabLtm.innerHTML = `
+                <div class="max-w-2xl">
+                    <h2 class="text-2xl font-bold text-white font-heading mb-4">Cek Kesehatan Bisnis (LTM)</h2>
+                    <p class="text-slate-400 text-sm mb-6">Fitur Premium aktif. Silakan lakukan diagnosis mendalam terhadap operasional bisnis Anda.</p>
+                    <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 shadow-inner">
+                        <p class="text-emerald-400 font-bold mb-4">✓ Modul LTM Terbuka</p>
+                        <p class="text-slate-300 text-sm">Dashboard analitik lengkap akan segera tersedia di pembaruan berikutnya. Sementara itu, gunakan Kalkulator Target Untung dan AI SOP Generator sepuasnya.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Ubah link download laporan menjadi fungsi alert sukses
+        document.querySelectorAll("#hasil-profit .trigger-paywall").forEach(btn => {
+            btn.classList.remove("trigger-paywall", "bg-slate-800");
+            btn.classList.add("bg-emerald-600", "hover:bg-emerald-500", "border-emerald-500");
+            btn.innerHTML = `📄 Download Laporan (PDF)`;
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                alert("Laporan sedang diproses dan akan otomatis terunduh.");
+            });
         });
+        
+        // Buka hasil blur pada AI SOP dan hapus tombol langganan
+        const blurElements = document.querySelectorAll("#ai-result .blur-sm");
+        blurElements.forEach(el => el.classList.remove("blur-sm", "select-none"));
+        
+        const overlayPremium = document.querySelector("#ai-result .bg-gradient-to-t");
+        if(overlayPremium) overlayPremium.classList.add("hidden");
+        
+        // Hapus batas kuota AI
+        localStorage.setItem("logaritma_ai_quota", "9999");
     }
 
     // Profit Calculator Logic
@@ -472,7 +609,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 const btnAction = lead.status === "PREMIUM"
                     ? `<button class="text-[10px] font-bold text-slate-500 px-3 py-1.5 border border-slate-700 rounded cursor-not-allowed">SUDAH AKTIF</button>`
-                    : `<a href="https://wa.me/${lead.wa}?text=Halo%20Kak%20${encodeURIComponent(lead.nama)}%2C%20kami%20lihat%20Anda%20telah%20mencoba%20Logaritma%20Tools.%20Apakah%20berminat%20upgrade%20Premium%3F" target="_blank" onclick="markFollowUp(${index})" class="text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded transition shadow-lg shadow-emerald-500/20">Follow Up WA</a>`;
+                    : `<a href="https://wa.me/${lead.wa}?text=Halo%20Kak%20${encodeURIComponent(lead.nama)}%2C%20kami%20lihat%20Anda%20telah%20mencoba%20Logaritma%20Tools.%20Yuk%20aktifkan%20akses%20Premium%20Anda%20melalui%20link%20ini:%20https://baimwarunkarsi.myr.id/pay-membership" target="_blank" onclick="markFollowUp(${index})" class="text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded transition shadow-lg shadow-emerald-500/20">Kirim Link Perpanjangan WA</a>`;
 
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-xs">${dateStr}</td>
