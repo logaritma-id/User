@@ -363,41 +363,49 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // 1. Cek parameter success dari Mayar
     if (urlParams.get("status") === "premium_success") {
-        localStorage.setItem("logarithm_user_status", "premium");
-        
-        // Membersihkan URL tanpa mereload halaman
-        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        window.history.pushState({path:newUrl}, '', newUrl);
-
-        const errorModal = document.getElementById("error-modal");
-        if (errorModal) {
-            const h2 = errorModal.querySelector("h2") || document.createElement("h2");
-            const p = errorModal.querySelector("p") || document.createElement("p");
-            h2.className = "text-xl font-bold mb-4 font-heading text-emerald-400";
-            h2.textContent = "PEMBAYARAN BERHASIL!";
-            p.className = "text-slate-300 mb-6";
-            p.textContent = "🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.";
-            
-            const contentDiv = errorModal.querySelector(".bg-slate-900 > div");
-            if(contentDiv) {
-                contentDiv.innerHTML = "";
-                contentDiv.appendChild(h2);
-                contentDiv.appendChild(p);
-                const closeBtn = document.createElement("button");
-                closeBtn.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg";
-                closeBtn.textContent = "Mulai Gunakan";
-                closeBtn.onclick = () => {
-                    errorModal.classList.add("hidden");
-                    errorModal.classList.remove("flex");
-                    document.body.style.overflow = "auto";
-                };
-                contentDiv.appendChild(closeBtn);
-            }
-            errorModal.classList.remove("hidden");
-            errorModal.classList.add("flex");
-            document.body.style.overflow = "hidden";
+        // Jika redirect terjadi di dalam iframe Mayar, redirect parent window
+        if (window.self !== window.top) {
+            window.top.location.href = window.location.href;
         } else {
-            alert("🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.");
+            localStorage.setItem("logarithm_user_status", "premium");
+            
+            // Membersihkan URL tanpa mereload halaman
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({path:newUrl}, '', newUrl);
+
+            const errorModal = document.getElementById("error-modal");
+            if (errorModal) {
+                const iconContainer = errorModal.querySelector(".w-12");
+                if (iconContainer) {
+                    iconContainer.className = "w-12 h-12 bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-400 mb-5 border border-emerald-500/30";
+                    iconContainer.textContent = "🎉";
+                }
+                const h3 = errorModal.querySelector("h3");
+                if (h3) {
+                    h3.className = "text-xl font-bold font-heading mb-2 text-emerald-400";
+                    h3.textContent = "PEMBAYARAN BERHASIL!";
+                }
+                const p = errorModal.querySelector("p");
+                if (p) {
+                    p.textContent = "Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.";
+                }
+                const btn = errorModal.querySelector("#ok-error-modal-btn") || errorModal.querySelector("button:not(#close-error-modal-btn)");
+                if (btn) {
+                    btn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-lg transition shadow-lg shadow-emerald-500/20";
+                    btn.textContent = "Mulai Gunakan";
+                    btn.onclick = () => {
+                        errorModal.classList.add("hidden");
+                        errorModal.classList.remove("flex");
+                        document.body.style.overflow = "auto";
+                    };
+                }
+                
+                errorModal.classList.remove("hidden");
+                errorModal.classList.add("flex");
+                document.body.style.overflow = "hidden";
+            } else {
+                alert("🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.");
+            }
         }
     }
 
