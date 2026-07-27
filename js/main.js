@@ -433,16 +433,10 @@ document.addEventListener("DOMContentLoaded", function() {
         // Buka LTM Checker
         const tabLtm = document.getElementById("tab-ltm");
         if(tabLtm) {
-            tabLtm.innerHTML = `
-                <div class="max-w-2xl">
-                    <h2 class="text-2xl font-bold text-white font-heading mb-4">Cek Kesehatan Bisnis (LTM)</h2>
-                    <p class="text-slate-400 text-sm mb-6">Fitur Premium aktif. Silakan lakukan diagnosis mendalam terhadap operasional bisnis Anda.</p>
-                    <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 shadow-inner">
-                        <p class="text-emerald-400 font-bold mb-4">✓ Modul LTM Terbuka</p>
-                        <p class="text-slate-300 text-sm">Dashboard analitik lengkap akan segera tersedia di pembaruan berikutnya. Sementara itu, gunakan Kalkulator Target Untung dan AI SOP Generator sepuasnya.</p>
-                    </div>
-                </div>
-            `;
+            const lockedContent = tabLtm.querySelector(".ltm-locked-content");
+            const premiumContent = tabLtm.querySelector(".ltm-premium-content");
+            if (lockedContent) lockedContent.classList.add("hidden");
+            if (premiumContent) premiumContent.classList.remove("hidden");
         }
 
         // Ubah link download laporan menjadi fungsi alert sukses
@@ -540,8 +534,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         <li>Identifikasi emosi pelanggan dan lakukan mirroring empati.</li>
                         <li>Input keluhan ke sistem CRM logaritma.</li>
                         <li>Eskalasi ke Lapis 2 jika masalah tidak selesai di menit ke-3.</li>
-                        <li><span class="blur-sm select-none">Berikan voucher diskon retensi 10% jika terbukti ada kesalahan sistem.</span></li>
-                        <li><span class="blur-sm select-none">Follow up H+1 untuk memastikan kepuasan paripurna.</span></li>
+                        <li class="${isPremium ? '' : 'blur-sm select-none'}">Berikan voucher diskon senilai 10% jika terbukti ada kesalahan sistem.</li>
+                        <li class="${isPremium ? '' : 'blur-sm select-none'}">Follow up H+1 untuk memastikan kepuasan paripurna.</li>
                     </ul>
                 `;
             }, 2500);
