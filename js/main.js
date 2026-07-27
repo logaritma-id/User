@@ -409,6 +409,25 @@ document.addEventListener("DOMContentLoaded", function() {
 // ADMIN DASHBOARD LOGIC (/admin/index.html)
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
+    // Admin Mobile Menu Toggle
+    const adminMenuBtn = document.getElementById("admin-menu-btn");
+    const adminSidebar = document.getElementById("admin-sidebar");
+    
+    if (adminMenuBtn && adminSidebar) {
+        adminMenuBtn.addEventListener("click", () => {
+            adminSidebar.classList.toggle("hidden");
+            adminSidebar.classList.toggle("flex");
+        });
+        
+        // Close when clicking outside on mobile
+        document.addEventListener("click", (e) => {
+            if (window.innerWidth < 768 && !adminSidebar.classList.contains("hidden") && !adminSidebar.contains(e.target) && e.target !== adminMenuBtn) {
+                adminSidebar.classList.add("hidden");
+                adminSidebar.classList.remove("flex");
+            }
+        });
+    }
+
     const tableBody = document.getElementById("admin-table-body");
     
     if (tableBody) {
