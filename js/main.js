@@ -430,6 +430,19 @@ document.addEventListener("DOMContentLoaded", function() {
             btnManageMembership.classList.add("flex");
         }
 
+        // Ubah badge AI quota menjadi Unlimited
+        const quotaBadgeContainer = document.querySelector("#ai-quota-bar")?.closest(".bg-slate-800");
+        if(quotaBadgeContainer) {
+            quotaBadgeContainer.innerHTML = `
+                <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
+                <h4 class="text-xs font-bold text-slate-400 mb-1">Akses Fitur Cerdas AI</h4>
+                <div class="mt-2 inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg w-full">
+                    <span class="text-emerald-400">✨</span>
+                    <span class="text-emerald-400 font-bold text-sm drop-shadow">UNLIMITED ACCESS</span>
+                </div>
+            `;
+        }
+
         // Buka LTM Checker
         const tabLtm = document.getElementById("tab-ltm");
         if(tabLtm) {
@@ -439,16 +452,28 @@ document.addEventListener("DOMContentLoaded", function() {
             if (premiumContent) premiumContent.classList.remove("hidden");
         }
 
-        // Ubah link download laporan menjadi fungsi alert sukses
-        document.querySelectorAll("#hasil-profit .trigger-paywall").forEach(btn => {
-            btn.classList.remove("trigger-paywall", "bg-slate-800");
-            btn.classList.add("bg-emerald-600", "hover:bg-emerald-500", "border-emerald-500");
-            btn.innerHTML = `📄 Download Laporan (PDF)`;
-            btn.addEventListener("click", (e) => {
+        // Ubah link download laporan menjadi fungsi window.print
+        const btnDownloadProfit = document.getElementById("btn-download-profit");
+        if(btnDownloadProfit) {
+            btnDownloadProfit.classList.remove("trigger-paywall", "bg-slate-800");
+            btnDownloadProfit.classList.add("bg-emerald-600", "hover:bg-emerald-500", "border-emerald-500");
+            btnDownloadProfit.innerHTML = `📄 Download / Cetak Laporan (PDF)`;
+            btnDownloadProfit.addEventListener("click", (e) => {
                 e.preventDefault();
-                alert("Laporan sedang diproses dan akan otomatis terunduh.");
+                document.title = "Target_Untung_Logaritma";
+                window.print();
             });
-        });
+        }
+        
+        const btnDownloadSop = document.getElementById("btn-download-sop");
+        if(btnDownloadSop) {
+            btnDownloadSop.classList.remove("trigger-paywall");
+            btnDownloadSop.addEventListener("click", (e) => {
+                e.preventDefault();
+                document.title = "SOP_Logaritma";
+                window.print();
+            });
+        }
         
         // Buka hasil blur pada AI SOP dan hapus tombol langganan
         const blurElements = document.querySelectorAll("#ai-result .blur-sm");
@@ -461,13 +486,47 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.setItem("logaritma_ai_quota", "9999");
     }
 
+    // Input Formatter
+    function formatRibuan(angka) {
+        let number_string = angka.replace(/[^,\d]/g, '').toString();
+        let split = number_string.split(',');
+        let sisa = split[0].length % 3;
+        let rupiah = split[0].substr(0, sisa);
+        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+        return rupiah;
+    }
+
+    const inputsNominal = ["input-profit", "input-harga", "input-ltm-biaya", "input-ltm-target"];
+    inputsNominal.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.addEventListener("input", function(e) {
+                this.value = formatRibuan(this.value);
+            });
+        }
+    });
+
+    const printDate = document.getElementById("print-date");
+    if(printDate) {
+        const d = new Date();
+        printDate.textContent = "Dibuat pada: " + d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
+    }
+
     // Profit Calculator Logic
     const btnProfit = document.getElementById("btn-kalkulasi-profit");
     if (btnProfit) {
         btnProfit.addEventListener("click", () => {
-            const profit = parseFloat(document.getElementById("input-profit").value);
+            const rawProfit = document.getElementById("input-profit").value.replace(/\./g, "");
+            const rawHarga = document.getElementById("input-harga").value.replace(/\./g, "");
+            
+            const profit = parseFloat(rawProfit);
             const margin = parseFloat(document.getElementById("input-margin").value);
-            const harga = parseFloat(document.getElementById("input-harga").value);
+            const harga = parseFloat(rawHarga);
             const cr = parseFloat(document.getElementById("input-cr").value);
 
             if (!profit || !margin || !harga || !cr) {
@@ -525,18 +584,43 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 const content = document.getElementById("ai-content");
                 content.innerHTML = `
-                    <p class="font-bold text-white mb-2">Nama Proses: <span class="text-emerald-400">${inputVal.toUpperCase()}</span></p>
-                    <p><strong>1. Ultimate Outcome (Target Akhir):</strong> Memastikan konversi pelanggan mencapai > 80% dari total keluhan.</p>
-                    <p><strong>2. KPI Pelaksana:</strong> Respon < 5 Menit, Rating CS > 4.8.</p>
-                    <p><strong>3. Langkah Standar (SOP):</strong></p>
-                    <ul class="list-decimal pl-5 space-y-1">
-                        <li>Ucapkan salam standar: "Halo, dengan [Nama CS], ada yang bisa dibantu?"</li>
-                        <li>Identifikasi emosi pelanggan dan lakukan mirroring empati.</li>
-                        <li>Input keluhan ke sistem CRM logaritma.</li>
-                        <li>Eskalasi ke Lapis 2 jika masalah tidak selesai di menit ke-3.</li>
-                        <li class="${isPremium ? '' : 'blur-sm select-none'}">Berikan voucher diskon senilai 10% jika terbukti ada kesalahan sistem.</li>
-                        <li class="${isPremium ? '' : 'blur-sm select-none'}">Follow up H+1 untuk memastikan kepuasan paripurna.</li>
-                    </ul>
+                    <div class="mb-4 pb-4 border-b border-slate-700/50">
+                        <h4 class="font-bold text-white text-lg mb-1">1. Identitas Dokumen</h4>
+                        <ul class="text-sm space-y-1 text-slate-300">
+                            <li><span class="text-slate-500">Nama Proses:</span> <span class="text-emerald-400 font-bold">${inputVal.toUpperCase()}</span></li>
+                            <li><span class="text-slate-500">Sektor / Departemen:</span> Operasional Internal</li>
+                            <li><span class="text-slate-500">Penanggung Jawab:</span> Staf / Manajer Terkait</li>
+                        </ul>
+                    </div>
+                    <div class="mb-4 pb-4 border-b border-slate-700/50">
+                        <h4 class="font-bold text-white text-lg mb-1">2. Tujuan & Output Akhir</h4>
+                        <p class="text-sm text-slate-300">Memastikan proses <span class="font-semibold">${inputVal}</span> berjalan terstandarisasi, efisien, meminimalisir kesalahan manusia (human error), dan berujung pada penghematan waktu/biaya serta peningkatan kepuasan.</p>
+                    </div>
+                    <div class="mb-4 pb-4 border-b border-slate-700/50">
+                        <h4 class="font-bold text-white text-lg mb-1">3. Dokumen & Bahan Persiapan</h4>
+                        <ul class="list-disc pl-5 text-sm space-y-1 text-slate-300">
+                            <li>Checklist Harian / Sistem Pencatatan (Digital/Buku)</li>
+                            <li>Akses ke Alat Bantu / Software Relevan</li>
+                            <li>Protokol Komunikasi Tim</li>
+                        </ul>
+                    </div>
+                    <div class="mb-4 pb-4 border-b border-slate-700/50">
+                        <h4 class="font-bold text-white text-lg mb-1">4. Langkah-Langkah Operasional Detail</h4>
+                        <ul class="list-decimal pl-5 text-sm space-y-2 text-slate-300">
+                            <li><strong class="text-white">Persiapan (Pra-Eksekusi):</strong> Lakukan pengecekan kesiapan alat, bahan, dan data 15 menit sebelum proses dimulai.</li>
+                            <li><strong class="text-white">Eksekusi Inti:</strong> Terapkan tindakan utama sesuai standar kualitas perusahaan tanpa melewatkan detail kecil.</li>
+                            <li><strong class="text-white">Monitoring Proses:</strong> Jika terjadi kendala atau eskalasi di tengah jalan, segera laporkan ke atasan dalam rentang waktu maks 10 menit.</li>
+                            <li class="${isPremium ? '' : 'blur-sm select-none'}"><strong class="${isPremium ? 'text-white' : ''}">Quality Control (QC):</strong> Periksa kembali hasil akhir sebelum diserahkan ke pelanggan atau departemen selanjutnya. Pastikan bebas cacat.</li>
+                            <li class="${isPremium ? '' : 'blur-sm select-none'}"><strong class="${isPremium ? 'text-white' : ''}">Pencatatan (Logging):</strong> Input status penyelesaian ke dalam sistem atau buku laporan harian untuk rekam jejak.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-lg mb-1">5. Indikator Keberhasilan (KPI)</h4>
+                        <ul class="list-disc pl-5 text-sm space-y-1 text-slate-300">
+                            <li>Waktu penyelesaian tepat waktu (On-time Delivery > 95%).</li>
+                            <li class="${isPremium ? '' : 'blur-sm select-none'}">Tingkat komplain atau *error rate* mendekati 0%.</li>
+                        </ul>
+                    </div>
                 `;
             }, 2500);
         });
@@ -658,6 +742,75 @@ document.addEventListener("DOMContentLoaded", function() {
                 setTimeout(renderAdmin, 800);
             });
         }
+    }
+});
+
+// ==========================================
+// LTM CHECKER LOGIC (/tools/index.html)
+// ==========================================
+document.addEventListener("DOMContentLoaded", function() {
+    const btnLTM = document.getElementById("btn-hitung-ltm");
+    if(btnLTM) {
+        btnLTM.addEventListener("click", () => {
+            const rawBiaya = document.getElementById("input-ltm-biaya").value.replace(/\./g, "");
+            const rawTarget = document.getElementById("input-ltm-target").value.replace(/\./g, "");
+            const biaya = parseFloat(rawBiaya);
+            const target = parseFloat(rawTarget);
+            
+            if(!biaya || !target) {
+                alert("Masukkan angka biaya dan target hasil yang valid.");
+                return;
+            }
+
+            const roi = ((target - biaya) / biaya) * 100;
+            
+            const badge = document.getElementById("ltm-badge");
+            const title = document.getElementById("ltm-title");
+            const desc = document.getElementById("ltm-desc");
+            const roiEl = document.getElementById("ltm-roi");
+            const action = document.getElementById("ltm-action");
+            const box = document.getElementById("ltm-result-box");
+
+            roiEl.textContent = roi.toFixed(1) + "%";
+
+            // Cleanup classes
+            badge.className = "inline-block text-[10px] font-bold px-2 py-1 rounded w-max mb-3 uppercase border";
+            box.className = "bg-slate-900 border rounded-xl p-6 relative overflow-hidden transition-all shadow-lg";
+
+            if(roi < 0) {
+                // JEBAKAN
+                badge.classList.add("bg-red-500/20", "text-red-400", "border-red-500/30");
+                box.classList.add("border-red-500/50", "shadow-red-500/10");
+                title.textContent = "AWAS JEBAKAN OUTPUT!";
+                title.className = "text-2xl font-bold font-heading text-red-400 mb-2";
+                desc.textContent = "Kegiatan ini diproyeksikan akan membuat Anda RUGI. Anda mengeluarkan biaya lebih besar daripada uang yang masuk.";
+                action.textContent = "Batalkan / Revisi Rencana";
+                action.className = "font-bold text-red-400 text-right";
+                roiEl.className = "font-bold text-red-400";
+            } else if (roi < 100) {
+                // MARGINAL
+                badge.classList.add("bg-yellow-500/20", "text-yellow-400", "border-yellow-500/30");
+                box.classList.add("border-yellow-500/50", "shadow-yellow-500/10");
+                title.textContent = "HASIL TERLALU KECIL / MARGINAL";
+                title.className = "text-2xl font-bold font-heading text-yellow-400 mb-2";
+                desc.textContent = "Ada potensi untung, tapi terlalu kecil untuk menutupi risiko tersembunyi (waktu & tenaga tim).";
+                action.textContent = "Tingkatkan Target atau Pangkas Biaya";
+                action.className = "font-bold text-yellow-400 text-right";
+                roiEl.className = "font-bold text-yellow-400";
+            } else {
+                // PROFIT
+                badge.classList.add("bg-emerald-500/20", "text-emerald-400", "border-emerald-500/30");
+                box.classList.add("border-emerald-500/50", "shadow-emerald-500/10");
+                title.textContent = "KEGIATAN LAYAK DIEKSEKUSI";
+                title.className = "text-2xl font-bold font-heading text-emerald-400 mb-2";
+                desc.textContent = "Rencana kegiatan ini memiliki rasio pengembalian (ROI) yang positif dan kuat. Silakan susun pelaksanaannya menggunakan fitur AI kami.";
+                action.textContent = "Lanjutkan & Kawal Eksekusi";
+                action.className = "font-bold text-emerald-400 text-right";
+                roiEl.className = "font-bold text-emerald-400";
+            }
+
+            document.getElementById("hasil-ltm").classList.remove("hidden");
+        });
     }
 });
 
