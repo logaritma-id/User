@@ -509,3 +509,55 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+// ==========================================
+// SCROLL REVEAL ANIMATIONS
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const revealElements = document.querySelectorAll('.reveal-up, .animate-fade-in-up');
+    
+    if (revealElements.length > 0) {
+        const revealOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    if(entry.boundingClientRect.top > 0) {
+                        entry.target.classList.remove('active');
+                    }
+                }
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => {
+            // Jika elemen sudah punya animate-fade-in-up bawaan tailwind dan ingin dipicu observer
+            // Kita bisa memanfaatkan class active
+            if(el.classList.contains('animate-fade-in-up')) {
+                el.style.animationPlayState = 'paused';
+                revealObserver.observe(el);
+            } else {
+                revealObserver.observe(el);
+            }
+        });
+    }
+    
+    // Khusus untuk Tailwind animate-fade-in-up agar dipicu saat muncul
+    const observer2 = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            }
+        });
+    });
+    
+    document.querySelectorAll('.animate-fade-in-up').forEach((el) => {
+        el.style.animationPlayState = 'paused';
+        observer2.observe(el);
+    });
+});
+
