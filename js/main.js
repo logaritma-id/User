@@ -308,10 +308,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 followUp: false
             };
 
-            // Save to localStorage for Admin
-            let adminLeads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
-            adminLeads.unshift(leadData);
-            localStorage.setItem("logarithm_admin_leads", JSON.stringify(adminLeads));
+            // Save to Database
+            if(window.LogaritmaDB) {
+                await window.LogaritmaDB.saveLead(leadData);
+            } else {
+                let adminLeads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
+                adminLeads.unshift(leadData);
+                localStorage.setItem("logarithm_admin_leads", JSON.stringify(adminLeads));
+            }
             
             // Legacy fallback (for the old admin dashboard logic if needed)
             let oldLeads = JSON.parse(localStorage.getItem("logaritma_leads") || "[]");
@@ -720,7 +724,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // =// ==========================================
 // ADMIN DASHBOARD LOGIC (/admin/index.html)
 // ==========================================
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     // Admin Mobile Menu Toggle
     const adminMenuBtn = document.getElementById("admin-menu-btn");
     const adminSidebar = document.getElementById("admin-sidebar");
@@ -734,7 +738,27 @@ document.addEventListener("DOMContentLoaded", function() {
     // Populate Data leads
     const tableBody = document.getElementById("admin-leads-table");
     if(tableBody) {
-        let leads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
+        let leads = [];
+        if(window.LogaritmaDB) {
+            leads = await window.LogaritmaDB.getAllLeads();
+        } else {
+            leads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
+        }
+
+        window.refreshAdminData = async function() {
+            if(window.LogaritmaDB) leads = await window.LogaritmaDB.getAllLeads();
+            renderAdmin();
+        };
+
+        const btnRefresh = document.getElementById("btn-refresh-data");
+        if(btnRefresh) {
+            btnRefresh.addEventListener("click", () => {
+                btnRefresh.innerHTML = "🔄 Memuat...";
+                window.refreshAdminData().then(() => {
+                    btnRefresh.innerHTML = "🔄 Refresh Data";
+                });
+            });
+        }
 
         // Helper date format
         const formatDate = (isoString) => {
@@ -769,15 +793,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${formatDate(lead.tanggal)}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="font-medium text-white">${lead.nama}</div>
-                        <div class="text-sm text-slate-400">${lead.wa}</div>
+                        <div class="font-medium text-white">${lead.nama || lead.namaPemilik}</div>
+                        <div class="text-sm text-slate-400">${lead.wa || lead.whatsapp}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-slate-300">${lead.kategori}</div>
                         <div class="text-xs text-slate-500">${lead.skor}/5</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs font-bold rounded-full border ${badgeClass}">${lead.kesehatan}</span>
+                        <span class="px-2 py-1 text-xs font-bold rounded-full border ${badgeClass}">${lead.kesehatan || lead.skorKesehatan}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-white">${lead.activity_count || 0} Aksi</div>
+                        <div class="text-xs text-slate-500">${lead.last_active ? formatDate(lead.last_active) : '-'}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <select onchange="updateLeadStatus(${index}, this.value)" class="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
@@ -794,9 +822,13 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         };
 
-        window.updateLeadStatus = function(index, newStatus) {
+        window.updateLeadStatus = async function(index, newStatus) {
             leads[index].status = newStatus;
-            localStorage.setItem("logarithm_admin_leads", JSON.stringify(leads));
+            if(window.LogaritmaDB) {
+                await window.LogaritmaDB.updateLeadStatus(leads[index].wa || leads[index].whatsapp, newStatus);
+            } else {
+                localStorage.setItem("logarithm_admin_leads", JSON.stringify(leads));
+            }
             renderAdmin();
         };
 
@@ -807,7 +839,11 @@ document.addEventListener("DOMContentLoaded", function() {
             
             if(lead.status === "Calon Pelanggan") {
                 leads[index].status = "Di-Follow Up";
-                localStorage.setItem("logarithm_admin_leads", JSON.stringify(leads));
+                if(window.LogaritmaDB) {
+                    await window.LogaritmaDB.updateLeadStatus(leads[index].wa || leads[index].whatsapp, "Di-Follow Up");
+                } else {
+                    localStorage.setItem("logarithm_admin_leads", JSON.stringify(leads));
+                }
                 renderAdmin();
             }
             
@@ -983,7 +1019,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // ==========================================
 // LOGIN & AUTHENTICATION LOGIC
 // ==========================================
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     // 1. Member Login Page Logic (/login/index.html)
     const formLogin = document.getElementById("form-login");
     if(formLogin) {
@@ -992,9 +1028,13 @@ document.addEventListener("DOMContentLoaded", function() {
             const inputWA = document.getElementById("input-login-wa").value;
             const errorMsg = document.getElementById("login-error");
             
-            // Ambil dari localStorage
-            let leads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
-            let foundUser = leads.find(l => l.whatsapp === inputWA);
+            let foundUser = null;
+            if(window.LogaritmaDB) {
+                foundUser = await window.LogaritmaDB.getUserByWA(inputWA);
+            } else {
+                let leads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
+                foundUser = leads.find(l => l.whatsapp === inputWA || l.wa === inputWA);
+            }
             
             if(foundUser) {
                 // Set sesi aktif
