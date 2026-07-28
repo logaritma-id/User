@@ -355,142 +355,25 @@
             </div>
         </div>
     </section>
-    <!-- Kalkulator Kebocoran Operasional UMKM -->
+    <!-- Kalkulator Kebocoran Operasional UMKM (Lead Capture Callout) -->
     <section id="kalkulator" class="py-10 lg:py-20 relative bg-slate-900/80 border-t border-slate-800 reveal-up">
         <div class="max-w-4xl mx-auto px-4">
-            <div class="glass-card p-8 md:p-12 rounded-3xl relative overflow-hidden border border-emerald-500/30">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-600/10 rounded-full blur-3xl"></div>
-                <div class="relative z-10">
-                    <h2 class="text-3xl font-bold mb-4 font-heading text-white">Cek Kesehatan Bisnis Anda</h2>
-                    <p class="text-slate-400 mb-8">Jawab 5 pertanyaan simpel ini untuk tahu apakah bisnis Anda berpotensi untung maksimal atau malah bocor.</p>
-                    
-                    <div class="space-y-6 mb-8" id="kalkulator-umkm-form">
-                        <!-- Q1 -->
-                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700">
-                            <p class="text-white font-medium mb-4">1. Apakah Anda tahu persis berapa biaya modal dan untung tiap produk setiap harinya?</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq1" value="0" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Belum tahu, catatannya masih berantakan.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq1" value="1" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Tahu kira-kira saja, tidak setiap hari dihitung.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq1" value="2" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Tahu persis sampai ke angka ribuan.</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Q2 -->
-                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700">
-                            <p class="text-white font-medium mb-4">2. Apakah karyawan Anda tahu persis berapa target yang harus dicapai hari ini agar bisnis nutup modal (Break Even Point)?</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq2" value="0" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Tidak tahu, mereka kerja ngalir saja tiap hari.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq2" value="1" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Hanya manajer atau saya sendiri yang tahu.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq2" value="2" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Ya, tiap karyawan punya target harian jelas.</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Q3 -->
-                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700">
-                            <p class="text-white font-medium mb-4">3. Kalau penjualan lagi sepi, apa yang biasanya Anda lakukan?</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq3" value="0" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Panik kasih diskon atau promo asal-asalan biar ramai.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq3" value="1" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Ngedumel atau marah ke karyawan tanpa lihat letak masalahnya.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq3" value="2" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Cek ulang laporan harian dan ubah strategi karyawan.</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Q4 -->
-                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700">
-                            <p class="text-white font-medium mb-4">4. Apakah karyawan Anda punya pedoman kerja (SOP) yang selalu ditaati walau Anda tidak ada di tempat?</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq4" value="0" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Belum ada aturan tertulis, semua tunggu perintah.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq4" value="1" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Ada aturannya, tapi sering dilanggar kalau saya nggak ngecek.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq4" value="2" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Bisnis bisa jalan otomatis tanpa saya harus jaga gawang.</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Q5 -->
-                        <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-700">
-                            <p class="text-white font-medium mb-4">5. Bagaimana hasil dari iklan atau pemasaran (Marketing) bisnis Anda selama ini?</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq5" value="0" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Banyak yang nge-like/follow, tapi nggak ada yang beli.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq5" value="1" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Ada yang tanya-tanya, tapi biaya ngiklan rasanya boncos.</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                                    <input type="radio" name="uq5" value="2" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
-                                    <span class="text-slate-300">Iklan efektif dan langsung menghasilkan untung penjualan.</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <button id="btn-hitung-umkm" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/20">
-                            Lihat Hasil Diagnosis Bisnis Anda
-                        </button>
-                    </div>
-
-                    <!-- Hasil Kalkulator -->
-                    <div id="hasil-kalkulator-umkm" class="hidden animate-fade-in-up">
-                        <div class="border-t border-slate-700 pt-8 mt-4 text-center">
-                            <h3 class="text-2xl font-bold text-white mb-2">Diagnosis Operasional Bisnis Anda</h3>
-                            
-                            <div id="skor-container-umkm" class="w-32 h-32 mx-auto rounded-full flex items-center justify-center text-4xl font-bold border-4 mb-6 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-                                0
-                            </div>
-                            
-                            <h4 id="status-judul-umkm" class="text-xl font-bold mb-4 font-heading">STATUS</h4>
-                            <p id="status-deskripsi-umkm" class="text-slate-300 mb-8 max-w-2xl mx-auto"></p>
-                            
-                            <div class="bg-slate-900/80 p-6 rounded-2xl border border-emerald-500/30">
-                                <h5 class="text-white font-bold mb-2">Rekomendasi Tindakan Cepat:</h5>
-                                <p class="text-slate-400 text-sm mb-6">Gunakan simulasi Profit & SOP otomatis kami untuk menutupi celah kebocoran ini.</p>
-                                <a href="/tools/" class="inline-block px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-1">
-                                    Buka Logarithm Tools Sekarang
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
+            <div class="glass-card p-8 md:p-12 rounded-3xl relative overflow-hidden border border-emerald-500/30 text-center">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <span class="inline-block px-3 py-1 bg-emerald-900/50 text-emerald-400 text-xs font-bold rounded-full mb-4 border border-emerald-500/30">TES GRATIS</span>
+                    <h2 class="text-3xl font-bold mb-4 font-heading text-white">Cek Kesehatan & Potensi Kebocoran Bisnis Anda</h2>
+                    <p class="text-slate-300 mb-8 text-lg">Cukup 60 detik untuk mengetahui apakah bisnis Anda sudah berpotensi untung maksimal atau justru bocor di operasional harian.</p>
+                    <button id="btn-open-diagnostic" class="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold py-4 px-8 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all transform hover:scale-105 inline-flex items-center gap-2 cursor-pointer">
+                        Jawab 5 Pertanyaan Diagnostik (Gratis)
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
+
 
     <!-- Error Modal Component -->
     <div id="error-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4">
@@ -517,6 +400,88 @@
                 <a href="/tools/" class="block w-full bg-gradient-to-r from-emerald-700 to-teal-600 hover:from-emerald-600 hover:to-teal-500 border border-emerald-500/50 hover:border-emerald-400 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg shadow-emerald-500/20">Saya Pemilik UMKM</a>
                 <a href="/praktisi/" class="block w-full bg-slate-800 hover:bg-blue-600 border border-slate-700 hover:border-blue-500 rounded-lg px-4 py-4 text-white text-center font-bold transition">Saya Praktisi & Eksekutif</a>
                 <a href="/akademisi/" class="block w-full bg-slate-800 hover:bg-cyan-600 border border-slate-700 hover:border-cyan-500 rounded-lg px-4 py-4 text-white text-center font-bold transition">Saya Akademisi & Peneliti</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lead Capture Diagnostic Modal -->
+    <div id="diagnostic-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4 overflow-y-auto pt-20 pb-10">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl relative shadow-2xl overflow-hidden my-auto">
+            <button id="close-diagnostic-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white z-20">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="p-6 md:p-8 relative">
+                <!-- Decorative BG -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <!-- STEP 1: Profil UMKM -->
+                <div id="diagnostic-step-1" class="relative z-10 animate-fade-in">
+                    <div class="mb-8 border-b border-slate-800 pb-4">
+                        <span class="inline-block px-3 py-1 bg-blue-900/50 text-blue-400 text-xs font-bold rounded-full mb-3">LANGKAH 1 DARI 2</span>
+                        <h3 class="text-2xl font-bold font-heading text-white">Lengkapi Profil Usaha Anda</h3>
+                        <p class="text-slate-400 text-sm mt-1">Data Anda aman dan hanya digunakan untuk menyesuaikan hasil diagnosa.</p>
+                    </div>
+                    
+                    <form id="diagnostic-form-step1" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Nama Usaha / Bisnis <span class="text-red-500">*</span></label>
+                            <input type="text" id="diag-nama" required class="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: Kedai Kopi Senja">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Kategori Usaha <span class="text-red-500">*</span></label>
+                            <select id="diag-kategori" required class="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition appearance-none">
+                                <option value="" disabled selected>-- Pilih Kategori --</option>
+                                <option value="Kuliner & F&B">Kuliner & F&B (Warung, Resto, Cafe)</option>
+                                <option value="Fashion & Olshop">Fashion, Distro & Online Shop</option>
+                                <option value="Jasa & Percetakan">Jasa, Kriya & Percetakan</option>
+                                <option value="PKL & Lapakan">Pedagang Kaki Lima (PKL) & Lapakan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Nomor WhatsApp <span class="text-red-500">*</span></label>
+                            <input type="tel" id="diag-wa" required class="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="081234567890">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Alamat / Kota</label>
+                            <input type="text" id="diag-alamat" class="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: Jakarta Selatan">
+                        </div>
+                        
+                        <button type="submit" class="w-full mt-6 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold py-4 px-6 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer">
+                            Lanjut ke Diagnostik Bisnis 
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- STEP 2: Pertanyaan Dinamis -->
+                <div id="diagnostic-step-2" class="relative z-10 hidden">
+                    <div class="mb-6 border-b border-slate-800 pb-4">
+                        <button id="btn-back-step1" class="text-sm text-slate-400 hover:text-white mb-4 inline-flex items-center gap-1 transition cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path></svg>
+                            Kembali
+                        </button>
+                        <br>
+                        <span class="inline-block px-3 py-1 bg-emerald-900/50 text-emerald-400 text-xs font-bold rounded-full mb-3">LANGKAH 2 DARI 2</span>
+                        <h3 class="text-2xl font-bold font-heading text-white">Analisa Kesehatan: <span id="diag-display-kategori" class="text-emerald-400"></span></h3>
+                        <p class="text-slate-400 text-sm mt-1">Jawab kelima pertanyaan ini sesuai kondisi nyata operasional Anda.</p>
+                    </div>
+                    
+                    <div id="diagnostic-questions-container" class="space-y-6 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
+                        <!-- Questions will be injected here via JS -->
+                    </div>
+                    
+                    <div class="mt-8 pt-4 border-t border-slate-800">
+                        <button id="btn-submit-diagnostic" class="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold py-4 px-6 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer">
+                            <span>Selesai & Lihat Hasil Diagnosa</span>
+                            <svg class="w-5 h-5 hidden animate-spin" id="spinner-diagnostic" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>

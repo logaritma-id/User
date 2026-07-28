@@ -158,107 +158,182 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// UMKM KALKULATOR KEBOCORAN (INDEX.HTML)
+// MULTI-STEP DIAGNOSTIC LEAD CAPTURE (INDEX.HTML)
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
-    const btnHitungUMKM = document.getElementById("btn-hitung-umkm");
-    if (btnHitungUMKM) {
-        btnHitungUMKM.addEventListener("click", function() {
+    const btnOpenDiag = document.getElementById("btn-open-diagnostic");
+    const diagModal = document.getElementById("diagnostic-modal");
+    const btnCloseDiag = document.getElementById("close-diagnostic-btn");
+    const step1 = document.getElementById("diagnostic-step-1");
+    const step2 = document.getElementById("diagnostic-step-2");
+    const formStep1 = document.getElementById("diagnostic-form-step1");
+    const btnBackStep1 = document.getElementById("btn-back-step1");
+    const btnSubmitDiag = document.getElementById("btn-submit-diagnostic");
+    const questionsContainer = document.getElementById("diagnostic-questions-container");
+    const displayKategori = document.getElementById("diag-display-kategori");
+    const spinnerDiag = document.getElementById("spinner-diagnostic");
+
+    // Dynamic Questions Database
+    const diagQuestions = {
+        "Kuliner & F&B": [
+            { q: "Apakah Anda tahu persis Food Cost (HPP) per porsi setiap menunya?", options: ["Belum dihitung rinci, tebak-tebak saja.", "Tahu sebagian menu favorit saja.", "Ya, tahu persis sampai gramasi bahan."] },
+            { q: "Berapa banyak bahan baku yang sering terbuang (wastage) setiap harinya?", options: ["Lumayan banyak, sering sisa sayur/daging.", "Kadang-kadang kalau sepi pengunjung.", "Sangat minim, porsi terjaga ketat."] },
+            { q: "Apakah Anda punya target harian porsi terjual agar warung/resto balik modal?", options: ["Tidak ada, yang penting ada yang beli.", "Tahu kira-kira nominal rupiahnya.", "Tahu persis berapa porsi per menu yang harus laku."] },
+            { q: "Apakah ada SOP takaran di dapur agar rasa dan porsi selalu konsisten?", options: ["Tergantung feeling koki yang masak.", "Ada, tapi jarang ditimbang presisi.", "Ada SOP gramasi yang ketat ditaati."] },
+            { q: "Apakah kas masuk laci kasir sering selisih dengan stok yang keluar?", options: ["Sering bocor dan malas ngecek.", "Kadang ada selisih sedikit.", "Selalu klop antara kasir dan dapur."] }
+        ],
+        "Fashion & Olshop": [
+            { q: "Berapa banyak stok barang mati (dead stock) di gudang Anda saat ini?", options: ["Lebih dari 30% stok numpuk.", "Sekitar 10-20% belum laku.", "Hampir tidak ada, stok cepat berputar."] },
+            { q: "Berapa % rata-rata konversi dari chat nanya-nanya menjadi pembeli nyata?", options: ["Dibawah 5% (banyak tanya doang).", "Sekitar 10-20%.", "Diatas 30%, closing rate tinggi."] },
+            { q: "Apakah biaya ngiklan (Ads/Endorse) Anda selalu menghasilkan untung?", options: ["Sering boncos, pengeluaran iklan > profit.", "Kadang untung, kadang rugi.", "Selalu untung dan terukur ROI-nya."] },
+            { q: "Berapa tingkat retur/komplain barang cacat dari pelanggan?", options: ["Lumayan sering karena packing asal.", "Sesekali terjadi kalau lagi ramai.", "Sangat jarang, ada proses QC ketat."] },
+            { q: "Apakah admin Anda punya target closing harian yang wajib dicapai?", options: ["Tidak ada, admin cuma balas chat saja.", "Ada, tapi sering tidak tercapai.", "Ya, admin berorientasi pada target closing."] }
+        ],
+        "Jasa & Percetakan": [
+            { q: "Apakah waktu pengerjaan project/pesanan pelanggan sering molor dari janji?", options: ["Sering banget, klien suka komplain.", "Kadang-kadang kalau antrean penuh.", "Selalu tepat waktu sesuai deadline."] },
+            { q: "Berapa sering terjadi kesalahan pengerjaan (error rate/salah cetak)?", options: ["Sering, bahan banyak terbuang percuma.", "Sesekali karyawan kurang teliti.", "Sangat jarang, ada sistem cek berlapis."] },
+            { q: "Apakah Anda menghitung biaya jam kerja karyawan (man-hours) ke dalam harga jual?", options: ["Tidak, hanya hitung harga bahan saja.", "Kadang dihitung kalau proyek besar.", "Selalu, setiap jam kerja dihitung biayanya."] },
+            { q: "Bagaimana cara Anda menentukan harga jual jasa/produk?", options: ["Ikut-ikutan harga kompetitor saja.", "Tebak-tebak asal nutup operasional.", "Dihitung matang dari HPP + Target Margin."] },
+            { q: "Apakah ada alur kerja (workflow) tertulis untuk setiap staf produksi?", options: ["Kerja ngalir saja, tunggu perintah.", "Ada, tapi cuma lisan.", "Ada SOP tertulis yang jelas tiap mesin/tugas."] }
+        ],
+        "PKL & Lapakan": [
+            { q: "Apakah uang hasil dagangan sering tercampur dengan uang kebutuhan rumah tangga?", options: ["Selalu kecampur, dompetnya sama.", "Kadang dipisah, kadang kecampur kalau butuh.", "Sudah dipisah 100% disiplin."] },
+            { q: "Apakah Anda tahu persis berapa untung bersih (bukan omzet kotor) Anda hari ini?", options: ["Tidak tahu, yang penting pegang uang.", "Cuma tahu kira-kira saja.", "Tahu persis sampai ke nominal ribuan."] },
+            { q: "Jika jalanan sepi atau hujan, apa yang Anda lakukan agar tetap laku?", options: ["Pasrah saja nunggu pembeli lewat.", "Coba promosi mulut ke mulut seadanya.", "Punya database kontak WA pelanggan untuk dihubungi/PO."] },
+            { q: "Apakah Anda mencatat stok bahan baku yang dibeli setiap pagi?", options: ["Malas mencatat, beli secukupnya.", "Kadang dicatat kalau ingat.", "Selalu ada catatan belanja harian."] },
+            { q: "Apakah Anda menabung sebagian keuntungan untuk dana darurat usaha?", options: ["Uangnya habis terus untuk makan sehari-hari.", "Kadang menabung kalau lagi ramai banget.", "Selalu sisihkan prosentase tertentu tiap hari."] }
+        ]
+    };
+
+    if (btnOpenDiag && diagModal) {
+        // Open Modal
+        btnOpenDiag.addEventListener("click", () => {
+            diagModal.classList.remove("hidden");
+            diagModal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        });
+
+        // Close Modal
+        btnCloseDiag.addEventListener("click", () => {
+            diagModal.classList.add("hidden");
+            diagModal.classList.remove("flex");
+            document.body.style.overflow = "auto";
+        });
+
+        // Step 1 Submit
+        formStep1.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const kategori = document.getElementById("diag-kategori").value;
+            displayKategori.textContent = kategori;
+            
+            // Generate Questions
+            questionsContainer.innerHTML = "";
+            const questions = diagQuestions[kategori] || diagQuestions["Kuliner & F&B"]; // Fallback
+            
+            questions.forEach((qObj, index) => {
+                const qHtml = \`
+                    <div class="bg-slate-950/50 p-5 rounded-xl border border-slate-700">
+                        <p class="text-white font-medium mb-3">\${index + 1}. \${qObj.q}</p>
+                        <div class="space-y-2">
+                            \${qObj.options.map((opt, i) => \`
+                                <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
+                                    <input type="radio" required name="diag_q\${index}" value="\${i}" class="text-emerald-500 bg-slate-800 border-slate-600 focus:ring-emerald-500">
+                                    <span class="text-slate-300 text-sm">\${opt}</span>
+                                </label>
+                            \`).join("")}
+                        </div>
+                    </div>
+                \`;
+                questionsContainer.insertAdjacentHTML("beforeend", qHtml);
+            });
+
+            step1.classList.add("hidden");
+            step2.classList.remove("hidden");
+        });
+
+        // Back to Step 1
+        btnBackStep1.addEventListener("click", () => {
+            step2.classList.add("hidden");
+            step1.classList.remove("hidden");
+        });
+
+        // Step 2 Submit
+        btnSubmitDiag.addEventListener("click", () => {
+            // Validate all 5 questions
             let totalScore = 0;
             let answered = 0;
+            const kategori = document.getElementById("diag-kategori").value;
+            const questions = diagQuestions[kategori] || diagQuestions["Kuliner & F&B"];
             
-            ["uq1", "uq2", "uq3", "uq4", "uq5"].forEach(q => {
-                const selected = document.querySelector(`input[name="${q}"]:checked`);
-                if (selected) {
+            for(let i=0; i < questions.length; i++) {
+                const selected = document.querySelector(\`input[name="diag_q\${i}"]:checked\`);
+                if(selected) {
                     totalScore += parseInt(selected.value);
                     answered++;
                 }
-            });
+            }
 
-            if (answered < 5) {
-                const errorModal = document.getElementById("error-modal");
-                if (errorModal) {
-                    errorModal.classList.remove("hidden");
-                    errorModal.classList.add("flex");
-                    document.body.style.overflow = "hidden";
-                } else {
-                    alert("Mohon jawab seluruh 5 pertanyaan diagnostik.");
-                }
+            if(answered < questions.length) {
+                alert("Mohon jawab seluruh 5 pertanyaan.");
                 return;
             }
 
-            // Simpan sebagai leads dummy
-            simpanLeadsUMKM();
+            // Lock UI & Show Spinner
+            btnSubmitDiag.disabled = true;
+            spinnerDiag.classList.remove("hidden");
+            btnSubmitDiag.querySelector("span").textContent = "Memproses Analisa...";
 
-            const hasilDiv = document.getElementById("hasil-kalkulator-umkm");
-            const skorContainer = document.getElementById("skor-container-umkm");
-            const judul = document.getElementById("status-judul-umkm");
-            const deskripsi = document.getElementById("status-deskripsi-umkm");
+            // Determine Score Status
+            const maxScore = questions.length * 2; // Each q is 0,1,2
+            const percentage = (totalScore / maxScore) * 100;
+            let statusKesehatan = "";
+            if(percentage <= 30) statusKesehatan = "Kritis (" + percentage.toFixed(0) + "%)";
+            else if (percentage <= 70) statusKesehatan = "Transisi (" + percentage.toFixed(0) + "%)";
+            else statusKesehatan = "Sehat (" + percentage.toFixed(0) + "%)";
 
-            hasilDiv.classList.remove("hidden");
-            this.classList.add("hidden");
+            // Prepare Lead Object
+            const leadData = {
+                id: "LEAD-" + Date.now(),
+                tanggal: new Date().toLocaleDateString('id-ID'),
+                timestamp: Date.now(),
+                namaPemilik: document.getElementById("diag-nama").value,
+                namaBisnis: document.getElementById("diag-nama").value,
+                kategori: kategori,
+                whatsapp: document.getElementById("diag-wa").value,
+                alamat: document.getElementById("diag-alamat").value,
+                skorKesehatan: statusKesehatan,
+                status: "Calon Pelanggan",
+                sumber: "Form Diagnostik Landing Page",
+                followUp: false
+            };
 
-            let currentScore = 0;
-            const targetScore = totalScore * 10; // Max 100
+            // Save to localStorage for Admin
+            let adminLeads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
+            adminLeads.unshift(leadData);
+            localStorage.setItem("logarithm_admin_leads", JSON.stringify(adminLeads));
             
-            const interval = setInterval(() => {
-                if (currentScore >= targetScore) {
-                    clearInterval(interval);
-                    
-                    skorContainer.className = "w-32 h-32 mx-auto rounded-full flex items-center justify-center text-4xl font-bold border-4 mb-6 shadow-[0_0_30px_rgba(0,0,0,0.5)]";
-                    
-                    if (targetScore <= 30) {
-                        skorContainer.classList.add("border-red-500", "text-red-500", "bg-red-500/10");
-                        judul.textContent = "BAHAYA KEBOCORAN KRITIS";
-                        judul.className = "text-xl font-bold mb-4 font-heading text-red-400";
-                        deskripsi.textContent = "Bisnis Anda beroperasi tanpa arah matematis. Mayoritas margin habis untuk aktivitas yang tidak berkonversi menjadi profit.";
-                    } else if (targetScore <= 70) {
-                        skorContainer.classList.add("border-yellow-500", "text-yellow-500", "bg-yellow-500/10");
-                        judul.textContent = "FASE TRANSISI (RAWAN)";
-                        judul.className = "text-xl font-bold mb-4 font-heading text-yellow-400";
-                        deskripsi.textContent = "Ada upaya mengukur target, namun belum konsisten hingga ke level staf eksekutor harian. Butuh standardisasi sistem.";
-                    } else {
-                        skorContainer.classList.add("border-emerald-500", "text-emerald-500", "bg-emerald-500/10");
-                        judul.textContent = "SANGAT SEHAT";
-                        judul.className = "text-xl font-bold mb-4 font-heading text-emerald-400";
-                        deskripsi.textContent = "Sistem operasional Anda sudah berjalan dengan prinsip Backward Mapping yang sangat baik. Siap untuk scale-up agresif.";
-                    }
-                    
-                    // Auto scroll ke hasil
-                    setTimeout(() => {
-                        hasilDiv.scrollIntoView({ behavior: "smooth", block: "center" });
-                    }, 500);
+            // Legacy fallback (for the old admin dashboard logic if needed)
+            let oldLeads = JSON.parse(localStorage.getItem("logaritma_leads") || "[]");
+            oldLeads.unshift({
+                timestamp: leadData.timestamp,
+                nama: leadData.namaPemilik,
+                bisnis: leadData.namaBisnis,
+                wa: leadData.whatsapp,
+                status: "FREE",
+                followUp: false
+            });
+            localStorage.setItem("logaritma_leads", JSON.stringify(oldLeads));
 
-                } else {
-                    currentScore++;
-                    skorContainer.textContent = currentScore;
-                }
-            }, 20);
+            // Save active session for Member Area Greeting
+            localStorage.setItem("logarithm_lead_data", JSON.stringify(leadData));
+
+            // Redirect
+            setTimeout(() => {
+                window.location.href = '/tools/?source=diagnostic_lead';
+            }, 1000);
         });
     }
 });
-
-function simpanLeadsUMKM() {
-    let leads = JSON.parse(localStorage.getItem("logaritma_leads") || "[]");
-    
-    // Jangan spam leads jika dari IP/Browser yang sama dalam waktu berdekatan
-    if(leads.length > 0 && (new Date().getTime() - leads[0].timestamp < 60000)) return;
-
-    const dummyNames = ["Budi Santoso", "Siti Aminah", "Ahmad Fauzi", "Dewi Lestari"];
-    const dummyBiz = ["Kopi Senja", "Toko Hijabku", "Agensi Kreatif XYZ", "Pabrik Tahu Joss"];
-    const rIdx = Math.floor(Math.random() * dummyNames.length);
-
-    leads.unshift({
-        timestamp: new Date().getTime(),
-        nama: dummyNames[rIdx],
-        bisnis: dummyBiz[rIdx],
-        wa: "0812" + Math.floor(10000000 + Math.random() * 90000000),
-        status: "FREE",
-        followUp: false
-    });
-
-    localStorage.setItem("logaritma_leads", JSON.stringify(leads));
-}
 
 // ==========================================
 // TOOLS FREEMIUM LOGIC (/tools/index.html)
@@ -648,104 +723,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Admin Mobile Menu Toggle
     const adminMenuBtn = document.getElementById("admin-menu-btn");
     const adminSidebar = document.getElementById("admin-sidebar");
-    
-    if (adminMenuBtn && adminSidebar) {
-        adminMenuBtn.addEventListener("click", () => {
-            adminSidebar.classList.toggle("hidden");
-            adminSidebar.classList.toggle("flex");
-        });
-        
-        // Close when clicking outside on mobile
-        document.addEventListener("click", (e) => {
-            if (window.innerWidth < 768 && !adminSidebar.classList.contains("hidden") && !adminSidebar.contains(e.target) && e.target !== adminMenuBtn) {
-                adminSidebar.classList.add("hidden");
-                adminSidebar.classList.remove("flex");
-            }
-        });
-    }
-
-    const tableBody = document.getElementById("admin-table-body");
-    
-    if (tableBody) {
-        // Init Mock Data
-        let leads = JSON.parse(localStorage.getItem("logaritma_leads") || "[]");
-        if (leads.length === 0) {
-            leads = [
-                { timestamp: new Date().getTime() - 86400000, nama: "Joko Anwar", bisnis: "Film Production", wa: "081199998888", status: "PREMIUM", followUp: true },
-                { timestamp: new Date().getTime() - 172800000, nama: "Rina Nose", bisnis: "Kuliner Geprek", wa: "081233445566", status: "FREE", followUp: false }
-            ];
-            localStorage.setItem("logaritma_leads", JSON.stringify(leads));
-        }
-
-        function renderAdmin() {
-            leads = JSON.parse(localStorage.getItem("logaritma_leads") || "[]");
-            
-            // Update Stats
-            document.getElementById("stat-total-leads").textContent = leads.length;
-            
-            const freeCount = leads.filter(l => l.status === "FREE").length;
-            document.getElementById("stat-free-users").textContent = freeCount;
-            
-            const premiumCount = leads.filter(l => l.status === "PREMIUM").length;
-            document.getElementById("stat-premium-users").textContent = premiumCount;
-            document.getElementById("stat-revenue").textContent = "Est. Rp " + (premiumCount * 99000).toLocaleString("id-ID") + "/bln";
-            
-            const fuCount = leads.filter(l => l.status === "FREE" && !l.followUp).length;
-            document.getElementById("stat-follow-up").textContent = fuCount;
-
-            // Render Table
-            tableBody.innerHTML = "";
-            leads.forEach((lead, index) => {
-                const dateObj = new Date(lead.timestamp);
-                const dateStr = dateObj.toLocaleDateString("id-ID") + " " + dateObj.toLocaleTimeString("id-ID", {hour: "2-digit", minute:"2-digit"});
-                
-                const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-800/50 transition";
-                
-                const statusBadge = lead.status === "PREMIUM" 
-                    ? `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold px-2 py-1 rounded">PREMIUM</span>`
-                    : `<span class="bg-slate-700 text-slate-300 text-[10px] font-bold px-2 py-1 rounded">FREE</span>`;
-
-                const btnAction = lead.status === "PREMIUM"
-                    ? `<button class="text-[10px] font-bold text-slate-500 px-3 py-1.5 border border-slate-700 rounded cursor-not-allowed">SUDAH AKTIF</button>`
-                    : `<a href="https://wa.me/${lead.wa}?text=Halo%20Kak%20${encodeURIComponent(lead.nama)}%2C%20kami%20lihat%20Anda%20telah%20mencoba%20Logaritma%20Tools.%20Yuk%20aktifkan%20akses%20Premium%20Anda%20melalui%20link%20ini:%20https://baimwarunkarsi.myr.id/pay-membership" target="_blank" onclick="markFollowUp(${index})" class="text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded transition shadow-lg shadow-emerald-500/20">Kirim Link Perpanjangan WA</a>`;
-
-                tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-xs">${dateStr}</td>
-                    <td class="px-6 py-4">
-                        <div class="font-bold text-white">${lead.nama}</div>
-                        <div class="text-[10px] text-slate-500">${lead.bisnis}</div>
-                    </td>
-                    <td class="px-6 py-4 font-mono text-xs">${lead.wa}</td>
-                    <td class="px-6 py-4">${statusBadge}</td>
-                    <td class="px-6 py-4">${btnAction}</td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-
-        // Expose global markFollowUp function
-        window.markFollowUp = function(index) {
-            leads[index].followUp = true;
-            localStorage.setItem("logaritma_leads", JSON.stringify(leads));
-            setTimeout(renderAdmin, 1000);
-        };
-
-        // Render on load
-        setTimeout(renderAdmin, 500);
-
-        // Refresh button
-        const btnRefresh = document.getElementById("btn-refresh-data");
-        if(btnRefresh) {
-            btnRefresh.addEventListener("click", () => {
-                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500"><div class="inline-block w-6 h-6 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin mb-2"></div><p>Memuat data terbaru...</p></td></tr>`;
-                setTimeout(renderAdmin, 800);
-            });
-        }
-    }
-});
-
-// ==========================================
 // LTM CHECKER LOGIC (/tools/index.html)
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
@@ -865,4 +842,43 @@ document.addEventListener('DOMContentLoaded', () => {
         observer2.observe(el);
     });
 });
+
+
+
+// ==========================================
+// DIAGNOSTIC LEAD WELCOME (MEMBER AREA)
+// ==========================================
+document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("source") === "diagnostic_lead") {
+        const welcomeModal = document.getElementById("diagnostic-welcome-modal");
+        const btnCloseWelcome = document.getElementById("btn-close-welcome");
+        const titleWelcome = document.getElementById("welcome-modal-title");
+        
+        if (welcomeModal) {
+            // Coba ambil nama dari localStorage
+            const leadData = JSON.parse(localStorage.getItem("logarithm_lead_data") || "{}");
+            if (leadData.namaPemilik && titleWelcome) {
+                titleWelcome.textContent = "Halo " + leadData.namaPemilik + ", Selamat Datang!";
+            }
+
+            welcomeModal.classList.remove("hidden");
+            welcomeModal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+
+            if (btnCloseWelcome) {
+                btnCloseWelcome.addEventListener("click", () => {
+                    welcomeModal.classList.add("hidden");
+                    welcomeModal.classList.remove("flex");
+                    document.body.style.overflow = "auto";
+                    
+                    // Membersihkan URL agar tidak muncul terus kalau direfresh
+                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.pushState({path:newUrl}, "", newUrl);
+                });
+            }
+        }
+    }
+});
+
 
