@@ -1,5 +1,5 @@
 const ENCODED_KEY = "QVEuQWI4Uk42TGgtNl9pTWdrdFpqNk1JeHJMT0lUZmczVU9Pb3dndEZYdzBZckpWcHZvVnc=";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${atob(ENCODED_KEY)}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${atob(ENCODED_KEY)}`;
 
 document.addEventListener("DOMContentLoaded", () => {
     const btnSop = document.getElementById("btn-generate-sop");
@@ -111,7 +111,7 @@ Buatkan rekomendasi operasionalnya.
 
         } catch (error) {
             console.error("Gemini API Error:", error);
-            alert("Maaf, Tim Logaritma sedang mengalami kendala teknis dalam meracik sistem Anda. Silakan coba lagi.");
+            showElegantError("Sistem sedang mengalami peningkatan layanan. Mohon coba beberapa saat lagi.");
         } finally {
             document.getElementById("ai-loading").classList.add("hidden");
             document.getElementById("ai-result").classList.remove("hidden");
@@ -119,6 +119,41 @@ Buatkan rekomendasi operasionalnya.
             btnSop.innerHTML = "Eksekusi Rekomendasi Tim Logaritma ⚡";
         }
     });
+
+    function showElegantError(message) {
+        let errDiv = document.getElementById("elegant-toast");
+        if (!errDiv) {
+            errDiv = document.createElement("div");
+            errDiv.id = "elegant-toast";
+            errDiv.className = "fixed top-5 right-5 z-[200] max-w-sm w-full bg-slate-900 border border-rose-500/30 rounded-xl shadow-[0_0_40px_-10px_rgba(244,63,94,0.3)] p-4 transform transition-all duration-500 translate-x-[150%] flex gap-4 items-start";
+            
+            errDiv.innerHTML = `
+                <div class="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center shrink-0 border border-rose-500/20">
+                    <span class="text-rose-400 text-xl">⚠️</span>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-1 font-heading">Kendala Teknis</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed" id="elegant-toast-msg"></p>
+                </div>
+                <button onclick="document.getElementById('elegant-toast').classList.add('translate-x-[150%]')" class="absolute top-4 right-4 text-slate-500 hover:text-white transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            `;
+            document.body.appendChild(errDiv);
+        }
+        
+        document.getElementById("elegant-toast-msg").textContent = message;
+        
+        // Show
+        setTimeout(() => {
+            errDiv.classList.remove("translate-x-[150%]");
+        }, 100);
+        
+        // Auto hide
+        setTimeout(() => {
+            errDiv.classList.add("translate-x-[150%]");
+        }, 5000);
+    }
 
     function renderResult(markdownText, isPremium) {
         const contentDiv = document.getElementById("ai-content");
