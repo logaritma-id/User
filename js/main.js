@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         // Step 2 Submit
-        btnSubmitDiag.addEventListener("click", () => {
+        btnSubmitDiag.addEventListener("click", async () => {
             // Validate all 5 questions
             let totalScore = 0;
             let answered = 0;
