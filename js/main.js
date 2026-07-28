@@ -133,7 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.textContent = "Memproses...";
                 submitBtn.disabled = true;
                 
-                setTimeout(() => {
+                if(window.LogaritmaDB) { const currentUserStr = localStorage.getItem("logarithm_current_user"); if(currentUserStr) { window.LogaritmaDB.trackActivity(JSON.parse(currentUserStr).whatsapp, "sop"); } }
+            setTimeout(() => {
                     if (originalText.includes("Unduh")) {
                         alert("Berhasil! File PDF Executive Summary sedang diunduh ke perangkat Anda.");
                         window.open('/assets/docs/Executive-Summary-Metoda-Logaritma.pdf', '_blank');
@@ -799,7 +800,7 @@ document.addEventListener("DOMContentLoaded", function() {
             renderAdmin();
         };
 
-        window.sendWA = function(index) {
+        window.sendWA = async function(index) {
             const lead = leads[index];
             const text = `Halo Bapak/Ibu ${lead.nama}, saya dari Logaritma.id melihat bisnis ${lead.kategori} Anda berstatus ${lead.kesehatan}. Mari diskusikan bagaimana Logaritma bisa membantu.`;
             const waUrl = `https://wa.me/${lead.wa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
@@ -986,7 +987,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 1. Member Login Page Logic (/login/index.html)
     const formLogin = document.getElementById("form-login");
     if(formLogin) {
-        formLogin.addEventListener("submit", function(e) {
+        formLogin.addEventListener("submit", async function(e) {
             e.preventDefault();
             const inputWA = document.getElementById("input-login-wa").value;
             const errorMsg = document.getElementById("login-error");
