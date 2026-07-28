@@ -365,6 +365,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     badgeEl.textContent = "STATUS: SEHAT";
                     descEl.innerHTML = `Selamat! Bisnis ${kategori} Anda beroperasi dengan <strong>sangat optimal</strong>. Saatnya fokus pada strategi ekspansi dan delegasi otomatis menggunakan sistem Logaritma.`;
                 }
+
+                // Automatically log the user in for the dashboard
+                const currentUserData = {
+                    nama: leadData.namaPemilik,
+                    bisnis: leadData.namaBisnis,
+                    whatsapp: leadData.whatsapp,
+                    kategori: leadData.kategori,
+                    status: "FREE"
+                };
+                localStorage.setItem("logarithm_current_user", JSON.stringify(currentUserData));
                 
                 step3.classList.remove("hidden");
                 
