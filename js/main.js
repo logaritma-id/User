@@ -1170,8 +1170,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         const nameDisplay = document.getElementById("user-name-display");
         const catDisplay = document.getElementById("user-category-display");
-        if(nameDisplay) nameDisplay.textContent = currentUser.nama.split(" ")[0];
-        if(catDisplay) catDisplay.textContent = currentUser.kategori;
+        if(nameDisplay) nameDisplay.textContent = (currentUser.nama || currentUser.namaPemilik || "Member").split(" ")[0];
+        if(catDisplay) catDisplay.textContent = currentUser.kategori || "UMKM";
         
         const subtitle = document.getElementById("dashboard-subtitle");
         if(subtitle) subtitle.textContent = `Khusus: ${currentUser.kategori || "UMKM"}`;
