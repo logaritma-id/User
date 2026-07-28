@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Member - Logaritma.id</title>
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Space Grotesk"', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#141e33',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen flex items-center justify-center selection:bg-blue-500/30 selection:text-blue-200 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwem0yMCAyMGMxMS4wNDYgMCAyMC04Ljk1NCAyMC0yMFMyOC45NTQgMCAyMCAwIDAgOC45NTQgMCAyMHM4Ljk1NCAyMCAyMCAyMHptMCAyMGMxMS4wNDYgMCAyMC04Ljk1NCAyMC0yMFMyOC45NTQgMCAyMCAwIDAgOC45NTQgMCAyMHM4Ljk1NCAyMCAyMCAyMHoiIGZpbGw9IiMzMzQxNTUiIGZpbGwtb3BhY2l0eT0iMC4wNSIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+')] relative">
+
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="w-full max-w-md p-6 relative z-10">
+        <div class="text-center mb-8">
+            <a href="/" class="inline-flex items-center gap-2 text-white font-heading font-bold text-2xl tracking-tight mb-4 hover:opacity-80 transition">
+                <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg shadow-lg shadow-blue-500/20">∑</span>
+                Logaritma<span class="text-blue-400">.id</span>
+            </a>
+            <h1 class="text-2xl font-bold text-white font-heading">Member Login</h1>
+            <p class="text-slate-400 text-sm mt-2">Masukkan nomor WhatsApp yang Anda gunakan saat mengisi Diagnostik Bisnis.</p>
+        </div>
+
+        <div class="bg-slate-900/80 backdrop-blur-xl p-8 rounded-2xl border border-slate-700/50 shadow-2xl">
+            <form id="form-login" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Nomor WhatsApp</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">📱</span>
+                        <input type="tel" id="input-login-wa" required class="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-12 pr-4 py-3.5 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600" placeholder="08123456789">
+                    </div>
+                </div>
+                
+                <div id="login-error" class="hidden text-red-400 text-xs bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
+                    Nomor WhatsApp tidak terdaftar. Silakan ikuti tes diagnostik di halaman utama terlebih dahulu.
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 group">
+                    Masuk ke Dashboard
+                    <span class="group-hover:translate-x-1 transition-transform">→</span>
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center border-t border-slate-800 pt-6">
+                <p class="text-sm text-slate-400">Belum pernah mengisi diagnostik? <a href="/" class="text-blue-400 font-bold hover:text-blue-300 transition">Mulai di sini</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+</body>
+</html>
