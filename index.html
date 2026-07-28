@@ -397,10 +397,30 @@
             <h3 class="text-2xl font-bold font-heading mb-2 text-white">Mulai Eksplorasi</h3>
             <p class="text-slate-400 text-sm mb-6">Silakan pilih persona Anda untuk melanjutkan penelusuran lebih dalam.</p>
             <div class="space-y-4">
-                <a href="#studi-kasus" onclick="document.getElementById('cta-modal').classList.add('hidden')" class="block w-full bg-gradient-to-r from-emerald-700 to-teal-600 hover:from-emerald-600 hover:to-teal-500 border border-emerald-500/50 hover:border-emerald-400 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg shadow-emerald-500/20">Saya Pelaku Usaha (Kuliner, Toko, Jasa, Produksi)</a>
-                <a href="/praktisi/" class="block w-full bg-slate-800 hover:bg-blue-600 border border-slate-700 hover:border-blue-500 rounded-lg px-4 py-4 text-white text-center font-bold transition">Saya Praktisi & Eksekutif</a>
-                <a href="/akademisi/" class="block w-full bg-slate-800 hover:bg-cyan-600 border border-slate-700 hover:border-cyan-500 rounded-lg px-4 py-4 text-white text-center font-bold transition">Saya Akademisi & Peneliti</a>
+                <a href="#" onclick="openDiagFromCategory('Kuliner & F&B'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Kuliner</a>
+                <a href="#" onclick="openDiagFromCategory('Fashion & Olshop'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Fashion</a>
+                <a href="#" onclick="openDiagFromCategory('Jasa & Percetakan'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Percetakan</a>
+                <a href="#" onclick="openDiagFromCategory('PKL & Lapakan'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pedagang Kaki Lima</a>
             </div>
+            <script>
+            function openDiagFromCategory(catValue) {
+                const ctaModal = document.getElementById('cta-modal');
+                if(ctaModal) {
+                    ctaModal.classList.add('hidden');
+                    ctaModal.classList.remove('flex');
+                }
+                const diagModal = document.getElementById('diagnostic-modal');
+                if(diagModal) {
+                    diagModal.classList.remove('hidden');
+                    diagModal.classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                }
+                const selectCat = document.getElementById('diag-kategori');
+                if(selectCat) {
+                    selectCat.value = catValue;
+                }
+            }
+            </script>
         </div>
     </div>
 
