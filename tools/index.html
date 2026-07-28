@@ -92,7 +92,7 @@
                         <span>📊</span> Target Untung
                     </button>
                     <button data-target="tab-sop" class="tab-btn w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <span>🤖</span> Pembuat SOP (AI)
+                        <span>🤖</span> Pembuat SOP Otomatis
                     </button>
                     <button data-target="tab-ltm" class="tab-btn w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
                         <span>🔗</span> Uji Dampak Kegiatan
@@ -102,7 +102,7 @@
                 <div class="mt-8 px-2">
                     <div class="bg-slate-800 rounded-lg p-4 border border-slate-700 relative overflow-hidden">
                         <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
-                        <h4 class="text-xs font-bold text-white mb-1">Kuota AI Anda</h4>
+                        <h4 class="text-xs font-bold text-white mb-1">Lisensi Operasional</h4>
                         <div class="w-full bg-slate-900 rounded-full h-1.5 mb-1">
                             <div id="ai-quota-bar" class="bg-emerald-500 h-1.5 rounded-full w-[33%] transition-all"></div>
                         </div>
@@ -114,11 +114,24 @@
             <!-- Content Area -->
             <div class="flex-1 p-4 md:p-8 relative bg-slate-850/50">
                 
+                <div class="mb-8 print-hide">
+                    <h1 id="workspace-heading" class="text-3xl font-bold text-white mb-4 font-heading">Workspace Operasional</h1>
+                    <div id="support-box" class="bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/30 rounded-xl p-4 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/30">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 id="support-box-title" class="text-white font-bold mb-1">Tim Spesialis Logaritma</h3>
+                            <p class="text-xs text-slate-300">Tim kami siap membantu merekayasa operasional bisnis Anda agar profitabilitas meningkat.</p>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Tab 1: Profit Calculator -->
                 <div id="tab-profit" class="tab-content block animate-fade-in-up">
                     <div class="max-w-2xl print-max-w-full">
                         <div class="print-hide">
-                            <h2 class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator Target Untung Bulanan</h2>
+                            <h2 id="webtool-heading" class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator Target Untung Bulanan</h2>
                             <p class="text-slate-400 text-sm mb-8">Masukkan target untung bersih bulanan yang Anda mau. Sistem akan otomatis menghitung berapa target omzet, jumlah barang terjual, dan calon pembeli yang wajib didapat setiap hari.</p>
                         </div>
                         
@@ -176,9 +189,47 @@
                                 </div>
                             </div>
                             
-                            <button id="btn-download-profit" class="trigger-paywall w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg border border-slate-600 transition print-hide">
+                            <button id="btn-download-profit" class="trigger-paywall w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg border border-slate-600 transition print-hide mb-6">
                                 📄 Download Laporan (PDF) <span class="bg-amber-500 text-black text-[10px] px-2 py-0.5 rounded ml-2">PREMIUM</span>
                             </button>
+
+                            <!-- Rekomendasi Tim Logaritma Box -->
+                            <div class="mt-8 border-t border-slate-700 pt-8 print-hide">
+                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded bg-emerald-900/50 flex items-center justify-center text-emerald-400 border border-emerald-500/30">⚡</span>
+                                    Rekomendasi Eksekusi Tim Logaritma
+                                </h3>
+                                
+                                <div id="rek-free-state" class="relative bg-slate-900 border border-slate-700 rounded-xl overflow-hidden p-6 hidden">
+                                    <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-6 text-center">
+                                        <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-3 border border-slate-600">🔒</div>
+                                        <h4 class="text-white font-bold mb-2">Solusi Otomatis Terkunci</h4>
+                                        <p class="text-xs text-slate-300 mb-4">Sistem mendeteksi bahwa Anda memerlukan rekayasa operasional khusus. Buka akses untuk melihat rancangan solusi dari Tim Spesialis kami.</p>
+                                        <button class="trigger-paywall bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-lg shadow-emerald-500/20 transition-all">
+                                            ⚡ Aktifkan Tim Spesialis <span id="rek-cat-name"></span>
+                                        </button>
+                                    </div>
+                                    <!-- Blurred dummy content -->
+                                    <div class="space-y-3 opacity-50 blur-[2px]">
+                                        <div class="h-4 bg-slate-800 rounded w-3/4"></div>
+                                        <div class="h-4 bg-slate-800 rounded w-full"></div>
+                                        <div class="h-4 bg-slate-800 rounded w-5/6"></div>
+                                        <div class="h-4 bg-slate-800 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                                
+                                <div id="rek-premium-state" class="bg-slate-900 border border-emerald-500/30 rounded-xl p-6 hidden relative shadow-[0_0_15px_-3px_rgba(16,185,129,0.1)]">
+                                    <div class="absolute top-0 right-0 px-3 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-bl-lg">PREMIUM ACCESS</div>
+                                    <h4 class="text-white font-bold mb-3 border-b border-slate-800 pb-2">Rancangan Operasional Siap Pakai:</h4>
+                                    <div id="rek-premium-content" class="text-sm text-slate-300 space-y-4 mb-4">
+                                        <!-- Diisi via JS -->
+                                    </div>
+                                    <div class="flex gap-3 mt-4 pt-4 border-t border-slate-800">
+                                        <button class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg border border-slate-600 transition text-xs">📋 Copy Dokumen</button>
+                                        <button class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg transition text-xs">⬇️ Download File Resmi</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -189,9 +240,9 @@
                     <div class="max-w-2xl">
                         <div class="flex items-center gap-3 mb-2">
                             <h2 class="text-2xl font-bold text-white font-heading">Pembuat SOP Otomatis (AI)</h2>
-                            <span class="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2 py-1 rounded">AI CERDAS</span>
+                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-1 rounded">SYSTEM READY</span>
                         </div>
-                        <p class="text-slate-400 text-sm mb-8">Ketik masalah atau kegiatan bisnis Anda, dan sistem AI kami akan membuatkan panduan kerja (SOP) otomatis agar hasilnya maksimal.</p>
+                        <p class="text-slate-400 text-sm mb-8">Ketik masalah atau kegiatan bisnis Anda, dan Sistem Rekayasa Logaritma akan membuatkan panduan kerja (SOP) otomatis agar hasilnya maksimal.</p>
                         
                         <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 shadow-inner">
                             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Kegiatan Bisnis (Contoh: Cara Melayani Komplain Pelanggan)</label>
@@ -206,13 +257,13 @@
                         <!-- Loading State -->
                         <div id="ai-loading" class="hidden mt-8 text-center py-10">
                             <div class="inline-block w-8 h-8 border-4 border-slate-700 border-t-purple-500 rounded-full animate-spin mb-4"></div>
-                            <p class="text-slate-400 text-sm animate-pulse">AI sedang merumuskan standar operasional...</p>
+                            <p class="text-slate-400 text-sm animate-pulse">Tim Logaritma sedang merumuskan standar operasional...</p>
                         </div>
 
                         <!-- AI Result -->
                         <div id="ai-result" class="hidden mt-8 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden relative">
                             <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center print-hide">
-                                <span class="text-xs font-bold text-slate-300">HASIL PANDUAN KERJA (DIBUAT AI)</span>
+                                <span class="text-xs font-bold text-slate-300">HASIL PANDUAN KERJA (TIM LOGARITMA)</span>
                                 <button id="btn-download-sop" class="trigger-paywall text-[10px] font-bold bg-amber-500 hover:bg-amber-400 transition text-black px-3 py-1.5 rounded flex items-center gap-2">
                                     📄 DOWNLOAD PDF LENGKAP
                                 </button>
@@ -281,7 +332,7 @@
                             <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 relative overflow-hidden" id="ltm-result-box">
                                 <div id="ltm-badge" class="inline-block text-[10px] font-bold px-2 py-1 rounded w-max mb-3 uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">BERDAMPAK PROFIT</div>
                                 <h4 id="ltm-title" class="text-2xl font-bold font-heading text-white mb-2">Kegiatan Layak Dieksekusi</h4>
-                                <p id="ltm-desc" class="text-slate-300 text-sm mb-4">Rencana kegiatan ini memiliki rasio pengembalian (ROI) yang positif dan terukur secara matematis. Silakan susun SOP pelaksanaannya menggunakan fitur AI kami.</p>
+                                <p id="ltm-desc" class="text-slate-300 text-sm mb-4">Rencana kegiatan ini memiliki rasio pengembalian (ROI) yang positif dan terukur secara matematis. Silakan susun SOP pelaksanaannya menggunakan fitur Tim Logaritma.</p>
                                 
                                 <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-sm">
                                     <div class="flex justify-between items-center mb-2">
@@ -332,7 +383,7 @@
                         </div>
                         <ul class="mt-4 space-y-2 text-xs text-slate-300">
                             <li class="flex items-center gap-2"><span>✔️</span> Bisa Download Laporan Target Untung Sepuasnya</li>
-                            <li class="flex items-center gap-2"><span>✔️</span> Bisa Bikin Aturan Kerja (SOP) Pakai AI Sepuasnya</li>
+                            <li class="flex items-center gap-2"><span>✔️</span> Bisa Bikin Aturan Kerja (SOP) Secara Otomatis Sepuasnya</li>
                             <li class="flex items-center gap-2"><span>✔️</span> Akses Fitur Cek Kesehatan Bisnis</li>
                         </ul>
                     </div>
@@ -389,4 +440,6 @@
     <script src="/js/main.js"></script>
 </body>
 </html>
+
+
 

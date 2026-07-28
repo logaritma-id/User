@@ -556,7 +556,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if(quotaBadgeContainer) {
             quotaBadgeContainer.innerHTML = `
                 <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
-                <h4 class="text-xs font-bold text-slate-400 mb-1">Akses Fitur Cerdas AI</h4>
+                <h4 class="text-xs font-bold text-slate-400 mb-1">Lisensi Operasional</h4>
                 <div class="mt-2 inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg w-full">
                     <span class="text-emerald-400">✨</span>
                     <span class="text-emerald-400 font-bold text-sm drop-shadow">UNLIMITED ACCESS</span>
@@ -668,6 +668,44 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("hasil-leads").textContent = Math.ceil(leadsHarian) + " Leads/hari";
 
             document.getElementById("hasil-profit").classList.remove("hidden");
+
+            // Rekomendasi Eksekusi Tim Logaritma Logic
+            const rekFreeState = document.getElementById("rek-free-state");
+            const rekPremiumState = document.getElementById("rek-premium-state");
+            const rekPremiumContent = document.getElementById("rek-premium-content");
+            
+            if (currentUser.status === "FREE") {
+                if(rekFreeState) rekFreeState.classList.remove("hidden");
+                if(rekPremiumState) rekPremiumState.classList.add("hidden");
+            } else {
+                if(rekFreeState) rekFreeState.classList.add("hidden");
+                if(rekPremiumState) {
+                    rekPremiumState.classList.remove("hidden");
+                    let premiumHTML = `<ul class="list-disc list-inside space-y-2">`;
+                    if (currentUser.kategori === "Kuliner & F&B") {
+                        premiumHTML += `<li>SOP Quality Control Bahan Baku (Mencegah Wastage)</li>`;
+                        premiumHTML += `<li>Draft Instruksi Kerja Kasir untuk Upselling</li>`;
+                        premiumHTML += `<li>Format Rekap Penjualan Harian via WA Group</li>`;
+                    } else if (currentUser.kategori === "Fashion & Olshop") {
+                        premiumHTML += `<li>Skrip Balas Chat WA (Meningkatkan Konversi Sales)</li>`;
+                        premiumHTML += `<li>SOP Packing Barang Anti Salah Kirim</li>`;
+                        premiumHTML += `<li>Matriks Re-stock Barang Fast Moving</li>`;
+                    } else if (currentUser.kategori === "Jasa & Percetakan" || currentUser.kategori === "Jasa & Kriya") {
+                        premiumHTML += `<li>SOP Maintenance Mesin Mingguan (Mencegah Downtime)</li>`;
+                        premiumHTML += `<li>SLA Pengerjaan Order & Sistem Antrian</li>`;
+                        premiumHTML += `<li>Formulir Quality Control Hasil Cetak</li>`;
+                    } else if (currentUser.kategori === "PKL & Lapakan") {
+                        premiumHTML += `<li>Aturan Pisah Uang Kas Pribadi & Jualan</li>`;
+                        premiumHTML += `<li>SOP Persiapan Buka Lapak & Bersih-bersih</li>`;
+                        premiumHTML += `<li>Tabel Pencatatan Laba Bersih Sederhana</li>`;
+                    } else {
+                        premiumHTML += `<li>SOP Standar Operasional Harian</li>`;
+                        premiumHTML += `<li>Draft Evaluasi Kinerja Karyawan Bulanan</li>`;
+                    }
+                    premiumHTML += `</ul>`;
+                    if(rekPremiumContent) rekPremiumContent.innerHTML = premiumHTML;
+                }
+            }
         });
     }
 
@@ -961,7 +999,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 box.classList.add("border-emerald-500/50", "shadow-emerald-500/10");
                 title.textContent = "KEGIATAN LAYAK DIEKSEKUSI";
                 title.className = "text-2xl font-bold font-heading text-emerald-400 mb-2";
-                desc.textContent = "Rencana kegiatan ini memiliki rasio pengembalian (ROI) yang positif dan kuat. Silakan susun pelaksanaannya menggunakan fitur AI kami.";
+                desc.textContent = "Rencana kegiatan ini memiliki rasio pengembalian (ROI) yang positif dan kuat. Silakan susun pelaksanaannya menggunakan Tim Logaritma.";
                 action.textContent = "Lanjutkan & Kawal Eksekusi";
                 action.className = "font-bold text-emerald-400 text-right";
                 roiEl.className = "font-bold text-emerald-400";
@@ -1128,28 +1166,54 @@ document.addEventListener("DOMContentLoaded", async function() {
         const subtitle = document.getElementById("dashboard-subtitle");
         if(subtitle) subtitle.textContent = `Khusus: ${currentUser.kategori || "UMKM"}`;
 
-        // Dynamic Placeholders untuk SOP AI berdasarkan kategori
+        // Dynamic Placeholders & Dashboard Setup berdasarkan kategori
         const inputSOP = document.getElementById("input-sop");
         const sopCatText = document.getElementById("sop-category-text");
         if(sopCatText) sopCatText.textContent = currentUser.kategori || "Anda";
-        if(inputSOP) {
-            let ph = "Tulis kegiatan yang ingin dibuatkan aturannya...";
-            switch(currentUser.kategori) {
-                case "Kuliner & F&B":
-                    ph = "Contoh: Cara simpan bahan baku dapur, SOP kasir resto...";
-                    break;
-                case "Fashion & Olshop":
-                    ph = "Contoh: Cara balas chat WA agar closing, SOP packing barang...";
-                    break;
-                case "Jasa & Kriya":
-                    ph = "Contoh: Quality Control hasil cetakan, SOP melayani klien...";
-                    break;
-                case "PKL & Lapakan":
-                    ph = "Contoh: Cara atur modal jualan harian agar tidak minus...";
-                    break;
-            }
-            inputSOP.placeholder = ph;
+        
+        const wsHeading = document.getElementById("workspace-heading");
+        const wtHeading = document.getElementById("webtool-heading");
+        const sbTitle = document.getElementById("support-box-title");
+        const rekCatName = document.getElementById("rek-cat-name");
+
+        let ph = "Tulis kegiatan yang ingin dibuatkan aturannya...";
+        let wsText = "Workspace Operasional";
+        let wtText = "Kalkulator Target Untung Bulanan";
+        let sbText = "Tim Spesialis Logaritma";
+
+        switch(currentUser.kategori) {
+            case "Kuliner & F&B":
+                ph = "Contoh: Cara simpan bahan baku dapur, SOP kasir resto...";
+                wsText = "Workspace Operasional Kuliner & F&B";
+                wtText = "Kalkulator HPP, Yield & Food-Waste Dapur";
+                sbText = "Tim Spesialis Operasional Kuliner Logaritma";
+                break;
+            case "Fashion & Olshop":
+                ph = "Contoh: Cara balas chat WA agar closing, SOP packing barang...";
+                wsText = "Workspace Sales & Inventory Fashion";
+                wtText = "Matriks Turn-Over Stok & Lead Conversion Rate";
+                sbText = "Tim Analis Sales & Stock Logaritma";
+                break;
+            case "Jasa & Percetakan":
+            case "Jasa & Kriya":
+                ph = "Contoh: Quality Control hasil cetakan, SOP melayani klien...";
+                wsText = "Workspace QC & Production Engineering";
+                wtText = "Kalkulator SLA Mesin & Margin Cetak";
+                sbText = "Tim QC & Produksi Logaritma";
+                break;
+            case "PKL & Lapakan":
+                ph = "Contoh: Cara atur modal jualan harian agar tidak minus...";
+                wsText = "Workspace Manajemen Lapak & Modal Putar";
+                wtText = "Pemisah Kas Usaha vs Kas Dapur";
+                sbText = "Tim Pendamping Cashflow Lapak Logaritma";
+                break;
         }
+        
+        if(inputSOP) inputSOP.placeholder = ph;
+        if(wsHeading) wsHeading.textContent = wsText;
+        if(wtHeading) wtHeading.textContent = wtText;
+        if(sbTitle) sbTitle.textContent = sbText;
+        if(rekCatName) rekCatName.textContent = currentUser.kategori || "";
         
         // Fitur Logout
         const btnLogout = document.getElementById("btn-logout");
@@ -1161,4 +1225,5 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 });
+
 
