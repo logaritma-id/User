@@ -332,10 +332,51 @@ document.addEventListener("DOMContentLoaded", function() {
             // Save active session for Member Area Greeting
             localStorage.setItem("logarithm_lead_data", JSON.stringify(leadData));
 
-            // Redirect
+            // Show Step 3 instead of Redirecting
             setTimeout(() => {
+                document.getElementById("diagnostic-step-2").classList.add("hidden");
+                const step3 = document.getElementById("diagnostic-step-3");
+                
+                // Populate Step 3 Data
+                document.getElementById("diag-result-score").textContent = statusKesehatan;
+                
+                const iconEl = document.getElementById("diag-result-icon");
+                const badgeEl = document.getElementById("diag-result-badge");
+                const descEl = document.getElementById("diag-result-desc");
+                
+                document.getElementById("diag-result-kategori").textContent = kategori;
+                
+                if(percentage <= 30) {
+                    iconEl.innerHTML = "🚨";
+                    iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-red-900/50 border-2 border-red-500/50";
+                    badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-red-950 text-red-400 border-red-500/30";
+                    badgeEl.textContent = "STATUS: KRITIS";
+                    descEl.innerHTML = `Bisnis ${kategori} Anda berpotensi mengalami <strong>kebocoran operasional yang fatal</strong>. Segera evaluasi ulang struktur biaya, harga jual, dan alur kerja harian sebelum kehabisan modal kas.`;
+                } else if(percentage <= 70) {
+                    iconEl.innerHTML = "⚠️";
+                    iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-yellow-900/50 border-2 border-yellow-500/50";
+                    badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-yellow-950 text-yellow-400 border-yellow-500/30";
+                    badgeEl.textContent = "STATUS: TRANSISI";
+                    descEl.innerHTML = `Bisnis ${kategori} Anda berjalan cukup stabil, namun <strong>masih ada inefisiensi</strong>. Anda membuang potensi profit yang seharusnya bisa lebih besar jika operasional diperketat.`;
+                } else {
+                    iconEl.innerHTML = "🏆";
+                    iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-emerald-900/50 border-2 border-emerald-500/50";
+                    badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-emerald-950 text-emerald-400 border-emerald-500/30";
+                    badgeEl.textContent = "STATUS: SEHAT";
+                    descEl.innerHTML = `Selamat! Bisnis ${kategori} Anda beroperasi dengan <strong>sangat optimal</strong>. Saatnya fokus pada strategi ekspansi dan delegasi otomatis menggunakan sistem Logaritma.`;
+                }
+                
+                step3.classList.remove("hidden");
+                
+                // Hide spinner
+                spinnerDiag.classList.add("hidden");
+                btnSubmitDiag.querySelector("span").textContent = "Selesai & Lihat Hasil Diagnosa";
+            }, 800);
+            
+            // Handle Dashboard Button
+            document.getElementById("btn-to-dashboard").addEventListener("click", () => {
                 window.location.href = '/tools/?source=diagnostic_lead';
-            }, 1000);
+            });
         });
     }
 });
@@ -761,8 +802,16 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
 
         // Helper date format
-        const formatDate = (isoString) => {
-            const d = new Date(isoString);
+        const formatDate = (dateValue) => {
+            if(!dateValue) return '-';
+            
+            // Jika dateValue sudah format dd/mm/yyyy
+            if(typeof dateValue === 'string' && dateValue.includes('/')) {
+                return dateValue;
+            }
+            
+            const d = new Date(dateValue);
+            if(isNaN(d.getTime())) return '-'; // Invalid date
             return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         };
 
@@ -791,7 +840,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 let tr = document.createElement("tr");
                 tr.className = "border-b border-slate-700/50 hover:bg-slate-800/30 transition";
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${formatDate(lead.tanggal)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${formatDate(lead.timestamp || lead.tanggal)}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="font-medium text-white">${lead.nama || lead.namaPemilik}</div>
                         <div class="text-sm text-slate-400">${lead.wa || lead.whatsapp}</div>
@@ -1075,9 +1124,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         const catDisplay = document.getElementById("user-category-display");
         if(nameDisplay) nameDisplay.textContent = currentUser.nama.split(" ")[0];
         if(catDisplay) catDisplay.textContent = currentUser.kategori;
+        
+        const subtitle = document.getElementById("dashboard-subtitle");
+        if(subtitle) subtitle.textContent = `Khusus: ${currentUser.kategori || "UMKM"}`;
 
         // Dynamic Placeholders untuk SOP AI berdasarkan kategori
         const inputSOP = document.getElementById("input-sop");
+        const sopCatText = document.getElementById("sop-category-text");
+        if(sopCatText) sopCatText.textContent = currentUser.kategori || "Anda";
         if(inputSOP) {
             let ph = "Tulis kegiatan yang ingin dibuatkan aturannya...";
             switch(currentUser.kategori) {
