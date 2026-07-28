@@ -2,14 +2,14 @@
 // FIREBASE DATABASE CONFIGURATION
 // ==========================================
 
-// TODO: GANTI DENGAN CONFIG FIREBASE ANDA
 const firebaseConfig = {
-    apiKey: "GANTI_DENGAN_API_KEY",
-    authDomain: "GANTI_DENGAN_AUTH_DOMAIN",
-    projectId: "GANTI_DENGAN_PROJECT_ID",
-    storageBucket: "GANTI_DENGAN_STORAGE_BUCKET",
-    messagingSenderId: "GANTI_DENGAN_MESSAGING_SENDER_ID",
-    appId: "GANTI_DENGAN_APP_ID"
+    apiKey: "AIzaSyAFMnyib2wCOC0Lzo9Z84Phs5Eqmlc-VCQ",
+    authDomain: "logaritma-id.firebaseapp.com",
+    projectId: "logaritma-id",
+    storageBucket: "logaritma-id.firebasestorage.app",
+    messagingSenderId: "343719249271",
+    appId: "1:343719249271:web:12fb2d7db1236180970d72",
+    measurementId: "G-9YKVKH7QN9"
 };
 
 // Initialize Firebase only if config is set (preventing crash on empty config)
