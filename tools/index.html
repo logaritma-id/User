@@ -22,6 +22,7 @@
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -92,7 +93,7 @@
                         <span>📊</span> Target Untung
                     </button>
                     <button data-target="tab-sop" class="tab-btn w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <span>🤖</span> Pembuat SOP Otomatis
+                        <span>📋</span> Pembuat SOP & Aturan Kerja
                     </button>
                     <button data-target="tab-ltm" class="tab-btn w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
                         <span>🔗</span> Uji Dampak Kegiatan
@@ -239,8 +240,8 @@
                 <div id="tab-sop" class="tab-content hidden animate-fade-in-up">
                     <div class="max-w-2xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <h2 class="text-2xl font-bold text-white font-heading">Pembuat SOP Otomatis (AI)</h2>
-                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-1 rounded">SYSTEM READY</span>
+                            <h2 class="text-2xl font-bold text-white font-heading">Pembuat SOP & Aturan Kerja Otomatis</h2>
+                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-1 rounded">SYSTEM READY / TIM LOGARITMA AKTIF</span>
                         </div>
                         <p class="text-slate-400 text-sm mb-8">Ketik masalah atau kegiatan bisnis Anda, dan Sistem Rekayasa Logaritma akan membuatkan panduan kerja (SOP) otomatis agar hasilnya maksimal.</p>
                         
@@ -248,8 +249,8 @@
                             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Kegiatan Bisnis (Contoh: Cara Melayani Komplain Pelanggan)</label>
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <input type="text" id="input-sop" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Tulis kegiatan yang ingin dibuatkan aturannya...">
-                                <button id="btn-generate-sop" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-3 rounded-lg transition-all shadow-lg shadow-purple-500/20 whitespace-nowrap">
-                                    Buat SOP ⚡
+                                <button id="btn-generate-sop" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-3 rounded-lg transition-all shadow-lg shadow-purple-500/20 whitespace-nowrap text-sm sm:text-base">
+                                    Eksekusi Rekomendasi Tim Logaritma ⚡
                                 </button>
                             </div>
                         </div>
@@ -262,11 +263,16 @@
 
                         <!-- AI Result -->
                         <div id="ai-result" class="hidden mt-8 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden relative">
-                            <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center print-hide">
+                            <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex flex-wrap justify-between items-center gap-2 print-hide">
                                 <span class="text-xs font-bold text-slate-300">HASIL PANDUAN KERJA (TIM LOGARITMA)</span>
-                                <button id="btn-download-sop" class="trigger-paywall text-[10px] font-bold bg-amber-500 hover:bg-amber-400 transition text-black px-3 py-1.5 rounded flex items-center gap-2">
-                                    📄 DOWNLOAD PDF LENGKAP
-                                </button>
+                                <div class="flex items-center gap-2">
+                                    <button id="btn-copy-sop" class="text-[10px] font-bold bg-slate-700 hover:bg-slate-600 transition text-white px-3 py-1.5 rounded flex items-center gap-2">
+                                        📋 COPY HASIL SOP/SKRIP
+                                    </button>
+                                    <button id="btn-download-sop" class="trigger-paywall text-[10px] font-bold bg-amber-500 hover:bg-amber-400 transition text-black px-3 py-1.5 rounded flex items-center gap-2">
+                                        📄 DOWNLOAD PDF RESMI LOGARITMA
+                                    </button>
+                                </div>
                             </div>
                             <div class="print-only hidden mb-6 text-center border-b border-slate-700 pb-6">
                                 <div class="inline-flex w-12 h-12 rounded bg-gradient-to-br from-emerald-500 to-teal-600 items-center justify-center text-xl font-bold shadow-lg shadow-emerald-500/20 mb-4">∑</div>
@@ -438,6 +444,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="/js/db.js"></script>
     <script src="/js/main.js?v=2"></script>
+    <script src="/js/workspace.js?v=1"></script>
 </body>
 </html>
 

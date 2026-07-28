@@ -725,74 +725,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let aiQuota = parseInt(localStorage.getItem("logaritma_ai_quota") || "2");
         updateQuotaUI(aiQuota);
 
-        btnSop.addEventListener("click", () => {
-            const inputVal = document.getElementById("input-sop").value;
-            if(!inputVal) {
-                alert("Masukkan nama proses bisnis terlebih dahulu.");
-                return;
-            }
-
-            if (aiQuota <= 0) {
-                document.getElementById("paywall-modal").classList.remove("hidden");
-                document.body.style.overflow = "hidden";
-                return;
-            }
-
-            aiQuota--;
-            localStorage.setItem("logaritma_ai_quota", aiQuota);
-            updateQuotaUI(aiQuota);
-
-            document.getElementById("ai-loading").classList.remove("hidden");
-            document.getElementById("ai-result").classList.add("hidden");
-            btnSop.disabled = true;
-
-            setTimeout(() => {
-                document.getElementById("ai-loading").classList.add("hidden");
-                document.getElementById("ai-result").classList.remove("hidden");
-                btnSop.disabled = false;
-                
-                const content = document.getElementById("ai-content");
-                content.innerHTML = `
-                    <div class="mb-4 pb-4 border-b border-slate-700/50">
-                        <h4 class="font-bold text-white text-lg mb-1">1. Identitas Dokumen</h4>
-                        <ul class="text-sm space-y-1 text-slate-300">
-                            <li><span class="text-slate-500">Nama Proses:</span> <span class="text-emerald-400 font-bold">${inputVal.toUpperCase()}</span></li>
-                            <li><span class="text-slate-500">Sektor / Departemen:</span> Operasional Internal</li>
-                            <li><span class="text-slate-500">Penanggung Jawab:</span> Staf / Manajer Terkait</li>
-                        </ul>
-                    </div>
-                    <div class="mb-4 pb-4 border-b border-slate-700/50">
-                        <h4 class="font-bold text-white text-lg mb-1">2. Tujuan & Output Akhir</h4>
-                        <p class="text-sm text-slate-300">Memastikan proses <span class="font-semibold">${inputVal}</span> berjalan terstandarisasi, efisien, meminimalisir kesalahan manusia (human error), dan berujung pada penghematan waktu/biaya serta peningkatan kepuasan.</p>
-                    </div>
-                    <div class="mb-4 pb-4 border-b border-slate-700/50">
-                        <h4 class="font-bold text-white text-lg mb-1">3. Dokumen & Bahan Persiapan</h4>
-                        <ul class="list-disc pl-5 text-sm space-y-1 text-slate-300">
-                            <li>Checklist Harian / Sistem Pencatatan (Digital/Buku)</li>
-                            <li>Akses ke Alat Bantu / Software Relevan</li>
-                            <li>Protokol Komunikasi Tim</li>
-                        </ul>
-                    </div>
-                    <div class="mb-4 pb-4 border-b border-slate-700/50">
-                        <h4 class="font-bold text-white text-lg mb-1">4. Langkah-Langkah Operasional Detail</h4>
-                        <ul class="list-decimal pl-5 text-sm space-y-2 text-slate-300">
-                            <li><strong class="text-white">Persiapan (Pra-Eksekusi):</strong> Lakukan pengecekan kesiapan alat, bahan, dan data 15 menit sebelum proses dimulai.</li>
-                            <li><strong class="text-white">Eksekusi Inti:</strong> Terapkan tindakan utama sesuai standar kualitas perusahaan tanpa melewatkan detail kecil.</li>
-                            <li><strong class="text-white">Monitoring Proses:</strong> Jika terjadi kendala atau eskalasi di tengah jalan, segera laporkan ke atasan dalam rentang waktu maks 10 menit.</li>
-                            <li class="${isPremium ? '' : 'blur-sm select-none'}"><strong class="${isPremium ? 'text-white' : ''}">Quality Control (QC):</strong> Periksa kembali hasil akhir sebelum diserahkan ke pelanggan atau departemen selanjutnya. Pastikan bebas cacat.</li>
-                            <li class="${isPremium ? '' : 'blur-sm select-none'}"><strong class="${isPremium ? 'text-white' : ''}">Pencatatan (Logging):</strong> Input status penyelesaian ke dalam sistem atau buku laporan harian untuk rekam jejak.</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-white text-lg mb-1">5. Indikator Keberhasilan (KPI)</h4>
-                        <ul class="list-disc pl-5 text-sm space-y-1 text-slate-300">
-                            <li>Waktu penyelesaian tepat waktu (On-time Delivery > 95%).</li>
-                            <li class="${isPremium ? '' : 'blur-sm select-none'}">Tingkat komplain atau *error rate* mendekati 0%.</li>
-                        </ul>
-                    </div>
-                `;
-            }, 2500);
-        });
+        // Event listener dipindahkan ke js/workspace.js
     }
 
     function updateQuotaUI(quota) {
