@@ -632,7 +632,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return rupiah;
     }
 
-    const inputsNominal = ["input-profit", "input-harga", "input-ltm-biaya", "input-ltm-target"];
+    const inputsNominal = ["input-profit", "input-harga", "input-ltm-biaya", "input-ltm-target", "fb-input-profit", "fb-input-harga"];
     inputsNominal.forEach(id => {
         const el = document.getElementById(id);
         if(el) {
