@@ -96,7 +96,7 @@
             </div>
             
             <!-- BOTTOM: SIDEBAR + CONTENT -->
-            <div class="flex flex-col md:flex-row min-h-[620px]">
+            <div class="flex flex-col md:flex-row md:min-h-[620px]">
             
             <!-- Sidebar Tabs — DESKTOP ONLY -->
             <div class="hidden md:flex md:w-64 bg-slate-900/50 border-r border-slate-800 p-4 shrink-0 print-hide flex-col">
@@ -327,11 +327,11 @@
                 <!-- Tab 2: AI SOP Generator -->
                 <div id="tab-sop" class="tab-content hidden animate-fade-in-up">
                     <div class="w-full">
-                        <div class="flex items-center gap-3 mb-2">
-                            <h2 class="text-2xl font-bold text-white font-heading">Pembuat SOP & Aturan Kerja Otomatis</h2>
-                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-1 rounded">SYSTEM READY / TIM LOGARITMA AKTIF</span>
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <h2 class="text-xl sm:text-2xl font-bold text-white font-heading">Pembuat SOP & Aturan Kerja Otomatis</h2>
+                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-1 rounded shrink-0">SYSTEM READY / TIM LOGARITMA AKTIF</span>
                         </div>
-                        <p class="text-slate-400 text-sm mb-8">Ketik masalah atau kegiatan bisnis Anda, dan Sistem Rekayasa Logaritma akan membuatkan panduan kerja (SOP) otomatis agar hasilnya maksimal.</p>
+                        <p class="text-slate-400 text-sm mb-6">Ketik masalah atau kegiatan bisnis Anda, dan Sistem Rekayasa Logaritma akan membuatkan panduan kerja (SOP) otomatis agar hasilnya maksimal.</p>
                         
                         <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 shadow-inner">
                             <div id="sop-target-badge" class="hidden mb-4 bg-emerald-900/30 border border-emerald-500/30 p-3 rounded-lg text-emerald-300 text-xs font-bold flex items-center gap-2">
@@ -340,8 +340,9 @@
                               <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Kegiatan Bisnis (Contoh: Cara Melayani Komplain Pelanggan)</label>
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <input type="text" id="input-sop" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Tulis kegiatan yang ingin dibuatkan aturannya...">
-                                <button id="btn-generate-sop" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-3 rounded-lg transition-all shadow-lg shadow-purple-500/20 whitespace-nowrap text-sm sm:text-base">
-                                    Eksekusi Rekomendasi Tim Logaritma ⚡
+                                <button id="btn-generate-sop" class="w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-bold px-5 py-3 rounded-lg transition-all shadow-lg shadow-purple-500/20 text-sm">
+                                    <span class="hidden sm:inline">Eksekusi Rekomendasi Tim Logaritma ⚡</span>
+                                    <span class="sm:hidden">Eksekusi ⚡</span>
                                 </button>
                             </div>
                         </div>
@@ -388,8 +389,8 @@
                 </div>
 
                 <!-- Tab 3: LTM Checker -->
-                <div id="tab-ltm" class="tab-content hidden animate-fade-in-up">
-                    <div class="ltm-locked-content text-center py-12">
+                <div id="tab-ltm" class="tab-content hidden animate-fade-in-up w-full">
+                    <div class="ltm-locked-content text-center py-10 px-4">
                         <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 border border-slate-700">🔒</div>
                         <h2 class="text-2xl font-bold text-white mb-4 font-heading">Fitur Terkunci</h2>
                         <p class="text-slate-400 mb-8 max-w-md mx-auto">Fitur Uji Dampak Kegiatan (LTM Checker) adalah alat untuk memvalidasi apakah pengeluaran Anda berdampak profit atau berpotensi jebakan, khusus untuk pengguna Premium.</p>
