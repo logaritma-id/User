@@ -665,11 +665,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            // Rumus Backward Mapping
             const omzet = profit / (margin / 100);
             const salesUnit = omzet / harga;
             const leadsTotal = salesUnit / (cr / 100);
             const leadsHarian = leadsTotal / 30;
+
+            const targetDefaultData = {
+                omzetBulan: omzet,
+                targetUnitBulan: salesUnit,
+                leadsHarian: leadsHarian
+            };
+            localStorage.setItem("logaritma_default_target", JSON.stringify(targetDefaultData));
+            
+            // Try updating sop badge if it exists
+            if (typeof window.updateSopBadge === "function") {
+                window.updateSopBadge();
+            }
 
             const formatRp = (num) => "Rp " + Math.round(num).toLocaleString("id-ID");
 

@@ -24,6 +24,46 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
     }
 })();
 
+window.updateSopBadge = function updateSopBadge() {
+    const targetBadge = document.getElementById("sop-target-badge");
+    const targetText = document.getElementById("sop-target-text");
+    if (!targetBadge || !targetText) return;
+
+    const dataStrFb = localStorage.getItem("logaritma_fb_target");
+    const dataStrDef = localStorage.getItem("logaritma_default_target");
+    
+    const currentUserStr = localStorage.getItem("logarithm_current_user");
+    let isFb = false;
+    if(currentUserStr) {
+        try {
+            const cu = JSON.parse(currentUserStr);
+            const userCat = cu.kategori || "";
+            if (userCat.toLowerCase().includes("kuliner") || userCat.toLowerCase().includes("f&b")) {
+                isFb = true;
+            }
+        } catch(e) {}
+    }
+
+    try {
+        if (isFb && dataStrFb) {
+            const data = JSON.parse(dataStrFb);
+            const fRupiah = (num) => new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR", maximumFractionDigits: 0}).format(num);
+            targetText.textContent = `Target Operasional Anda Saat Ini: ${data.porsiHari} Porsi/Hari | HPP Max: ${fRupiah(data.batasBelanja)}`;
+            targetBadge.classList.remove("hidden");
+        } else if (dataStrDef) {
+            const data = JSON.parse(dataStrDef);
+            const fRupiah = (num) => new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR", maximumFractionDigits: 0}).format(num);
+            targetText.textContent = `Target Bulanan Anda Saat Ini: ${Math.round(data.targetUnitBulan)} Unit | Estimasi Traffic: ${Math.round(data.leadsHarian)} Leads/hari`;
+            targetBadge.classList.remove("hidden");
+        } else {
+            targetBadge.classList.add("hidden");
+        }
+    } catch (e) {
+        targetBadge.classList.add("hidden");
+    }
+}
+updateSopBadge();
+
 document.addEventListener("DOMContentLoaded", () => {
     const btnSop = document.getElementById("btn-generate-sop");
     
@@ -70,6 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 targetTraffic,
                 hari: valHari
             };
+            
+            localStorage.setItem("logaritma_fb_target", JSON.stringify(calculatedFbData));
+            updateSopBadge();
 
             const fRupiah = (num) => new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR", maximumFractionDigits: 0}).format(num);
             
@@ -260,12 +303,28 @@ Isi Dokumen Wajib Memuat:
                 outputFormat = "Analisis kebocoran kas dapur vs usaha, Aturan Ambil Gaji Owner Harian, dan Target Jual Porsi Harian terkait kegiatan tersebut.";
             }
 
+            let targetInfo = "";
+            const dataStrFb = localStorage.getItem("logaritma_fb_target");
+            const dataStrDef = localStorage.getItem("logaritma_default_target");
+            
+            if (dataStrFb && (userCat.toLowerCase().includes("kuliner") || userCat.toLowerCase().includes("f&b"))) {
+                try {
+                    const data = JSON.parse(dataStrFb);
+                    targetInfo = `\n[Konteks Target Klien Saat Ini: Target Jual ${data.porsiHari} Porsi/Hari, Batas Belanja HPP: Rp ${data.batasBelanja}/hari. Pastikan panduan/SOP yang Anda buat mendukung pencapaian target ini.]\n`;
+                } catch(e) {}
+            } else if (dataStrDef) {
+                try {
+                    const data = JSON.parse(dataStrDef);
+                    targetInfo = `\n[Konteks Target Klien Saat Ini: Target Penjualan Bulanan ${Math.round(data.targetUnitBulan)} Unit, Target Traffic/Leads: ${Math.round(data.leadsHarian)} leads/hari. Pastikan panduan/SOP yang Anda buat mendukung pencapaian target ini.]\n`;
+                } catch(e) {}
+            }
+
             const promptText = `
 System Persona: ${roleContext}
 Format Output: Format menggunakan markdown yang rapi dengan heading dan bullet point. Jangan bertele-tele, langsung berikan: ${outputFormat}.
 
 Masalah/Kegiatan Bisnis Pengguna: "${inputVal}"
-
+${targetInfo}
 Buatkan rekomendasi operasionalnya.
             `;
 

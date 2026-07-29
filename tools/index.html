@@ -81,6 +81,20 @@
 
     <!-- Main Workspace -->
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div class="mb-6 px-4 md:px-0">
+<div class="mb-2 print-hide">
+                    <h1 id="workspace-heading" class="text-3xl font-bold text-white mb-4 font-heading">Workspace Operasional</h1>
+                    <div id="support-box" class="bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/30 rounded-xl p-4 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/30">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 id="support-box-title" class="text-white font-bold mb-1">Tim Spesialis Logaritma</h3>
+                            <p class="text-xs text-slate-300">Tim kami siap membantu merekayasa operasional bisnis Anda agar profitabilitas meningkat.</p>
+                        </div>
+                    </div>
+                </div>
+        </div>
         
         <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[700px]">
             
@@ -115,22 +129,11 @@
             <!-- Content Area -->
             <div class="flex-1 p-4 md:p-8 relative bg-slate-850/50">
                 
-                <div class="mb-8 print-hide">
-                    <h1 id="workspace-heading" class="text-3xl font-bold text-white mb-4 font-heading">Workspace Operasional</h1>
-                    <div id="support-box" class="bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/30 rounded-xl p-4 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/30">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </div>
-                        <div>
-                            <h3 id="support-box-title" class="text-white font-bold mb-1">Tim Spesialis Logaritma</h3>
-                            <p class="text-xs text-slate-300">Tim kami siap membantu merekayasa operasional bisnis Anda agar profitabilitas meningkat.</p>
-                        </div>
-                    </div>
-                </div>
+                
                 
                 <!-- Tab 1: Profit Calculator -->
                 <div id="tab-profit" class="tab-content block animate-fade-in-up">
-                    <div class="max-w-2xl print-max-w-full">
+                    <div class="w-full print-max-w-full">
                         <div id="calc-default-container" class="print-hide">
                             <div class="print-hide">
                                 <h2 id="webtool-heading" class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator Target Untung Bulanan</h2>
@@ -323,7 +326,7 @@
 
                 <!-- Tab 2: AI SOP Generator -->
                 <div id="tab-sop" class="tab-content hidden animate-fade-in-up">
-                    <div class="max-w-2xl">
+                    <div class="w-full">
                         <div class="flex items-center gap-3 mb-2">
                             <h2 class="text-2xl font-bold text-white font-heading">Pembuat SOP & Aturan Kerja Otomatis</h2>
                             <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-1 rounded">SYSTEM READY / TIM LOGARITMA AKTIF</span>
@@ -331,7 +334,10 @@
                         <p class="text-slate-400 text-sm mb-8">Ketik masalah atau kegiatan bisnis Anda, dan Sistem Rekayasa Logaritma akan membuatkan panduan kerja (SOP) otomatis agar hasilnya maksimal.</p>
                         
                         <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 shadow-inner">
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Kegiatan Bisnis (Contoh: Cara Melayani Komplain Pelanggan)</label>
+                            <div id="sop-target-badge" class="hidden mb-4 bg-emerald-900/30 border border-emerald-500/30 p-3 rounded-lg text-emerald-300 text-xs font-bold flex items-center gap-2">
+                                  <span>??</span> <span id="sop-target-text">Target Operasional Anda Saat Ini: ...</span>
+                              </div>
+                              <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Kegiatan Bisnis (Contoh: Cara Melayani Komplain Pelanggan)</label>
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <input type="text" id="input-sop" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Tulis kegiatan yang ingin dibuatkan aturannya...">
                                 <button id="btn-generate-sop" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-3 rounded-lg transition-all shadow-lg shadow-purple-500/20 whitespace-nowrap text-sm sm:text-base">
