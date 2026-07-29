@@ -1,28 +1,43 @@
 const ENCODED_KEY = "QVEuQWI4Uk42TGgtNl9pTWdrdFpqNk1JeHJMT0lUZmczVU9Pb3dndEZYdzBZckpWcHZvVnc=";
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${atob(ENCODED_KEY)}`;
 
-document.addEventListener("DOMContentLoaded", () => {
-    const btnSop = document.getElementById("btn-generate-sop");
-    
-    // Init User State
+// Init User State & Toggle UI Immediately
+(function initWorkspaceUI() {
     const currentUserStr = localStorage.getItem("logarithm_current_user");
-    let isPremium = false;
     let userCat = "UMKM";
 
     if(currentUserStr) {
-        const cu = JSON.parse(currentUserStr);
-        isPremium = (cu.status === "PREMIUM");
-        userCat = cu.kategori || "UMKM";
+        try {
+            const cu = JSON.parse(currentUserStr);
+            userCat = cu.kategori || "UMKM";
+        } catch(e) {}
     }
 
-    // UI Toggle F&B
     const calcDefaultContainer = document.getElementById("calc-default-container");
     const calcFbContainer = document.getElementById("calc-fb-container");
+    
     if(userCat.toLowerCase().includes("kuliner") || userCat.toLowerCase().includes("f&b")) {
         if(calcDefaultContainer) calcDefaultContainer.classList.add("hidden");
         if(calcFbContainer) calcFbContainer.classList.remove("hidden");
         const supportTitle = document.getElementById("support-box-title");
         if(supportTitle) supportTitle.textContent = "Tim Spesialis Operasional Kuliner Logaritma";
+    }
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+    const btnSop = document.getElementById("btn-generate-sop");
+    
+    // Init User State for other functions
+    const currentUserStr = localStorage.getItem("logarithm_current_user");
+    let isPremium = false;
+    let userCat = "UMKM";
+
+    if(currentUserStr) {
+        try {
+            const cu = JSON.parse(currentUserStr);
+            isPremium = (cu.status === "PREMIUM");
+            userCat = cu.kategori || "UMKM";
+        } catch(e) {}
     }
 
     // F&B Calculator Logic
