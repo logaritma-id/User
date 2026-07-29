@@ -131,48 +131,75 @@
                 <!-- Tab 1: Profit Calculator -->
                 <div id="tab-profit" class="tab-content block animate-fade-in-up">
                     <div class="max-w-2xl print-max-w-full">
-                        <div class="print-hide">
-                            <h2 id="webtool-heading" class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator Target Untung Bulanan</h2>
-                            <p class="text-slate-400 text-sm mb-8">Masukkan target untung bersih bulanan yang Anda mau. Sistem akan otomatis menghitung berapa target omzet, jumlah barang terjual, dan calon pembeli yang wajib didapat setiap hari.</p>
-                        </div>
-                        
-                        <div class="print-only hidden mb-8 text-center border-b border-slate-700 pb-6">
-                            <div class="inline-flex w-12 h-12 rounded bg-gradient-to-br from-emerald-500 to-teal-600 items-center justify-center text-xl font-bold shadow-lg shadow-emerald-500/20 mb-4">∑</div>
-                            <h1 class="text-3xl font-bold text-white font-heading tracking-tight">Logaritma Tools</h1>
-                            <h2 class="text-xl font-medium text-emerald-400 mt-2">Executive Summary: Simulasi Target Bisnis</h2>
-                            <p class="text-slate-400 mt-2 text-sm" id="print-date">Dibuat pada: -</p>
-                        </div>
-                        
-                        <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 mb-8 shadow-inner print-hide">
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Untung Bersih Bulanan (Rp)</label>
-                                    <input type="text" id="input-profit" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: 10.000.000">
-                                    <p class="text-[10px] text-slate-500 mt-1">Uang bersih yang ingin Anda kantongi dalam 1 bulan setelah dipotong seluruh biaya operasional.</p>
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
+                        <div id="calc-default-container" class="print-hide">
+                            <div class="print-hide">
+                                <h2 id="webtool-heading" class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator Target Untung Bulanan</h2>
+                                <p class="text-slate-400 text-sm mb-8">Masukkan target untung bersih bulanan yang Anda mau. Sistem akan otomatis menghitung berapa target omzet, jumlah barang terjual, dan calon pembeli yang wajib didapat setiap hari.</p>
+                            </div>
+                            
+                            <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 mb-8 shadow-inner">
+                                <div class="space-y-4">
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Persentase Untung Bersih / Margin (%)</label>
-                                        <input type="number" id="input-margin" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 20">
-                                        <p class="text-[10px] text-slate-500 mt-1">Persentase keuntungan bersih dari harga jual. Contoh: Jika HPP 80rb dan Jual 100rb, margin = 20%.</p>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Untung Bersih Bulanan (Rp)</label>
+                                        <input type="text" id="input-profit" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: 10.000.000">
+                                        <p class="text-[10px] text-slate-500 mt-1">Uang bersih yang ingin Anda kantongi dalam 1 bulan setelah dipotong seluruh biaya operasional.</p>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Persentase Untung Bersih / Margin (%)</label>
+                                            <input type="number" id="input-margin" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 20">
+                                            <p class="text-[10px] text-slate-500 mt-1">Persentase keuntungan bersih dari harga jual. Contoh: Jika HPP 80rb dan Jual 100rb, margin = 20%.</p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Harga Jual Rata-rata Produk (Rp)</label>
+                                            <input type="text" id="input-harga" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 50.000">
+                                            <p class="text-[10px] text-slate-500 mt-1">Harga rata-rata 1 pcs produk atau paket layanan Anda.</p>
+                                        </div>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Harga Jual Rata-rata Produk (Rp)</label>
-                                        <input type="text" id="input-harga" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 50.000">
-                                        <p class="text-[10px] text-slate-500 mt-1">Harga rata-rata 1 pcs produk atau paket layanan Anda.</p>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Peluang Pembeli Jadi Beli / Konversi (%)</label>
+                                        <input type="number" id="input-cr" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 5">
+                                        <p class="text-[10px] text-slate-500 mt-1">Estimasi dari 100 orang yang tanya/chat, berapa orang yang beneran beli. Contoh: Jika dari 100 chat ada 5 yang beli, isi 5.</p>
                                     </div>
+                                    <button id="btn-kalkulasi-profit" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-emerald-500/20">Hitung Target Harian Saya</button>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Peluang Pembeli Jadi Beli / Konversi (%)</label>
-                                    <input type="number" id="input-cr" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 5">
-                                    <p class="text-[10px] text-slate-500 mt-1">Estimasi dari 100 orang yang tanya/chat, berapa orang yang beneran beli. Contoh: Jika dari 100 chat ada 5 yang beli, isi 5.</p>
+                            </div>
+                        </div>
+
+                        <!-- Kalkulator Backward Mapping F&B (Kuliner) -->
+                        <div id="calc-fb-container" class="print-hide hidden">
+                            <div class="print-hide">
+                                <h2 class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator HPP, Yield & Food-Waste Dapur</h2>
+                                <p class="text-slate-400 text-sm mb-8">Masukkan target untung bersih bulanan yang Anda mau. Sistem akan otomatis menghitung batas belanja harian (HPP) dan porsi wajib jual harian.</p>
+                            </div>
+                            
+                            <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 mb-8 shadow-inner">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Untung Bersih Bulanan (Rp)</label>
+                                        <input type="text" id="fb-input-profit" value="15.000.000" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: 15.000.000">
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Harga Jual Rata-rata per Porsi (Rp)</label>
+                                            <input type="text" id="fb-input-harga" value="25.000" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 25.000">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Margin Profit Bersih (%)</label>
+                                            <input type="number" id="fb-input-margin" value="25" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 25">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Hari Buka Usaha per Bulan</label>
+                                        <input type="number" id="fb-input-hari" value="30" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 30">
+                                    </div>
+                                    <button id="btn-kalkulasi-fb" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-emerald-500/20">Hitung Strategi Tarik Mundur Saya</button>
                                 </div>
-                                <button id="btn-kalkulasi-profit" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-emerald-500/20">Hitung Target Harian Saya</button>
                             </div>
                         </div>
 
                         <!-- Result Section -->
-                        <div id="hasil-profit" class="hidden">
+                        <div id="hasil-profit" class="hidden mb-8">
                             <h3 class="text-lg font-bold text-white mb-4">Hasil Hitungan Target Harian</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                                 <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 print-bg-transparent">
@@ -189,7 +216,65 @@
                                     <p id="hasil-leads" class="text-xl font-bold text-red-400 mt-1 relative z-10">0 Leads/hari</p>
                                 </div>
                             </div>
-                            
+                        </div>
+
+                        <!-- Result Section F&B -->
+                        <div id="hasil-fb" class="hidden mb-8">
+                            <h3 class="text-lg font-bold text-white mb-4">Ringkasan Target Operasional (F&B)</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Omzet Bulanan</p>
+                                    <p id="fb-hasil-omzet-bln" class="text-lg font-bold text-emerald-400 mt-1">Rp 0</p>
+                                </div>
+                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Omzet Harian</p>
+                                    <p id="fb-hasil-omzet-hr" class="text-lg font-bold text-emerald-400 mt-1">Rp 0</p>
+                                </div>
+                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Porsi Harian</p>
+                                    <p id="fb-hasil-porsi" class="text-lg font-bold text-white mt-1">0 Porsi</p>
+                                </div>
+                                <div class="bg-slate-800 p-4 rounded-xl border border-rose-500/30 relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-transparent"></div>
+                                    <p class="text-[10px] text-rose-300 font-bold uppercase relative z-10">Batas Belanja (HPP 45%)</p>
+                                    <p id="fb-hasil-belanja" class="text-lg font-bold text-rose-400 mt-1 relative z-10">Rp 0 / hari</p>
+                                </div>
+                            </div>
+
+                            <!-- CTA Integrasi Gemini -->
+                            <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-emerald-500/30 rounded-xl p-5 mb-8">
+                                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-xl">🛡️</span>
+                                            <h4 class="font-bold text-white">Tim Spesialis Operasional Kuliner Logaritma</h4>
+                                        </div>
+                                        <p class="text-sm text-slate-300" id="fb-gemini-desc">
+                                            Sistem mencatat Anda wajib menjual 0 porsi/hari dengan batas belanja bahan baku Rp 0/hari. Izinkan Tim Logaritma merancang SOP Dapur, Skrip Upselling Kasir, dan Checklist Audit Kas Malam Anda.
+                                        </p>
+                                    </div>
+                                    <button id="btn-generate-fb-sop" class="w-full sm:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg shadow-emerald-500/20 text-sm">
+                                        Generate Dokumen Operasional Kuliner Saya
+                                    </button>
+                                </div>
+                                
+                                <!-- Container Output Gemini F&B -->
+                                <div id="fb-gemini-output" class="hidden mt-6 pt-6 border-t border-slate-700 relative">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h5 class="font-bold text-emerald-400 text-sm">HASIL RACIKAN TIM LOGARITMA</h5>
+                                        <div class="flex gap-2">
+                                            <button id="btn-copy-fb-sop" class="text-[10px] font-bold bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded flex items-center gap-2">📋 COPY</button>
+                                            <button class="trigger-paywall text-[10px] font-bold bg-amber-500 hover:bg-amber-400 text-black px-3 py-1.5 rounded flex items-center gap-2">📄 DOWNLOAD PDF</button>
+                                        </div>
+                                    </div>
+                                    <div id="fb-gemini-content" class="text-sm"></div>
+                                </div>
+                                <div id="fb-gemini-loading" class="hidden mt-6 pt-6 border-t border-slate-700 text-center">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500 mx-auto mb-2"></div>
+                                    <p class="text-xs text-slate-400">Tim Spesialis sedang meracik SOP Kuliner Anda...</p>
+                                </div>
+                            </div>
+                        </div>                     
                             <button id="btn-download-profit" class="trigger-paywall w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg border border-slate-600 transition print-hide mb-6">
                                 📄 Download Laporan (PDF) <span class="bg-amber-500 text-black text-[10px] px-2 py-0.5 rounded ml-2">PREMIUM</span>
                             </button>

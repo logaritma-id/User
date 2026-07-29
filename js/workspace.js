@@ -3,9 +3,184 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
 
 document.addEventListener("DOMContentLoaded", () => {
     const btnSop = document.getElementById("btn-generate-sop");
-    if (!btnSop) return;
+    
+    // Init User State
+    const currentUserStr = localStorage.getItem("logarithm_current_user");
+    let isPremium = false;
+    let userCat = "UMKM";
 
+    if(currentUserStr) {
+        const cu = JSON.parse(currentUserStr);
+        isPremium = (cu.status === "PREMIUM");
+        userCat = cu.kategori || "UMKM";
+    }
+
+    // UI Toggle F&B
+    const calcDefaultContainer = document.getElementById("calc-default-container");
+    const calcFbContainer = document.getElementById("calc-fb-container");
+    if(userCat.toLowerCase() === "kuliner" || userCat.toLowerCase() === "f&b") {
+        if(calcDefaultContainer) calcDefaultContainer.classList.add("hidden");
+        if(calcFbContainer) calcFbContainer.classList.remove("hidden");
+        const supportTitle = document.getElementById("support-box-title");
+        if(supportTitle) supportTitle.textContent = "Tim Spesialis Operasional Kuliner Logaritma";
+    }
+
+    // F&B Calculator Logic
+    const btnKalkulasiFb = document.getElementById("btn-kalkulasi-fb");
+    let calculatedFbData = null;
+
+    if (btnKalkulasiFb) {
+        btnKalkulasiFb.addEventListener("click", () => {
+            const valProfit = parseFloat(document.getElementById("fb-input-profit").value.replace(/\./g, "")) || 0;
+            const valHarga = parseFloat(document.getElementById("fb-input-harga").value.replace(/\./g, "")) || 0;
+            const valMargin = parseFloat(document.getElementById("fb-input-margin").value) || 0;
+            const valHari = parseFloat(document.getElementById("fb-input-hari").value) || 30;
+
+            if(valProfit === 0 || valHarga === 0 || valMargin === 0 || valHari === 0) {
+                alert("Mohon isi semua data perhitungan dengan benar.");
+                return;
+            }
+
+            const omzetBulan = valProfit / (valMargin / 100);
+            const omzetHari = omzetBulan / valHari;
+            const porsiHari = Math.ceil(omzetHari / valHarga);
+            const batasBelanja = omzetHari * 0.45; // HPP 45%
+            const targetTraffic = Math.ceil(porsiHari / 0.40); // CR 40%
+
+            calculatedFbData = {
+                omzetBulan,
+                omzetHari,
+                porsiHari,
+                batasBelanja,
+                targetTraffic,
+                hari: valHari
+            };
+
+            const fRupiah = (num) => new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR", maximumFractionDigits: 0}).format(num);
+            
+            document.getElementById("fb-hasil-omzet-bln").textContent = fRupiah(omzetBulan);
+            document.getElementById("fb-hasil-omzet-hr").textContent = fRupiah(omzetHari);
+            document.getElementById("fb-hasil-porsi").textContent = porsiHari + " Porsi";
+            document.getElementById("fb-hasil-belanja").textContent = fRupiah(batasBelanja) + " / hari";
+
+            document.getElementById("fb-gemini-desc").textContent = `Sistem mencatat Anda wajib menjual ${porsiHari} porsi/hari dengan batas belanja bahan baku ${fRupiah(batasBelanja)}/hari. Izinkan Tim Logaritma merancang SOP Dapur, Skrip Upselling Kasir, dan Checklist Audit Kas Malam Anda.`;
+            
+            document.getElementById("hasil-fb").classList.remove("hidden");
+            // Scroll to hasil
+            document.getElementById("hasil-fb").scrollIntoView({behavior: "smooth"});
+        });
+    }
+
+    // F&B Gemini Integration
     let aiQuota = parseInt(localStorage.getItem("logaritma_ai_quota") || "2");
+    
+    const btnGenerateFbSop = document.getElementById("btn-generate-fb-sop");
+    if (btnGenerateFbSop) {
+        btnGenerateFbSop.addEventListener("click", async () => {
+            if (!calculatedFbData) return;
+
+            if (!isPremium && aiQuota <= 0) {
+                document.getElementById("paywall-modal").classList.remove("hidden");
+                document.body.style.overflow = "hidden";
+                return;
+            }
+            if (!isPremium) {
+                aiQuota--;
+                localStorage.setItem("logaritma_ai_quota", aiQuota);
+                if(typeof window.updateQuotaUI === "function") window.updateQuotaUI(aiQuota);
+            }
+
+            document.getElementById("fb-gemini-loading").classList.remove("hidden");
+            document.getElementById("fb-gemini-output").classList.add("hidden");
+            btnGenerateFbSop.disabled = true;
+            btnGenerateFbSop.textContent = "Sedang Meracik...";
+
+            const prompt = `Anda adalah Tim Rekayasa Operasional Logaritma (Konsultan F&B Profesional). Klien adalah pemilik usaha Kuliner.
+Berdasarkan perhitungan Tarik Mundur, klien menargetkan:
+- Omzet Bulanan: Rp ${calculatedFbData.omzetBulan}
+- Omzet Harian: Rp ${calculatedFbData.omzetHari}
+- Hari Buka: ${calculatedFbData.hari} Hari
+- Target Jual: ${calculatedFbData.porsiHari} Porsi/Hari
+- Batas Belanja Bahan (HPP 45%): Rp ${calculatedFbData.batasBelanja}/Hari
+
+Tolong buatkan dokumen operasional yang SANGAT DETAIL, TERSTRUKTUR DAN PRAKTIS. Format markdown. Gunakan heading, list, tabel jika perlu. Dilarang menggunakan kata 'AI', posisikan diri Anda sebagai 'Tim Logaritma'.
+
+Isi Dokumen Wajib Memuat:
+1. SOP Dapur & Pengendalian HPP (Sertakan cara menjaga batas belanja Rp ${calculatedFbData.batasBelanja}/hari dan kontrol gramasi)
+2. Skrip Upselling Kasir (Berikan contoh skrip dialog kasir untuk mencapai target ${calculatedFbData.porsiHari} porsi/hari)
+3. Checklist Evaluasi & Audit Kas Malam (Checklist untuk closing kasir dan dapur)`;
+
+            try {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                    })
+                });
+
+                if (!response.ok) throw new Error("Network response was not ok");
+
+                const data = await response.json();
+                const aiResultText = data.candidates[0].content.parts[0].text;
+                
+                renderResultFb(aiResultText, isPremium);
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                showElegantError("Sistem sedang mengalami peningkatan layanan. Mohon coba beberapa saat lagi.");
+            } finally {
+                document.getElementById("fb-gemini-loading").classList.add("hidden");
+                document.getElementById("fb-gemini-output").classList.remove("hidden");
+                btnGenerateFbSop.disabled = false;
+                btnGenerateFbSop.innerHTML = "Generate Dokumen Operasional Kuliner Saya";
+            }
+        });
+    }
+
+    function renderResultFb(markdownText, isPremium) {
+        const contentDiv = document.getElementById("fb-gemini-content");
+        if (isPremium) {
+            contentDiv.innerHTML = marked.parse(markdownText);
+            window.latestGeminiFbResult = markdownText;
+        } else {
+            // Cut text to 40% and blur the rest
+            const rawHtml = marked.parse(markdownText);
+            const words = rawHtml.split(" ");
+            const showCount = Math.floor(words.length * 0.4);
+            const htmlAllowed = words.slice(0, showCount).join(" ");
+            const htmlBlurred = words.slice(showCount).join(" ");
+            
+            contentDiv.innerHTML = `
+                <div class="text-slate-300 space-y-4 markdown-content">
+                    ${htmlAllowed}
+                </div>
+                <div class="text-slate-300 space-y-4 markdown-content opacity-40 blur-[3px] select-none mt-4 pointer-events-none relative">
+                    ${htmlBlurred}
+                    <div class="absolute inset-0 z-10 bg-slate-900/10"></div>
+                </div>
+                <div class="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg text-center">
+                    <p class="text-amber-400 text-sm font-bold mb-2">Buka Kunci Seluruh Dokumen</p>
+                    <button class="trigger-paywall bg-amber-500 hover:bg-amber-400 text-black font-bold py-2 px-6 rounded transition">Upgrade ke PRO</button>
+                </div>
+            `;
+        }
+    }
+
+    const btnCopyFb = document.getElementById("btn-copy-fb-sop");
+    if (btnCopyFb) {
+        btnCopyFb.addEventListener("click", () => {
+            if (window.latestGeminiFbResult) {
+                navigator.clipboard.writeText(window.latestGeminiFbResult)
+                    .then(() => alert("Berhasil di-copy!"))
+                    .catch(err => alert("Gagal copy teks."));
+            } else {
+                alert("Harap upgrade ke Premium untuk mengcopy seluruh dokumen.");
+            }
+        });
+    }
+
+    if (!btnSop) return;
     
     btnSop.addEventListener("click", async () => {
         const inputVal = document.getElementById("input-sop").value;
