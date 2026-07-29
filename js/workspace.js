@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // UI Toggle F&B
     const calcDefaultContainer = document.getElementById("calc-default-container");
     const calcFbContainer = document.getElementById("calc-fb-container");
-    if(userCat.toLowerCase() === "kuliner" || userCat.toLowerCase() === "f&b") {
+    if(userCat.toLowerCase().includes("kuliner") || userCat.toLowerCase().includes("f&b")) {
         if(calcDefaultContainer) calcDefaultContainer.classList.add("hidden");
         if(calcFbContainer) calcFbContainer.classList.remove("hidden");
         const supportTitle = document.getElementById("support-box-title");
