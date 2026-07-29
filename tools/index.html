@@ -69,8 +69,9 @@
                     </div>
                     <button id="btn-logout" class="text-xs text-slate-400 hover:text-red-400 transition font-bold px-2">Keluar</button>
                 </div>
-                <button id="btn-top-paywall" class="trigger-paywall flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
-                    ⚡ Langganan Premium - Rp99rb/bln
+                <button id="btn-top-paywall" class="trigger-paywall flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
+                    <span class="hidden sm:inline">⚡ Langganan Premium - Rp99rb/bln</span>
+                    <span class="sm:hidden">⚡ Premium</span>
                 </button>
                 <a href="https://baimwarunkarsi.myr.id/pay-membership" target="_blank" id="btn-manage-membership" class="hidden items-center gap-2 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs sm:text-sm font-bold rounded-lg transition-all hover:-translate-y-0.5">
                     ⚙️ Kelola / Perpanjang Membership
@@ -80,7 +81,7 @@
     </header>
 
     <!-- Main Workspace -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <main class="flex-grow max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 md:py-8 pb-24 md:pb-8 w-full">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
             <div class="px-6 pt-5 pb-5 border-b border-slate-800 bg-slate-800/20">
                 <div id="support-box" class="bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/30 rounded-xl p-4 flex items-center gap-4 print-hide">
@@ -97,8 +98,8 @@
             <!-- BOTTOM: SIDEBAR + CONTENT -->
             <div class="flex flex-col md:flex-row min-h-[620px]">
             
-            <!-- Sidebar Tabs -->
-            <div class="w-full md:w-64 bg-slate-900/50 border-b md:border-b-0 md:border-r border-slate-800 p-4 shrink-0 print-hide">
+            <!-- Sidebar Tabs — DESKTOP ONLY -->
+            <div class="hidden md:flex md:w-64 bg-slate-900/50 border-r border-slate-800 p-4 shrink-0 print-hide flex-col">
                 <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">Menu Workspace</div>
                 <div id="dashboard-subtitle" class="text-[10px] font-bold text-emerald-400 mb-4 px-2 bg-emerald-900/20 py-1 rounded inline-block w-full border border-emerald-500/20 truncate">Khusus: UMKM</div>
                 <nav class="space-y-1" id="tools-tabs">
@@ -146,7 +147,7 @@
                                         <input type="text" id="input-profit" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: 10.000.000">
                                         <p class="text-[10px] text-slate-500 mt-1">Uang bersih yang ingin Anda kantongi dalam 1 bulan setelah dipotong seluruh biaya operasional.</p>
                                     </div>
-                                    <div class="grid grid-cols-2 gap-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Persentase Untung Bersih / Margin (%)</label>
                                             <input type="number" id="input-margin" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 20">
@@ -530,6 +531,24 @@
             <button id="btn-close-welcome" class="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-center font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20">Eksplorasi Tools</button>
         </div>
     </div>
+
+    <!-- Mobile Bottom Tab Bar (only shown on mobile) -->
+    <nav id="mobile-tab-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 print-hide safe-area-bottom">
+        <div class="flex items-stretch h-16">
+            <button data-target="tab-profit" class="mobile-tab-btn flex-1 flex flex-col items-center justify-center gap-1 text-emerald-400 bg-emerald-500/10 border-t-2 border-emerald-500 transition-all">
+                <span class="text-lg">📊</span>
+                <span class="text-[10px] font-bold">Target Untung</span>
+            </button>
+            <button data-target="tab-sop" class="mobile-tab-btn flex-1 flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800/50 border-t-2 border-transparent transition-all">
+                <span class="text-lg">📋</span>
+                <span class="text-[10px] font-bold">Buat SOP</span>
+            </button>
+            <button data-target="tab-ltm" class="mobile-tab-btn flex-1 flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800/50 border-t-2 border-transparent transition-all">
+                <span class="text-lg">🔗</span>
+                <span class="text-[10px] font-bold">Uji Dampak</span>
+            </button>
+        </div>
+    </nav>
 
     <!-- Scripts -->
         <!-- Firebase SDK (Compat) -->

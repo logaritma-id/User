@@ -396,24 +396,55 @@ document.addEventListener("DOMContentLoaded", function() {
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
     
-    // Tabs Navigation
+    // Tabs Navigation (Desktop sidebar + Mobile bottom bar)
     const tabBtns = document.querySelectorAll(".tab-btn");
+    const mobileTabBtns = document.querySelectorAll(".mobile-tab-btn");
     const tabContents = document.querySelectorAll(".tab-content");
-    
+
+    function switchTab(targetId) {
+        // Reset desktop sidebar buttons
+        tabBtns.forEach(b => {
+            b.classList.remove("bg-emerald-500/10", "text-emerald-400", "border-emerald-500/20", "border");
+            b.classList.add("text-slate-400", "border-transparent");
+        });
+        // Reset mobile tab buttons
+        mobileTabBtns.forEach(b => {
+            b.classList.remove("text-emerald-400", "bg-emerald-500/10", "border-emerald-500");
+            b.classList.add("text-slate-400", "border-transparent");
+        });
+        // Hide all tab contents
+        tabContents.forEach(c => c.classList.add("hidden"));
+
+        // Activate matching desktop button
+        tabBtns.forEach(b => {
+            if (b.getAttribute("data-target") === targetId) {
+                b.classList.remove("text-slate-400", "border-transparent");
+                b.classList.add("bg-emerald-500/10", "text-emerald-400", "border", "border-emerald-500/20");
+            }
+        });
+        // Activate matching mobile button
+        mobileTabBtns.forEach(b => {
+            if (b.getAttribute("data-target") === targetId) {
+                b.classList.remove("text-slate-400", "border-transparent");
+                b.classList.add("text-emerald-400", "bg-emerald-500/10", "border-emerald-500");
+            }
+        });
+        // Show target content
+        const target = document.getElementById(targetId);
+        if (target) target.classList.remove("hidden");
+    }
+
     if (tabBtns.length > 0) {
         tabBtns.forEach(btn => {
+            btn.addEventListener("click", () => switchTab(btn.getAttribute("data-target")));
+        });
+    }
+    if (mobileTabBtns.length > 0) {
+        mobileTabBtns.forEach(btn => {
             btn.addEventListener("click", () => {
-                tabBtns.forEach(b => {
-                    b.classList.remove("bg-emerald-500/10", "text-emerald-400", "border-emerald-500/20");
-                    b.classList.add("text-slate-400", "border-transparent");
-                });
-                tabContents.forEach(c => c.classList.add("hidden"));
-                
-                btn.classList.remove("text-slate-400", "border-transparent");
-                btn.classList.add("bg-emerald-500/10", "text-emerald-400", "border", "border-emerald-500/20");
-                
-                const target = document.getElementById(btn.getAttribute("data-target"));
-                if (target) target.classList.remove("hidden");
+                switchTab(btn.getAttribute("data-target"));
+                // Scroll to top of content on mobile
+                window.scrollTo({ top: 80, behavior: "smooth" });
             });
         });
     }
