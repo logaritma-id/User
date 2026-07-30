@@ -153,11 +153,11 @@
         <!-- Header Top in Desktop (Optional, for User Profile/Language) -->
         <div class="hidden lg:flex h-20 items-center justify-end px-8 border-b border-brand-border sticky top-0 bg-brand-bg/80 backdrop-blur-md z-10">
             <div class="flex items-center gap-4">
-                <div class="flex bg-brand-surface rounded-full p-1 border border-white/10">
-                    <span class="px-3 py-1 text-xs font-bold bg-white/10 rounded-full text-white">ID</span>
-                    <span class="px-3 py-1 text-xs font-bold text-slate-500">EN</span>
+                <div class="flex bg-brand-surface rounded-full p-1 border border-white/10 select-none">
+                    <span class="px-3 py-1 text-xs font-bold bg-white/10 rounded-full text-white cursor-default">ID</span>
+                    <span onclick="Swal.fire({icon: 'info', title: 'Coming Soon', text: 'English language support will be available soon!', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'})" class="px-3 py-1 text-xs font-bold text-slate-500 hover:text-white transition cursor-pointer">EN</span>
                 </div>
-                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-brand-accent1 to-brand-accent2 flex items-center justify-center text-white text-xs font-bold">U</div>
+                <div onclick="window.showUserProfile()" class="w-8 h-8 rounded-full bg-gradient-to-r from-brand-accent1 to-brand-accent2 flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:opacity-80 transition shadow-lg shadow-brand-accent1/20 select-none">U</div>
             </div>
         </div>
 
@@ -1279,6 +1279,69 @@
         document.addEventListener('DOMContentLoaded', () => {
             if(window.posFashion) window.posFashion.init();
         });
+    </script>
+    <script>
+    window.showUserProfile = () => {
+        const userStr = localStorage.getItem('logarithm_current_user');
+        if(!userStr) {
+            Swal.fire({
+                title: 'Profil Pengguna',
+                text: 'Anda sedang menggunakan alat tanpa data profil (Mode Gratis).',
+                icon: 'info',
+                background: '#0f172a',
+                color: '#cbd5e1',
+                confirmButtonText: 'Tutup',
+                confirmButtonColor: '#334155'
+            });
+            return;
+        }
+        
+        let user = {};
+        try { user = JSON.parse(userStr); } catch(e) {}
+        
+        const nama = user.namaPemilik || user.nama || 'Pengguna UMKM';
+        const bisnis = user.namaBisnis || user.bisnis || '-';
+        const kategori = user.kategori || '-';
+        
+        Swal.fire({
+            title: 'Profil Anda',
+            html: `
+                <div class="text-left mt-2 text-sm text-slate-300 bg-white/5 p-4 rounded-xl border border-white/10">
+                    <p class="mb-2"><span class="text-slate-500 inline-block w-20">Nama</span>: <strong class="text-white">${nama}</strong></p>
+                    <p class="mb-2"><span class="text-slate-500 inline-block w-20">Bisnis</span>: <strong class="text-white">${bisnis}</strong></p>
+                    <p class="mb-2"><span class="text-slate-500 inline-block w-20">Kategori</span>: <strong class="text-white">${kategori}</strong></p>
+                </div>
+            `,
+            background: '#0f172a',
+            color: '#cbd5e1',
+            showCancelButton: true,
+            confirmButtonText: 'Keluar',
+            cancelButtonText: 'Tutup',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#334155',
+            reverseButtons: true
+        }).then((res) => {
+            if(res.isConfirmed) {
+                Swal.fire({
+                    title: 'Keluar?',
+                    text: 'Anda akan dikembalikan ke halaman depan.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Keluar',
+                    cancelButtonText: 'Batal',
+                    background: '#0f172a',
+                    color: '#cbd5e1',
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#334155',
+                }).then((r) => {
+                    if(r.isConfirmed) {
+                        localStorage.removeItem('logarithm_current_user');
+                        window.location.href = '/';
+                    }
+                });
+            }
+        });
+    };
     </script>
 </body>
 </html>
