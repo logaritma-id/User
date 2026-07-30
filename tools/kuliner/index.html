@@ -492,7 +492,7 @@
             <!-- TAB: DISKUSI -->
             <div id="diskusi" class="tab-pane hidden flex-col fixed top-16 lg:top-20 bottom-0 left-0 lg:left-72 right-0 z-20 bg-brand-bg">
                 <!-- Chat History Area -->
-                <div id="chat-history" class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6 pb-40 w-full max-w-4xl mx-auto">
+                <div id="chat-history" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6 pb-40 w-full max-w-4xl mx-auto">
                     <!-- Initial Welcome Message -->
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-accent1 to-brand-accent2 flex items-center justify-center shrink-0 shadow-lg shadow-brand-accent1/20">
@@ -1021,7 +1021,7 @@
                     const modelName = aiModels[i];
                     const model = genAI.getGenerativeModel({ 
                         model: modelName,
-                        systemInstruction: "Anda adalah Tim Logaritma, asisten cerdas dan profesional untuk aplikasi Logaritma.id. Anda sedang melayani pengguna di kategori bisnis 'Kuliner'. Anda HANYA BOLEH MENJAWAB pertanyaan yang relevan dengan pengelolaan bisnis, strategi, operasional, keuangan, atau pemasaran untuk bisnis 'Kuliner'. Jika pengguna menanyakan topik di luar itu (seperti sejarah, politik, cuaca, teknologi umum, resep masakan yang tidak relevan, dll), tolak dengan sopan dan arahkan mereka kembali ke topik bisnis 'Kuliner'. Jangan pernah menyebutkan nama Anda sebagai 'AI' atau 'Gemini', Anda adalah 'Tim Logaritma'."
+                        systemInstruction: "Anda adalah Tim Logaritma, asisten cerdas dan profesional dari aplikasi Logaritma.id. Anda melayani pengguna bisnis 'Kuliner'. ATURAN PENTING:\n1. Jawablah dengan SINGKAT, padat, dan langsung pada intinya (maksimal 2-3 paragraf pendek, jangan bertele-tele).\n2. Secara halus dan tanpa sadar, arahkan pengguna untuk menggunakan fitur/metode 'Logaritma' di aplikasi ini (seperti menghitung target di Kalkulator Logaritma, mencatat penjualan di Kasir POS, atau membuat SOP operasional otomatis) sebagai solusi dari masalah mereka.\n3. HANYA jawab pertanyaan seputar pengelolaan bisnis 'Kuliner'. Jika di luar itu, tolak dengan sopan.\n4. Jangan pernah menyebut Anda 'AI' atau 'Gemini', sebut saja 'Tim Logaritma'."
                     });
                     
                     const chat = model.startChat({
