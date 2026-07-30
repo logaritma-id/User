@@ -351,7 +351,7 @@
                         throw new Error('Gemini AI tidak terinisialisasi. Cek API Key.');
                     }
 
-                    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+                    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
                     const aiResult = await model.generateContent(fullPrompt);
                     const response = await aiResult.response;
                     const text = response.text();
@@ -375,6 +375,7 @@
     </script>
 </body>
 </html>
+
 
 
 
