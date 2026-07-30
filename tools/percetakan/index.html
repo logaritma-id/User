@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Import Google Generative AI SDK -->
     <script type="importmap">
@@ -186,7 +186,7 @@
                                     <button onclick="copyAiOutput()" class="text-[10px] font-bold bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded flex items-center gap-2 transition">📋 COPY ALL</button>
                                 </div>
                             </div>
-                            <div id="ai-markdown-content" class="prose prose-invert prose-emerald max-w-none text-sm">
+                            <div id="ai-markdown-content" class="prose prose-invert prose-emerald max-w-none text-sm break-words whitespace-pre-wrap overflow-x-auto">
                                 <!-- Rendered Markdown -->
                             </div>
                         </div>
@@ -344,7 +344,7 @@
                 const targetPorsi = document.getElementById('hasil-porsi').innerText;
                 const batasBelanja = document.getElementById('hasil-belanja').innerText;
 
-                const fullPrompt = `${config.prompt_persona}\n\nKonteks Data:\n- Target Jualan: ${targetPorsi}\n- Batas Pengeluaran/HPP Harian: ${batasBelanja}\n\nBuat dokumen tersebut sekarang secara profesional.`;
+                const fullPrompt = `${config.prompt_persona}\n\nKonteks Data:\n- Target Jualan: ${targetPorsi}\n- Batas Pengeluaran/HPP Harian: ${batasBelanja}\n\nBuat dokumen tersebut sekarang secara profesional. Gunakan format Markdown yang rapi (Heading, Bullet points, Table jika perlu, dan pastikan ADA SPASI antar paragraf agar mudah dibaca).`;
 
                 try {
                     if (!genAI) {
@@ -375,6 +375,7 @@
     </script>
 </body>
 </html>
+
 
 
 
