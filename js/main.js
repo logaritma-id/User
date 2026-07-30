@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const q3 = document.querySelector('input[name="q3"]:checked');
 
             if (!q1 || !q2 || !q3) {
-                alert("Mohon jawab seluruh 3 pertanyaan untuk menghitung skor.");
+                Swal.fire({text: "Mohon jawab seluruh 3 pertanyaan untuk menghitung skor.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                 return;
             }
 
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 
                 if (!valid) {
-                    alert("Mohon lengkapi data form terlebih dahulu.");
+                    Swal.fire({text: "Mohon lengkapi data form terlebih dahulu.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                     return;
                 }
                 
@@ -136,10 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(window.LogaritmaDB) { const currentUserStr = localStorage.getItem("logarithm_current_user"); if(currentUserStr) { window.LogaritmaDB.trackActivity(JSON.parse(currentUserStr).whatsapp, "sop"); } }
             setTimeout(() => {
                     if (originalText.includes("Unduh")) {
-                        alert("Berhasil! File PDF Executive Summary sedang diunduh ke perangkat Anda.");
+                        Swal.fire({text: "Berhasil! File PDF Executive Summary sedang diunduh ke perangkat Anda.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                         window.open('/assets/docs/Executive-Summary-Metoda-Logaritma.pdf', '_blank');
                     } else {
-                        alert("Terima kasih. Tim ahli kami akan menghubungi Anda untuk penjadwalan Demo.");
+                        Swal.fire({text: "Terima kasih. Tim ahli kami akan menghubungi Anda untuk penjadwalan Demo.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                     }
                     
                     submitBtn.textContent = originalText;
@@ -289,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             if(answered < questions.length) {
-                alert("Mohon jawab seluruh 5 pertanyaan.");
+                Swal.fire({text: "Mohon jawab seluruh 5 pertanyaan.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                 return;
             }
 
@@ -584,7 +584,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 errorModal.classList.add("flex");
                 document.body.style.overflow = "hidden";
             } else {
-                alert("🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.");
+                Swal.fire({text: "🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
             }
         }
     }
@@ -710,7 +710,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const cr = parseFloat(document.getElementById("input-cr").value);
 
             if (!profit || !margin || !harga || !cr) {
-                alert("Harap isi semua kolom dengan angka yang valid.");
+                Swal.fire({text: "Harap isi semua kolom dengan angka yang valid.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                 return;
             }
 
@@ -957,7 +957,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const target = parseFloat(rawTarget);
             
             if(!biaya || !target) {
-                alert("Masukkan angka biaya dan target hasil yang valid.");
+                Swal.fire({text: "Masukkan angka biaya dan target hasil yang valid.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                 return;
             }
 

@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const valHari = parseFloat(document.getElementById("fb-input-hari").value) || 30;
 
             if(valProfit === 0 || valHarga === 0 || valMargin === 0 || valHari === 0) {
-                alert("Mohon isi semua data perhitungan dengan benar.");
+                Swal.fire({text: "Mohon isi semua data perhitungan dengan benar.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                 return;
             }
 
@@ -230,10 +230,10 @@ Isi Dokumen Wajib Memuat:
         btnCopyFb.addEventListener("click", () => {
             if (window.latestGeminiFbResult) {
                 navigator.clipboard.writeText(window.latestGeminiFbResult)
-                    .then(() => alert("Berhasil di-copy!"))
-                    .catch(err => alert("Gagal copy teks."));
+                    .then(() => Swal.fire({text: "Berhasil di-copy!", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}))
+                    .catch(err => Swal.fire({text: "Gagal copy teks.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}));
             } else {
-                alert("Harap upgrade ke Premium untuk mengcopy seluruh dokumen.");
+                Swal.fire({text: "Harap upgrade ke Premium untuk mengcopy seluruh dokumen.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
             }
         });
     }
@@ -243,7 +243,7 @@ Isi Dokumen Wajib Memuat:
     btnSop.addEventListener("click", async () => {
         const inputVal = document.getElementById("input-sop").value;
         if(!inputVal) {
-            alert("Masukkan nama proses bisnis terlebih dahulu.");
+            Swal.fire({text: "Masukkan nama proses bisnis terlebih dahulu.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
             return;
         }
 
@@ -454,8 +454,8 @@ Buatkan rekomendasi operasionalnya.
         btnCopy.addEventListener("click", () => {
             if (window.latestGeminiResult) {
                 navigator.clipboard.writeText(window.latestGeminiResult)
-                    .then(() => alert("Berhasil di-copy!"))
-                    .catch(err => alert("Gagal copy teks."));
+                    .then(() => Swal.fire({text: "Berhasil di-copy!", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}))
+                    .catch(err => Swal.fire({text: "Gagal copy teks.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}));
             }
         });
     }

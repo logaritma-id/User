@@ -361,7 +361,7 @@ function getPosJs(categoryId) {
             }
             function prosesOrder() {
                 const items = Object.values(order);
-                if (items.length === 0) { alert('Keranjang kosong!'); return; }
+                if (items.length === 0) { Swal.fire({text: 'Keranjang kosong!', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}); return; }
                 const subtotal = items.reduce((s, i) => s + i.harga * i.qty, 0);
                 const diskonPct = parseFloat(document.getElementById('pos-diskon')?.value) || 0;
                 const total = subtotal - (subtotal * diskonPct / 100);
@@ -405,8 +405,8 @@ function getPosJs(categoryId) {
                 if (elOmzet) elOmzet.innerText = fmtRp(txs.reduce((s, t) => s + t.total, 0));
                 if (elPorsi) elPorsi.innerText = txs.reduce((s, t) => s + t.qty, 0);
             }
-            function resetHarian() {
-                if (!confirm('Reset transaksi hari ini?')) return;
+            async function resetHarian() {
+                if(!await Swal.fire({text: 'Reset transaksi hari ini?', icon: 'warning', showCancelButton: true, background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#ef4444'}).then(r => r.isConfirmed)) return;
                 localStorage.removeItem(TX_KEY);
                 renderTxs(); updateSummary();
             }
@@ -419,7 +419,7 @@ function getPosJs(categoryId) {
             function saveMenu() {
                 const nama = document.getElementById('pos-menu-nama').value.trim();
                 const harga = parseFloat(document.getElementById('pos-menu-harga').value) || 0;
-                if (!nama || !harga) { alert('Isi data!'); return; }
+                if (!nama || !harga) { Swal.fire({text: 'Isi data!', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}); return; }
                 const menus = getMenus();
                 menus.push({ id: Date.now(), nama, harga });
                 localStorage.setItem(MENU_KEY, JSON.stringify(menus));
@@ -455,7 +455,7 @@ function getPosJs(categoryId) {
                 const jenis = document.getElementById('prc-jenis').value;
                 const total = parseFloat(document.getElementById('prc-total-order').value) || 0;
                 const dp = parseFloat(document.getElementById('prc-dp').value) || 0;
-                if (!customer || !total) { alert('Isi data!'); return; }
+                if (!customer || !total) { Swal.fire({text: 'Isi data!', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}); return; }
                 const o = { id: Date.now(), customer, jenis, total, dp, sisa: total - dp, status: 'antri', ts: new Date().toLocaleDateString('id-ID') };
                 const orders = getOrders(); orders.unshift(o); saveOrders(orders);
                 ['prc-customer','prc-total-order','prc-dp'].forEach(id => document.getElementById(id).value = '');
@@ -470,8 +470,8 @@ function getPosJs(categoryId) {
                 }
                 saveOrders(orders); render();
             };
-            window.prcDel = id => {
-                if(!confirm('Hapus?')) return;
+            window.prcDel = async id => {
+                if(!await Swal.fire({text: 'Hapus?', icon: 'warning', showCancelButton: true, background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#ef4444'}).then(r => r.isConfirmed)) return;
                 saveOrders(getOrders().filter(o => o.id !== id)); render();
             };
             function render() {
@@ -534,8 +534,8 @@ function getPosJs(categoryId) {
                 localStorage.setItem(KEY, JSON.stringify(txs));
                 render();
             };
-            function deleteMenu(id) {
-                if(!confirm('Yakin ingin menghapus menu ini?')) return;
+            async function deleteMenu(id) {
+                if(!await Swal.fire({text: 'Yakin ingin menghapus menu ini?', icon: 'warning', showCancelButton: true, background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#ef4444'}).then(r => r.isConfirmed)) return;
                 const m = getMenus().filter(x => x.id !== id);
                 localStorage.setItem(MENU_KEY, JSON.stringify(m));
                 render();
@@ -587,7 +587,7 @@ function getPosJs(categoryId) {
                 const nama = document.getElementById('pkl-new-nama').value;
                 const harga = parseFloat(document.getElementById('pkl-new-harga').value);
                 const hpp = parseFloat(document.getElementById('pkl-new-hpp').value);
-                if (!nama || !harga || !hpp) { alert('Isi semua data menu dengan benar!'); return; }
+                if (!nama || !harga || !hpp) { Swal.fire({text: 'Isi semua data menu dengan benar!', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}); return; }
                 const m = getMenus();
                 m.push({ id: Date.now(), nama, harga, hpp });
                 localStorage.setItem(MENU_KEY, JSON.stringify(m));
@@ -596,7 +596,7 @@ function getPosJs(categoryId) {
                 document.getElementById('pkl-new-hpp').value = '';
                 render();
             }
-            function reset() { if(confirm('Reset?')) { localStorage.removeItem(KEY); render(); } }
+            async function reset() { if(await Swal.fire({text: 'Reset?', icon: 'warning', showCancelButton: true, background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#ef4444'}).then(r => r.isConfirmed)) {  localStorage.removeItem(KEY); render();  } }
             
             function init() { render(); }
             document.addEventListener('DOMContentLoaded', init);
@@ -614,7 +614,7 @@ function getPosJs(categoryId) {
             function createNota() {
                 const toko = document.getElementById('dst-toko').value;
                 const total = parseFloat(document.getElementById('dst-total').value) || 0;
-                if (!toko || !total) { alert('Isi data!'); return; }
+                if (!toko || !total) { Swal.fire({text: 'Isi data!', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}); return; }
                 const notas = getNotas();
                 notas.unshift({ id: Date.now(), toko, total, lunas: false, ts: new Date().toLocaleDateString('id-ID') });
                 saveNotas(notas);
@@ -625,8 +625,8 @@ function getPosJs(categoryId) {
                 const notas = getNotas(); const n = notas.find(x => x.id === id);
                 if (n) n.lunas = true; saveNotas(notas); render();
             };
-            window.dstDel = id => {
-                if(!confirm('Hapus?')) return;
+            window.dstDel = async id => {
+                if(!await Swal.fire({text: 'Hapus?', icon: 'warning', showCancelButton: true, background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#ef4444'}).then(r => r.isConfirmed)) return;
                 saveNotas(getNotas().filter(n => n.id !== id)); render();
             };
             function render() {
@@ -737,6 +737,7 @@ function generateHtml(category) {
             background: rgba(255, 255, 255, 0.2);
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-brand-bg text-slate-300 font-sans antialiased h-screen flex overflow-hidden selection:bg-brand-accent1/30 selection:text-white">
 
@@ -1284,10 +1285,10 @@ function generateHtml(category) {
                         const phone = prompt('Masukkan Nomor WhatsApp yang terdaftar (Premium):');
                         if (phone === '085179660408') {
                             localStorage.setItem('is_premium', 'true');
-                            alert('Akses Premium Berhasil Diverifikasi! Selamat datang kembali.');
+                            Swal.fire({text: 'Akses Premium Berhasil Diverifikasi! Selamat datang kembali.', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                             location.reload();
                         } else if (phone !== null) {
-                            alert('Nomor belum terdaftar atau langganan tidak aktif. Silakan hubungi admin.');
+                            Swal.fire({text: 'Nomor belum terdaftar atau langganan tidak aktif. Silakan hubungi admin.', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                         }
                     });
                 });
@@ -1363,7 +1364,7 @@ function generateHtml(category) {
             // Handle Generate AI (Dokumen Tab)
             document.getElementById('btn-generate-ai').addEventListener('click', async () => {
                 if (globalTargetPorsi === 0) {
-                    alert('Harap hitung target di menu Kalkulator terlebih dahulu.');
+                    Swal.fire({text: 'Harap hitung target di menu Kalkulator terlebih dahulu.', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                     return;
                 }
 
@@ -1413,7 +1414,7 @@ function generateHtml(category) {
                     if (msg.includes('429') || msg.includes('quota')) {
                         msg = "Limit kuota harian Tim Logaritma gratis tercapai. Mohon coba beberapa saat lagi.";
                     }
-                    alert("Gagal meracik Dokumen Operasional: " + msg);
+                    Swal.fire({text: "Gagal meracik Dokumen Operasional: " + msg, background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                 }
             });
 
@@ -1424,13 +1425,13 @@ function generateHtml(category) {
                 const diskon = parseFloat(document.getElementById('input-ltm-diskon').value) || 0;
                 
                 if(!margin || diskon <= 0) {
-                    alert('Harap hitung target utama di menu Kalkulator dulu dan masukkan diskon yang valid.');
+                    Swal.fire({text: 'Harap hitung target utama di menu Kalkulator dulu dan masukkan diskon yang valid.', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                     return;
                 }
                 
                 const newMargin = margin - diskon;
                 if (newMargin <= 0) {
-                    alert('Diskon terlalu besar! Margin Anda habis/minus.');
+                    Swal.fire({text: 'Diskon terlalu besar! Margin Anda habis/minus.', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                     return;
                 }
                 
@@ -1501,7 +1502,7 @@ function generateHtml(category) {
                         if (msg.includes('429') || msg.includes('quota')) {
                             msg = "Limit kuota harian Tim Logaritma gratis tercapai. Mohon coba beberapa saat lagi.";
                         }
-                        alert("Gagal meracik dokumen promo: " + msg);
+                        Swal.fire({text: "Gagal meracik dokumen promo: " + msg, background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
                     });
                 };
             });
@@ -1591,7 +1592,7 @@ function generateHtml(category) {
         window.copyAiOutput = () => {
             const el = document.getElementById('ai-markdown-content');
             if(el) {
-                navigator.clipboard.writeText(el.innerText).then(() => alert('Tersalin ke clipboard!'));
+                navigator.clipboard.writeText(el.innerText).then(() => Swal.fire({text: 'Tersalin ke clipboard!', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'}));
             }
         };
 
