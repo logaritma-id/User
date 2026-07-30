@@ -195,13 +195,38 @@
             </div>
 
             <!-- Uji Dampak (Locked) -->
-            <div id="uji-dampak" class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl text-center scroll-mt-24 opacity-80 hover:opacity-100 transition">
-                <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-slate-700">🔒</div>
-                <h2 class="text-xl font-bold text-white mb-2 font-heading">Uji Dampak Kegiatan (LTM Checker)</h2>
-                <p class="text-slate-400 text-sm mb-6 max-w-md mx-auto">Validasi apakah rencana promosi/diskon Anda berujung profit atau rugi. Khusus Pengguna Premium.</p>
-                <button class="trigger-paywall inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold rounded-lg border border-slate-600 transition-all">
-                    Buka Fitur Premium
-                </button>
+            <div id="uji-dampak" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl scroll-mt-24 transition hidden">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-rose-500/20 text-rose-500 rounded-xl flex items-center justify-center text-2xl border border-rose-500/30">🎯</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white font-heading">Uji Dampak Kegiatan (LTM Checker)</h2>
+                        <p class="text-slate-400 text-xs">Simulasi dampak Diskon terhadap beban kerja operasional.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 text-left">
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Rencana Diskon (%)</label>
+                    <div class="flex flex-col sm:flex-row gap-4 items-end">
+                        <div class="relative w-full">
+                            <input type="number" id="input-ltm-diskon" placeholder="Misal: 20" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition pr-8">
+                            <span class="absolute right-4 top-3 text-slate-500 font-bold">%</span>
+                        </div>
+                        <button id="btn-hitung-ltm" class="w-full sm:w-auto px-6 py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg transition shadow-lg shadow-rose-600/20 whitespace-nowrap">Uji Dampak</button>
+                    </div>
+                </div>
+                
+                <div id="hasil-ltm" class="hidden bg-gradient-to-br from-rose-950/40 to-slate-900 border border-rose-500/30 rounded-xl p-6 relative overflow-hidden text-left">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl"></div>
+                    <h4 class="text-rose-400 font-bold text-sm mb-4 flex items-center gap-2">⚠️ HASIL SIMULASI TARGET BARU</h4>
+                    <div class="space-y-3">
+                        <p class="text-slate-300 text-sm">Sisa Margin Profit: <span id="ltm-sisa-margin" class="font-bold text-white">0%</span></p>
+                        <p class="text-slate-300 text-sm">Target Penjualan Baru (Break-Even): <span id="ltm-target-baru" class="font-bold text-rose-400 text-lg">0</span></p>
+                        <div class="bg-rose-950/50 border border-rose-500/20 rounded-lg p-4 mt-2">
+                            <p id="ltm-kesimpulan" class="text-xs text-rose-200 leading-relaxed"></p>
+                        </div>
+                        <button id="btn-terapkan-ltm" class="w-full mt-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg border border-slate-600 transition text-sm">Terapkan Target & Racik AI</button>
+                    </div>
+                </div>
             </div>
             
         </div>
@@ -279,10 +304,7 @@
                 // Unlock Uji Dampak
                 const ujiDampak = document.getElementById('uji-dampak');
                 if (ujiDampak) {
-                    ujiDampak.classList.remove('opacity-80');
-                    ujiDampak.querySelector('.text-3xl').innerText = '✅';
-                    ujiDampak.querySelector('h2').innerText = 'Uji Dampak Kegiatan Terbuka';
-                    ujiDampak.querySelector('p').innerText = 'Fitur kalkulasi LTM akan segera rilis di versi berikutnya.';
+                    ujiDampak.classList.remove('hidden');
                 }
                 
                 // Update Lisensi Box
@@ -416,6 +438,51 @@
                     alert("Gagal menghubungi AI: " + error.message);
                     console.error(error);
                 }
+            });
+            // LTM Logic
+            document.getElementById('btn-hitung-ltm')?.addEventListener('click', () => {
+                const parseNum = (val) => parseFloat(val.toString().replace(/\./g, '')) || 0;
+                
+                const margin = parseNum(document.getElementById('input-margin').value);
+                const diskon = parseFloat(document.getElementById('input-ltm-diskon').value) || 0;
+                
+                if(!margin || diskon <= 0) {
+                    alert('Harap hitung target utama dulu dan masukkan diskon LTM yang valid.');
+                    return;
+                }
+                
+                const newMargin = margin - diskon;
+                if (newMargin <= 0) {
+                    alert('Diskon terlalu besar! Margin Anda habis/minus.');
+                    return;
+                }
+                
+                const targetProfit = parseNum(document.getElementById('input-target_profit').value);
+                const hargaJual = parseNum(document.getElementById('input-harga_jual').value);
+                const hariBuka = parseNum(document.getElementById('input-hari_buka').value);
+                
+                const baseOmzetBulanan = targetProfit / (margin / 100);
+                const baseOmzetHarian = baseOmzetBulanan / hariBuka;
+                const baseTargetPorsi = Math.ceil(baseOmzetHarian / hargaJual);
+                
+                const multiplier = margin / newMargin;
+                const newTargetPorsi = Math.ceil(baseTargetPorsi * multiplier);
+                const kenaikanPersen = Math.round((multiplier - 1) * 100);
+                
+                document.getElementById('hasil-ltm').classList.remove('hidden');
+                document.getElementById('ltm-sisa-margin').innerText = newMargin.toFixed(1) + '%';
+                document.getElementById('ltm-target-baru').innerText = newTargetPorsi + ` ` + config.unit;
+                
+                const kesimpulan = `Untuk menutupi kebocoran profit akibat diskon ` + diskon + `%, tim Anda wajib menaikkan volume penjualan sebesar <strong>` + kenaikanPersen + `%</strong> (dari ` + baseTargetPorsi + ` menjadi ` + newTargetPorsi + ` ` + config.unit + `/hari) hanya untuk sekadar BALIK MODAL (Break-Even).`;
+                document.getElementById('ltm-kesimpulan').innerHTML = kesimpulan;
+                
+                document.getElementById('btn-terapkan-ltm').onclick = () => {
+                    // Overwrite DOM target for AI to read
+                    document.getElementById('hasil-porsi').innerHTML = newTargetPorsi + ` <span class="lbl-unit">` + config.unit + `</span>`;
+                    document.getElementById('summary-porsi').innerHTML = newTargetPorsi + ` <span class="lbl-unit">` + config.unit + `</span>/hari (TERINFLASI DISKON)`;
+                    
+                    document.getElementById('btn-generate-ai').click();
+                };
             });
         });
 
