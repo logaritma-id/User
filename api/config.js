@@ -1,7 +1,7 @@
 // Vercel Serverless Function: /api/config
 // API Key dibaca dari Environment Variable Vercel (bukan dari code/GitHub)
 export default function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://logaritma.id');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'no-store');
     
     const apiKey = process.env.LOGARITMA_API_KEY;
