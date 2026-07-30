@@ -399,10 +399,11 @@
             <h3 class="text-2xl font-bold font-heading mb-2 text-white">Mulai Eksplorasi</h3>
             <p class="text-slate-400 text-sm mb-6">Silakan pilih persona Anda untuk melanjutkan penelusuran lebih dalam.</p>
             <div class="space-y-4">
-                <a href="#" onclick="openDiagFromCategory('Kuliner & F&B'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Kuliner</a>
-                <a href="#" onclick="openDiagFromCategory('Fashion & Olshop'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Fashion</a>
-                <a href="#" onclick="openDiagFromCategory('Jasa & Percetakan'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Percetakan</a>
-                <a href="#" onclick="openDiagFromCategory('PKL & Lapakan'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pedagang Kaki Lima</a>
+                <a href="#" onclick="openDiagFromCategory('kuliner'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Kuliner</a>
+                <a href="#" onclick="openDiagFromCategory('fashion'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Fashion</a>
+                <a href="#" onclick="openDiagFromCategory('percetakan'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pelaku Usaha Percetakan</a>
+                <a href="#" onclick="openDiagFromCategory('pkl'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Pedagang Kaki Lima</a>
+                <a href="#" onclick="openDiagFromCategory('distributor'); return false;" class="block w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 hover:border-emerald-500 rounded-lg px-4 py-4 text-white text-center font-bold transition shadow-lg hover:shadow-emerald-500/20">Saya Agen / Distributor</a>
             </div>
             <script>
             function openDiagFromCategory(catValue) {
@@ -454,10 +455,11 @@
                             <label class="block text-sm font-medium text-slate-300 mb-1">Kategori Usaha <span class="text-red-500">*</span></label>
                             <select id="diag-kategori" required class="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition appearance-none">
                                 <option value="" disabled selected>-- Pilih Kategori --</option>
-                                <option value="Kuliner & F&B">Kuliner & F&B (Warung, Resto, Cafe)</option>
-                                <option value="Fashion & Olshop">Fashion, Distro & Online Shop</option>
-                                <option value="Jasa & Percetakan">Jasa, Kriya & Percetakan</option>
-                                <option value="PKL & Lapakan">Pedagang Kaki Lima (PKL) & Lapakan</option>
+                                <option value="kuliner">Kuliner & F&B (Warung, Resto, Cafe)</option>
+                                <option value="fashion">Fashion, Distro & Online Shop</option>
+                                <option value="percetakan">Jasa, Kriya & Percetakan</option>
+                                <option value="pkl">Pedagang Kaki Lima (PKL) & Lapakan</option>
+                                <option value="distributor">Distributor & Agen</option>
                             </select>
                         </div>
                         <div>

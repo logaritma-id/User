@@ -176,33 +176,40 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Dynamic Questions Database
     const diagQuestions = {
-        "Kuliner & F&B": [
+        "kuliner": [
             { q: "Apakah Anda tahu persis Food Cost (HPP) per porsi setiap menunya?", options: ["Belum dihitung rinci, tebak-tebak saja.", "Tahu sebagian menu favorit saja.", "Ya, tahu persis sampai gramasi bahan."] },
             { q: "Berapa banyak bahan baku yang sering terbuang (wastage) setiap harinya?", options: ["Lumayan banyak, sering sisa sayur/daging.", "Kadang-kadang kalau sepi pengunjung.", "Sangat minim, porsi terjaga ketat."] },
             { q: "Apakah Anda punya target harian porsi terjual agar warung/resto balik modal?", options: ["Tidak ada, yang penting ada yang beli.", "Tahu kira-kira nominal rupiahnya.", "Tahu persis berapa porsi per menu yang harus laku."] },
             { q: "Apakah ada SOP takaran di dapur agar rasa dan porsi selalu konsisten?", options: ["Tergantung feeling koki yang masak.", "Ada, tapi jarang ditimbang presisi.", "Ada SOP gramasi yang ketat ditaati."] },
             { q: "Apakah kas masuk laci kasir sering selisih dengan stok yang keluar?", options: ["Sering bocor dan malas ngecek.", "Kadang ada selisih sedikit.", "Selalu klop antara kasir dan dapur."] }
         ],
-        "Fashion & Olshop": [
+        "fashion": [
             { q: "Berapa banyak stok barang mati (dead stock) di gudang Anda saat ini?", options: ["Lebih dari 30% stok numpuk.", "Sekitar 10-20% belum laku.", "Hampir tidak ada, stok cepat berputar."] },
             { q: "Berapa % rata-rata konversi dari chat nanya-nanya menjadi pembeli nyata?", options: ["Dibawah 5% (banyak tanya doang).", "Sekitar 10-20%.", "Diatas 30%, closing rate tinggi."] },
             { q: "Apakah biaya ngiklan (Ads/Endorse) Anda selalu menghasilkan untung?", options: ["Sering boncos, pengeluaran iklan > profit.", "Kadang untung, kadang rugi.", "Selalu untung dan terukur ROI-nya."] },
             { q: "Berapa tingkat retur/komplain barang cacat dari pelanggan?", options: ["Lumayan sering karena packing asal.", "Sesekali terjadi kalau lagi ramai.", "Sangat jarang, ada proses QC ketat."] },
             { q: "Apakah admin Anda punya target closing harian yang wajib dicapai?", options: ["Tidak ada, admin cuma balas chat saja.", "Ada, tapi sering tidak tercapai.", "Ya, admin berorientasi pada target closing."] }
         ],
-        "Jasa & Percetakan": [
+        "percetakan": [
             { q: "Apakah waktu pengerjaan project/pesanan pelanggan sering molor dari janji?", options: ["Sering banget, klien suka komplain.", "Kadang-kadang kalau antrean penuh.", "Selalu tepat waktu sesuai deadline."] },
             { q: "Berapa sering terjadi kesalahan pengerjaan (error rate/salah cetak)?", options: ["Sering, bahan banyak terbuang percuma.", "Sesekali karyawan kurang teliti.", "Sangat jarang, ada sistem cek berlapis."] },
             { q: "Apakah Anda menghitung biaya jam kerja karyawan (man-hours) ke dalam harga jual?", options: ["Tidak, hanya hitung harga bahan saja.", "Kadang dihitung kalau proyek besar.", "Selalu, setiap jam kerja dihitung biayanya."] },
             { q: "Bagaimana cara Anda menentukan harga jual jasa/produk?", options: ["Ikut-ikutan harga kompetitor saja.", "Tebak-tebak asal nutup operasional.", "Dihitung matang dari HPP + Target Margin."] },
             { q: "Apakah ada alur kerja (workflow) tertulis untuk setiap staf produksi?", options: ["Kerja ngalir saja, tunggu perintah.", "Ada, tapi cuma lisan.", "Ada SOP tertulis yang jelas tiap mesin/tugas."] }
         ],
-        "PKL & Lapakan": [
+        "pkl": [
             { q: "Apakah uang hasil dagangan sering tercampur dengan uang kebutuhan rumah tangga?", options: ["Selalu kecampur, dompetnya sama.", "Kadang dipisah, kadang kecampur kalau butuh.", "Sudah dipisah 100% disiplin."] },
             { q: "Apakah Anda tahu persis berapa untung bersih (bukan omzet kotor) Anda hari ini?", options: ["Tidak tahu, yang penting pegang uang.", "Cuma tahu kira-kira saja.", "Tahu persis sampai ke nominal ribuan."] },
             { q: "Jika jalanan sepi atau hujan, apa yang Anda lakukan agar tetap laku?", options: ["Pasrah saja nunggu pembeli lewat.", "Coba promosi mulut ke mulut seadanya.", "Punya database kontak WA pelanggan untuk dihubungi/PO."] },
             { q: "Apakah Anda mencatat stok bahan baku yang dibeli setiap pagi?", options: ["Malas mencatat, beli secukupnya.", "Kadang dicatat kalau ingat.", "Selalu ada catatan belanja harian."] },
             { q: "Apakah Anda menabung sebagian keuntungan untuk dana darurat usaha?", options: ["Uangnya habis terus untuk makan sehari-hari.", "Kadang menabung kalau lagi ramai banget.", "Selalu sisihkan prosentase tertentu tiap hari."] }
+        ],
+        "distributor": [
+            { q: "Bagaimana Anda mengelola batas piutang (kredit limit) untuk toko/pelanggan?", options: ["Tidak ada batas, yang penting barang keluar.", "Ada batas tapi sering dilanggar kasihan.", "Ada sistem limitasi piutang yang ketat."] },
+            { q: "Berapa persentase invoice jatuh tempo yang telat dibayar?", options: ["Lebih dari 30% sering telat bayar.", "Sekitar 10-20% butuh ditagih berkali-kali.", "Hampir semua bayar tepat waktu."] },
+            { q: "Apakah Anda tahu pasti produk mana yang perputarannya paling cepat (fast-moving)?", options: ["Kira-kira saja berdasarkan insting.", "Tahu dari laporan bulanan.", "Punya data real-time inventory turnover."] },
+            { q: "Bagaimana tim sales Anda melakukan kunjungan (route plan) harian?", options: ["Sales jalan bebas semau mereka.", "Ada rute tapi jarang dievaluasi.", "Rute harian terstruktur dan dimonitor ketat."] },
+            { q: "Apakah sering terjadi selisih stok fisik gudang dengan catatan di sistem?", options: ["Sering banget, gudang berantakan.", "Kadang-kadang ada selisih sedikit.", "Selalu akurat lewat sistem opname rutin."] }
         ]
     };
 
@@ -224,12 +231,18 @@ document.addEventListener("DOMContentLoaded", function() {
         // Step 1 Submit
         formStep1.addEventListener("submit", (e) => {
             e.preventDefault();
-            const kategori = document.getElementById("diag-kategori").value;
-            displayKategori.textContent = kategori;
+            const selectEl = document.getElementById("diag-kategori");
+            const kategori = selectEl.value;
+            const kategoriName = selectEl.options[selectEl.selectedIndex].text;
+            displayKategori.textContent = kategoriName;
+            
+            // Save selection to data attribute for step 2
+            formStep1.dataset.kategoriId = kategori;
+            formStep1.dataset.kategoriName = kategoriName;
             
             // Generate Questions
             questionsContainer.innerHTML = "";
-            const questions = diagQuestions[kategori] || diagQuestions["Kuliner & F&B"]; // Fallback
+            const questions = diagQuestions[kategori] || diagQuestions["kuliner"]; // Fallback
             
             questions.forEach((qObj, index) => {
                 const qHtml = `
@@ -263,8 +276,9 @@ document.addEventListener("DOMContentLoaded", function() {
             // Validate all 5 questions
             let totalScore = 0;
             let answered = 0;
-            const kategori = document.getElementById("diag-kategori").value;
-            const questions = diagQuestions[kategori] || diagQuestions["Kuliner & F&B"];
+            const kategoriId = formStep1.dataset.kategoriId || "kuliner";
+            const kategoriName = formStep1.dataset.kategoriName || "Kuliner & F&B";
+            const questions = diagQuestions[kategoriId] || diagQuestions["kuliner"];
             
             for(let i=0; i < questions.length; i++) {
                 const selected = document.querySelector(`input[name="diag_q${i}"]:checked`);
@@ -299,7 +313,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 timestamp: Date.now(),
                 namaPemilik: document.getElementById("diag-nama").value,
                 namaBisnis: document.getElementById("diag-nama").value,
-                kategori: kategori,
+                kategori: kategoriName,
+                kategoriId: kategoriId,
                 whatsapp: document.getElementById("diag-wa").value,
                 alamat: document.getElementById("diag-alamat").value,
                 skorKesehatan: statusKesehatan,
@@ -344,26 +359,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 const badgeEl = document.getElementById("diag-result-badge");
                 const descEl = document.getElementById("diag-result-desc");
                 
-                document.getElementById("diag-result-kategori").textContent = kategori;
+                document.getElementById("diag-result-kategori").textContent = kategoriName;
                 
                 if(percentage <= 30) {
                     iconEl.innerHTML = "🚨";
                     iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-red-900/50 border-2 border-red-500/50";
                     badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-red-950 text-red-400 border-red-500/30";
                     badgeEl.textContent = "STATUS: KRITIS";
-                    descEl.innerHTML = `Bisnis ${kategori} Anda berpotensi mengalami <strong>kebocoran operasional yang fatal</strong>. Segera evaluasi ulang struktur biaya, harga jual, dan alur kerja harian sebelum kehabisan modal kas.`;
+                    descEl.innerHTML = `Bisnis ${kategoriName} Anda berpotensi mengalami <strong>kebocoran operasional yang fatal</strong>. Segera evaluasi ulang struktur biaya, harga jual, dan alur kerja harian sebelum kehabisan modal kas.`;
                 } else if(percentage <= 70) {
                     iconEl.innerHTML = "⚠️";
                     iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-yellow-900/50 border-2 border-yellow-500/50";
                     badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-yellow-950 text-yellow-400 border-yellow-500/30";
                     badgeEl.textContent = "STATUS: TRANSISI";
-                    descEl.innerHTML = `Bisnis ${kategori} Anda berjalan cukup stabil, namun <strong>masih ada inefisiensi</strong>. Anda membuang potensi profit yang seharusnya bisa lebih besar jika operasional diperketat.`;
+                    descEl.innerHTML = `Bisnis ${kategoriName} Anda berjalan cukup stabil, namun <strong>masih ada inefisiensi</strong>. Anda membuang potensi profit yang seharusnya bisa lebih besar jika operasional diperketat.`;
                 } else {
                     iconEl.innerHTML = "🏆";
                     iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-emerald-900/50 border-2 border-emerald-500/50";
                     badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-emerald-950 text-emerald-400 border-emerald-500/30";
                     badgeEl.textContent = "STATUS: SEHAT";
-                    descEl.innerHTML = `Selamat! Bisnis ${kategori} Anda beroperasi dengan <strong>sangat optimal</strong>. Saatnya fokus pada strategi ekspansi dan delegasi otomatis menggunakan sistem Logaritma.`;
+                    descEl.innerHTML = `Selamat! Bisnis ${kategoriName} Anda beroperasi dengan <strong>sangat optimal</strong>. Saatnya fokus pada strategi ekspansi dan delegasi otomatis menggunakan sistem Logaritma.`;
                 }
 
                 // Automatically log the user in for the dashboard
@@ -372,6 +387,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     bisnis: leadData.namaBisnis,
                     whatsapp: leadData.whatsapp,
                     kategori: leadData.kategori,
+                    categoryId: leadData.kategoriId,
                     status: "FREE"
                 };
                 localStorage.setItem("logarithm_current_user", JSON.stringify(currentUserData));
@@ -385,7 +401,8 @@ document.addEventListener("DOMContentLoaded", function() {
             
             // Handle Dashboard Button
             document.getElementById("btn-to-dashboard").addEventListener("click", () => {
-                window.location.href = '/tools/?source=diagnostic_lead';
+                const catId = formStep1.dataset.kategoriId || "kuliner";
+                window.location.href = '/tools/' + catId + '/';
             });
         });
     }
