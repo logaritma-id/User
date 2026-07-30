@@ -701,6 +701,64 @@
             navigator.clipboard.writeText(text).then(() => alert('Dokumen disalin!'));
         };
     </script>
+
+    <script>
+
+        // ===== POS PKL ENGINE =====
+        window.posPkl = (() => {
+            const KEY = 'pos_tx_pkl';
+            const menus = [
+                { id: 1, nama: 'Gorengan', harga: 2000, hpp: 800 },
+                { id: 2, nama: 'Nasi Bungkus', harga: 12000, hpp: 7000 },
+                { id: 3, nama: 'Es Teh', harga: 3000, hpp: 1000 }
+            ];
+            function getTxs() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e) { return []; } }
+            function fmtRp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+            window.pklRecord = id => {
+                const m = menus.find(x => x.id === id);
+                if(!m) return;
+                const txs = getTxs();
+                txs.unshift({ id: Date.now(), nama: m.nama, harga: m.harga, hpp: m.hpp, ts: new Date().toLocaleTimeString('id-ID') });
+                localStorage.setItem(KEY, JSON.stringify(txs));
+                render();
+            };
+            function render() {
+                const txs = getTxs();
+                const grid = document.getElementById('pkl-menu-grid');
+                if (grid && grid.innerHTML === '') {
+                    menus.forEach(m => {
+                        const b = document.createElement('button');
+                        b.className = 'bg-slate-800 hover:bg-orange-900/30 border border-slate-700 rounded-2xl p-4 text-center transition-all active:scale-95';
+                        b.onclick = () => pklRecord(m.id);
+                        b.innerHTML = `<p class="text-2xl mb-2">🛒</p><p class="text-sm font-bold text-white">${m.nama}</p><p class="text-orange-400 font-bold">${fmtRp(m.harga)}</p>`;
+                        grid.appendChild(b);
+                    });
+                }
+                const list = document.getElementById('pkl-tx-list');
+                if (list) {
+                    list.innerHTML = '';
+                    txs.forEach(tx => {
+                        const d = document.createElement('div');
+                        d.className = 'flex items-center justify-between bg-slate-800/50 border border-slate-700/50 rounded-lg px-3 py-1.5';
+                        d.innerHTML = `<div><span class="text-xs font-bold text-white">${tx.nama}</span><span class="text-[10px] text-slate-500 ml-2">${tx.ts}</span></div><span class="text-emerald-400 font-bold text-xs">${fmtRp(tx.harga)}</span>`;
+                        list.appendChild(d);
+                    });
+                }
+                const p = txs.reduce((s, t) => s + t.harga, 0);
+                const m = txs.reduce((s, t) => s + t.hpp, 0);
+                const elPorsi = document.getElementById('pkl-total-porsi');
+                if (elPorsi) {
+                    elPorsi.innerText = txs.length;
+                    document.getElementById('pkl-total-pemasukan').innerText = fmtRp(p);
+                    document.getElementById('pkl-total-laba').innerText = fmtRp(p - m);
+                }
+            }
+            function reset() { if(confirm('Reset?')) { localStorage.removeItem(KEY); render(); } }
+            render();
+            return { reset };
+        })();
+
+    </script>
 </body>
 </html>
 

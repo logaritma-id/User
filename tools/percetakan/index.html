@@ -710,6 +710,73 @@
             navigator.clipboard.writeText(text).then(() => alert('Dokumen disalin!'));
         };
     </script>
+
+    <script>
+
+        // ===== POS PERCETAKAN ENGINE =====
+        window.posPercetakan = (() => {
+            const KEY = 'pos_orders_percetakan';
+            function getOrders() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e) { return []; } }
+            function saveOrders(o) { localStorage.setItem(KEY, JSON.stringify(o)); }
+            function fmtRp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+            function createOrder() {
+                const customer = document.getElementById('prc-customer').value;
+                const jenis = document.getElementById('prc-jenis').value;
+                const total = parseFloat(document.getElementById('prc-total-order').value) || 0;
+                const dp = parseFloat(document.getElementById('prc-dp').value) || 0;
+                if (!customer || !total) { alert('Isi data!'); return; }
+                const o = { id: Date.now(), customer, jenis, total, dp, sisa: total - dp, status: 'antri', ts: new Date().toLocaleDateString('id-ID') };
+                const orders = getOrders(); orders.unshift(o); saveOrders(orders);
+                ['prc-customer','prc-total-order','prc-dp'].forEach(id => document.getElementById(id).value = '');
+                render();
+            }
+            window.prcNextStatus = id => {
+                const orders = getOrders(); const o = orders.find(x => x.id === id);
+                if (o) {
+                    if (o.status === 'antri') o.status = 'dikerjakan';
+                    else if (o.status === 'dikerjakan') o.status = 'selesai';
+                    else if (o.status === 'selesai') o.status = 'diambil';
+                }
+                saveOrders(orders); render();
+            };
+            window.prcDel = id => {
+                if(!confirm('Hapus?')) return;
+                saveOrders(getOrders().filter(o => o.id !== id)); render();
+            };
+            function render() {
+                const orders = getOrders();
+                const list = document.getElementById('prc-order-list');
+                const empty = document.getElementById('prc-empty');
+                if(!list) return;
+                list.querySelectorAll('.order-card').forEach(el => el.remove());
+                empty.classList.toggle('hidden', orders.length > 0);
+                orders.forEach(o => {
+                    const cls = o.status === 'selesai' ? 'border-emerald-500/30' : (o.status === 'dikerjakan' ? 'border-blue-500/30' : 'border-slate-700');
+                    const card = document.createElement('div');
+                    card.className = `order-card border rounded-xl p-4 bg-slate-800/30 transition ${cls}`;
+                    card.innerHTML = `<div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-violet-400 uppercase">${o.status}</span>
+                            <p class="font-bold text-white mt-1">${o.customer}</p>
+                            <p class="text-xs text-slate-400">${o.jenis}</p>
+                            <p class="text-xs mt-1">Sisa: <strong class="text-amber-400">${fmtRp(o.sisa)}</strong></p>
+                        </div>
+                        <div class="flex gap-2">
+                            ${o.status !== 'diambil' ? `<button onclick="prcNextStatus(${o.id})" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg">Lanjut</button>` : ''}
+                            <button onclick="prcDel(${o.id})" class="text-xs bg-rose-900/40 text-rose-400 px-3 py-1.5 rounded-lg">Hapus</button>
+                        </div>
+                    </div>`;
+                    list.appendChild(card);
+                });
+                const active = orders.filter(o => o.status !== 'diambil');
+                document.getElementById('prc-order-count').innerText = active.length;
+                document.getElementById('prc-piutang-total').innerText = fmtRp(active.reduce((s, o) => s + o.sisa, 0));
+            }
+            render();
+            return { createOrder };
+        })();
+
+    </script>
 </body>
 </html>
 

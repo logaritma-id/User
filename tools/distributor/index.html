@@ -703,6 +703,66 @@
             navigator.clipboard.writeText(text).then(() => alert('Dokumen disalin!'));
         };
     </script>
+
+    <script>
+
+        // ===== POS DISTRIBUTOR ENGINE =====
+        window.posDistributor = (() => {
+            const KEY = 'pos_nota_distributor';
+            function getNotas() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e) { return []; } }
+            function saveNotas(n) { localStorage.setItem(KEY, JSON.stringify(n)); }
+            function fmtRp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+            function createNota() {
+                const toko = document.getElementById('dst-toko').value;
+                const total = parseFloat(document.getElementById('dst-total').value) || 0;
+                if (!toko || !total) { alert('Isi data!'); return; }
+                const notas = getNotas();
+                notas.unshift({ id: Date.now(), toko, total, lunas: false, ts: new Date().toLocaleDateString('id-ID') });
+                saveNotas(notas);
+                document.getElementById('dst-toko').value = ''; document.getElementById('dst-total').value = '';
+                render();
+            }
+            window.dstLunas = id => {
+                const notas = getNotas(); const n = notas.find(x => x.id === id);
+                if (n) n.lunas = true; saveNotas(notas); render();
+            };
+            window.dstDel = id => {
+                if(!confirm('Hapus?')) return;
+                saveNotas(getNotas().filter(n => n.id !== id)); render();
+            };
+            function render() {
+                const notas = getNotas();
+                const list = document.getElementById('dst-nota-list');
+                const empty = document.getElementById('dst-empty');
+                if(!list) return;
+                list.querySelectorAll('.nota-card').forEach(el => el.remove());
+                empty.classList.toggle('hidden', notas.length > 0);
+                notas.forEach(n => {
+                    const card = document.createElement('div');
+                    card.className = `nota-card border rounded-xl p-4 transition ${n.lunas ? 'border-emerald-500/30 bg-emerald-900/10' : 'border-slate-700 bg-slate-800/30'}`;
+                    card.innerHTML = `<div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold ${n.lunas ? 'text-emerald-400' : 'text-amber-400'}">${n.lunas ? 'LUNAS' : 'BELUM LUNAS'}</span>
+                            <p class="font-bold text-white mt-1">${n.toko}</p>
+                            <p class="text-sm font-bold mt-1 text-white">${fmtRp(n.total)}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            ${!n.lunas ? `<button onclick="dstLunas(${n.id})" class="text-xs bg-emerald-900/40 text-emerald-400 px-3 py-1.5 rounded-lg">Lunas</button>` : ''}
+                            <button onclick="dstDel(${n.id})" class="text-xs bg-rose-900/40 text-rose-400 px-3 py-1.5 rounded-lg">Hapus</button>
+                        </div>
+                    </div>`;
+                    list.appendChild(card);
+                });
+                const totalPiutang = document.getElementById('dst-total-piutang');
+                if (totalPiutang) {
+                    totalPiutang.innerText = fmtRp(notas.filter(n => !n.lunas).reduce((s, n) => s + n.total, 0));
+                }
+            }
+            render();
+            return { createNota };
+        })();
+
+    </script>
 </body>
 </html>
 
