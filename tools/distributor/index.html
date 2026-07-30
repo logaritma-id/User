@@ -84,6 +84,9 @@
                     <a href="#uji-dampak" class="w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
                         <span>🔗</span> Uji Dampak Kegiatan
                     </a>
+                    <a href="#pos-section" class="w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <span>💳</span> Kasir POS
+                    </a>
                 </nav>
             </div>
             
@@ -91,7 +94,7 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
                 <div class="bg-slate-800 rounded-lg p-4 border border-slate-700 relative overflow-hidden">
                     <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
-                    <h4 class="text-xs font-bold text-white mb-1">Lisensi AI Tools</h4>
+                    <h4 class="text-xs font-bold text-white mb-1">Lisensi Tim Logaritma</h4>
                     <div class="w-full bg-slate-900 rounded-full h-1.5 mb-1">
                         <div class="bg-emerald-500 h-1.5 rounded-full w-[33%]"></div>
                     </div>
@@ -156,7 +159,7 @@
                     </div>
                 </div>
 
-                <!-- CTA Gemini AI -->
+                <!-- CTA Tim Logaritma -->
                 <div id="dokumen" class="bg-gradient-to-br from-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-[0_0_30px_rgba(16,185,129,0.1)] scroll-mt-24">
                     <div class="flex flex-col sm:flex-row gap-6 items-center">
                         <div class="flex-1">
@@ -173,7 +176,7 @@
                         </button>
                     </div>
                     
-                    <!-- Container Hasil AI -->
+                    <!-- Container Hasil Tim Logaritma -->
                     <div id="ai-output-container" class="hidden mt-8 pt-8 border-t border-slate-700">
                         <div id="ai-loading" class="text-center py-8">
                             <div class="inline-block w-8 h-8 border-4 border-slate-700 border-t-purple-500 rounded-full animate-spin mb-4"></div>
@@ -229,7 +232,7 @@
                 </div>
             </div>
             
-            <!-- Container Hasil AI LTM -->
+            <!-- Container Hasil Tim Logaritma LTM -->
             <div id="ltm-ai-output-container" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl transition">
                 <div id="ltm-ai-loading" class="text-center py-8">
                     <div class="inline-block w-8 h-8 border-4 border-slate-700 border-t-rose-500 rounded-full animate-spin mb-4"></div>
@@ -438,7 +441,7 @@
 
                 try {
                     if (!genAI) {
-                        throw new Error('Gemini AI tidak terinisialisasi. Cek API Key.');
+                        throw new Error('Tim Logaritma tidak terinisialisasi. Cek API Key.');
                     }
 
                     const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
@@ -633,6 +636,63 @@
         // Load history on page init
         document.addEventListener('DOMContentLoaded', () => renderDocs());
 
+        
+        // ===== POS DISTRIBUTOR ENGINE =====
+        const posDistributor = (() => {
+            const KEY = 'pos_nota_distributor';
+            function getNotas() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e) { return []; } }
+            function saveNotas(n) { localStorage.setItem(KEY, JSON.stringify(n)); }
+            function fmtRp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+            function createNota() {
+                const toko = document.getElementById('dst-toko').value;
+                const total = parseFloat(document.getElementById('dst-total').value) || 0;
+                if (!toko || !total) { alert('Isi data!'); return; }
+                const notas = getNotas();
+                notas.unshift({ id: Date.now(), toko, total, lunas: false, ts: new Date().toLocaleDateString('id-ID') });
+                saveNotas(notas);
+                document.getElementById('dst-toko').value = ''; document.getElementById('dst-total').value = '';
+                render();
+            }
+            window.dstLunas = id => {
+                const notas = getNotas(); const n = notas.find(x => x.id === id);
+                if (n) n.lunas = true; saveNotas(notas); render();
+            };
+            window.dstDel = id => {
+                if(!confirm('Hapus?')) return;
+                saveNotas(getNotas().filter(n => n.id !== id)); render();
+            };
+            function render() {
+                const notas = getNotas();
+                const list = document.getElementById('dst-nota-list');
+                const empty = document.getElementById('dst-empty');
+                if(!list) return;
+                list.querySelectorAll('.nota-card').forEach(el => el.remove());
+                empty.classList.toggle('hidden', notas.length > 0);
+                notas.forEach(n => {
+                    const card = document.createElement('div');
+                    card.className = `nota-card border rounded-xl p-4 transition ${n.lunas ? 'border-emerald-500/30 bg-emerald-900/10' : 'border-slate-700 bg-slate-800/30'}`;
+                    card.innerHTML = `<div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold ${n.lunas ? 'text-emerald-400' : 'text-amber-400'}">${n.lunas ? 'LUNAS' : 'BELUM LUNAS'}</span>
+                            <p class="font-bold text-white mt-1">${n.toko}</p>
+                            <p class="text-sm font-bold mt-1 text-white">${fmtRp(n.total)}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            ${!n.lunas ? `<button onclick="dstLunas(${n.id})" class="text-xs bg-emerald-900/40 text-emerald-400 px-3 py-1.5 rounded-lg">Lunas</button>` : ''}
+                            <button onclick="dstDel(${n.id})" class="text-xs bg-rose-900/40 text-rose-400 px-3 py-1.5 rounded-lg">Hapus</button>
+                        </div>
+                    </div>`;
+                    list.appendChild(card);
+                });
+                const totalPiutang = document.getElementById('dst-total-piutang');
+                if (totalPiutang) {
+                    totalPiutang.innerText = fmtRp(notas.filter(n => !n.lunas).reduce((s, n) => s + n.total, 0));
+                }
+            }
+            document.addEventListener('DOMContentLoaded', render);
+            return { createNota };
+        })();
+
         window.copyLtmAiOutput = () => {
             const text = document.getElementById('ltm-ai-markdown-content').innerText;
             navigator.clipboard.writeText(text).then(() => alert('Dokumen Promo disalin!'));
@@ -645,6 +705,7 @@
     </script>
 </body>
 </html>
+
 
 
 
