@@ -3,26 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alat Pintar & Kalkulator Untung Logaritma</title>
+    <title>Pusat Kategori - Logaritma Tools</title>
     
-    <!-- Meta SEO & Open Graph -->
-    <meta name="description" content="Alat Pintar dan Penghitung Target Untung UMKM dengan Cara Logaritma. Simulasi target jualan dan pembuat aturan kerja otomatis.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://logaritma.id/tools/">
-    <meta property="og:title" content="Alat Pintar & Kalkulator Untung Logaritma">
-    <meta property="og:description" content="Akses simulator profit dan pembuat SOP otomatis khusus UMKM.">
-    <meta property="og:image" content="https://logaritma.id/assets/images/tools-preview.jpg">
+    <meta name="description" content="Pilih industri usaha Anda dan masuk ke sistem rekayasa operasional Logaritma.">
     
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -46,520 +37,58 @@
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200">
 
-    <!-- Workspace Header -->
-    <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 print-hide">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="/" class="text-white font-heading font-bold text-xl tracking-tight flex items-center gap-2 hover:opacity-80 transition">
-                    <span class="w-8 h-8 rounded bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-sm shadow-lg shadow-emerald-500/20">∑</span>
-                    Logaritma<span class="text-emerald-400">Tools</span>
-                </a>
-            </div>
-            
+            <a href="/" class="text-white font-heading font-bold text-xl tracking-tight flex items-center gap-2 hover:opacity-80 transition">
+                <span class="w-8 h-8 rounded bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-sm shadow-lg shadow-emerald-500/20">∑</span>
+                Logaritma<span class="text-emerald-400">Tools</span>
+            </a>
             <div class="flex items-center gap-3">
-                <div id="user-status-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300">
                     <span class="w-2 h-2 rounded-full bg-slate-400"></span>
                     STATUS: FREE PLAN
                 </div>
-                <div id="user-profile-badge" class="hidden sm:flex items-center gap-3">
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-white">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        <span id="user-name-display">Member</span>
-                        <span id="user-category-display" class="bg-slate-700 px-2 py-0.5 rounded text-[10px] ml-1 text-slate-300">UMKM</span>
-                    </div>
-                    <button id="btn-logout" class="text-xs text-slate-400 hover:text-red-400 transition font-bold px-2">Keluar</button>
-                </div>
-                <button id="btn-top-paywall" class="trigger-paywall flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
-                    <span class="hidden sm:inline">⚡ Langganan Premium - Rp99rb/bln</span>
-                    <span class="sm:hidden">⚡ Premium</span>
-                </button>
-                <a href="https://baimwarunkarsi.myr.id/pay-membership" target="_blank" id="btn-manage-membership" class="hidden items-center gap-2 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs sm:text-sm font-bold rounded-lg transition-all hover:-translate-y-0.5">
-                    ⚙️ Kelola / Perpanjang Membership
-                </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="flex-grow max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 md:py-8 pb-24 md:pb-8 w-full">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-            <div class="px-6 pt-5 pb-5 border-b border-slate-800 bg-slate-800/20">
-                <div id="support-box" class="bg-gradient-to-r from-emerald-900/40 to-teal-900/40 border border-emerald-500/30 rounded-xl p-4 flex items-center gap-4 print-hide">
-                    <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 border border-emerald-500/30">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    </div>
-                    <div>
-                        <h3 id="support-box-title" class="text-white font-bold mb-0.5">Tim Spesialis Logaritma</h3>
-                        <p class="text-xs text-slate-300">Tim kami siap membantu merekayasa operasional bisnis Anda agar profitabilitas meningkat.</p>
-                    </div>
-                </div>
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+        <div class="text-center mb-12 animate-fade-in-up">
+            <div class="inline-flex w-16 h-16 rounded-full bg-emerald-500/10 items-center justify-center text-emerald-400 text-3xl mb-4 border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                ⚙️
             </div>
-            
-            <!-- BOTTOM: SIDEBAR + CONTENT -->
-            <div class="flex flex-col md:flex-row md:min-h-[620px]">
-            
-            <!-- Sidebar Tabs — DESKTOP ONLY -->
-            <div class="hidden md:flex md:w-64 bg-slate-900/50 border-r border-slate-800 p-4 shrink-0 print-hide flex-col">
-                <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">Menu Workspace</div>
-                <div id="dashboard-subtitle" class="text-[10px] font-bold text-emerald-400 mb-4 px-2 bg-emerald-900/20 py-1 rounded inline-block w-full border border-emerald-500/20 truncate">Khusus: UMKM</div>
-                <nav class="space-y-1" id="tools-tabs">
-                    <button data-target="tab-profit" class="tab-btn w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition">
-                        <span>📊</span> Target Untung
-                    </button>
-                    <button data-target="tab-sop" class="tab-btn w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <span>📋</span> Pembuat SOP & Aturan Kerja
-                    </button>
-                    <button data-target="tab-ltm" class="tab-btn w-full text-left px-3 py-3 rounded-lg text-sm font-bold flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <span>🔗</span> Uji Dampak Kegiatan
-                    </button>
-                </nav>
-                
-                <div class="mt-8 px-2">
-                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700 relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
-                        <h4 class="text-xs font-bold text-white mb-1">Lisensi Operasional</h4>
-                        <div class="w-full bg-slate-900 rounded-full h-1.5 mb-1">
-                            <div id="ai-quota-bar" class="bg-emerald-500 h-1.5 rounded-full w-[33%] transition-all"></div>
-                        </div>
-                        <p class="text-[10px] text-slate-400 text-right"><span id="ai-quota-text">2/3</span> Penggunaan</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content Area -->
-            <div class="flex-1 p-4 md:p-8 relative bg-slate-850/50">
-                
-                
-                
-                <!-- Tab 1: Profit Calculator -->
-                <div id="tab-profit" class="tab-content block animate-fade-in-up">
-                    <div class="w-full print-max-w-full">
-                        <div id="calc-default-container" class="print-hide">
-                            <div class="print-hide">
-                                <h2 id="webtool-heading" class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator Target Untung Bulanan</h2>
-                                <p class="text-slate-400 text-sm mb-8">Masukkan target untung bersih bulanan yang Anda mau. Sistem akan otomatis menghitung berapa target omzet, jumlah barang terjual, dan calon pembeli yang wajib didapat setiap hari.</p>
-                            </div>
-                            
-                            <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 mb-8 shadow-inner">
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Untung Bersih Bulanan (Rp)</label>
-                                        <input type="text" id="input-profit" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: 10.000.000">
-                                        <p class="text-[10px] text-slate-500 mt-1">Uang bersih yang ingin Anda kantongi dalam 1 bulan setelah dipotong seluruh biaya operasional.</p>
-                                    </div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Persentase Untung Bersih / Margin (%)</label>
-                                            <input type="number" id="input-margin" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 20">
-                                            <p class="text-[10px] text-slate-500 mt-1">Persentase keuntungan bersih dari harga jual. Contoh: Jika HPP 80rb dan Jual 100rb, margin = 20%.</p>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Harga Jual Rata-rata Produk (Rp)</label>
-                                            <input type="text" id="input-harga" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 50.000">
-                                            <p class="text-[10px] text-slate-500 mt-1">Harga rata-rata 1 pcs produk atau paket layanan Anda.</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Peluang Pembeli Jadi Beli / Konversi (%)</label>
-                                        <input type="number" id="input-cr" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 5">
-                                        <p class="text-[10px] text-slate-500 mt-1">Estimasi dari 100 orang yang tanya/chat, berapa orang yang beneran beli. Contoh: Jika dari 100 chat ada 5 yang beli, isi 5.</p>
-                                    </div>
-                                    <button id="btn-kalkulasi-profit" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-emerald-500/20">Hitung Target Harian Saya</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Kalkulator Backward Mapping F&B (Kuliner) -->
-                        <div id="calc-fb-container" class="print-hide hidden">
-                            <div class="print-hide">
-                                <h2 class="text-2xl font-bold text-white mb-2 font-heading">Kalkulator HPP, Yield & Food-Waste Dapur</h2>
-                                <p class="text-slate-400 text-sm mb-8">Masukkan target untung bersih bulanan yang Anda mau. Sistem akan otomatis menghitung batas belanja harian (HPP) dan porsi wajib jual harian.</p>
-                            </div>
-                            
-                            <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 mb-8 shadow-inner">
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Untung Bersih Bulanan (Rp)</label>
-                                        <input type="text" id="fb-input-profit" value="15.000.000" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" placeholder="Contoh: 15.000.000">
-                                    </div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Harga Jual Rata-rata per Porsi (Rp)</label>
-                                            <input type="text" id="fb-input-harga" value="25.000" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 25.000">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Margin Profit Bersih (%)</label>
-                                            <input type="number" id="fb-input-margin" value="25" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 25">
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Hari Buka Usaha per Bulan</label>
-                                        <input type="number" id="fb-input-hari" value="30" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 30">
-                                    </div>
-                                    <button id="btn-kalkulasi-fb" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-emerald-500/20">Hitung Strategi Tarik Mundur Saya</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Result Section -->
-                        <div id="hasil-profit" class="hidden mb-8">
-                            <h3 class="text-lg font-bold text-white mb-4">Hasil Hitungan Target Harian</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 print-bg-transparent">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Omzet Bulanan</p>
-                                    <p id="hasil-omzet" class="text-xl font-bold text-emerald-400 mt-1">Rp 0</p>
-                                </div>
-                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 print-bg-transparent">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Barang Terjual Tiap Bulan</p>
-                                    <p id="hasil-unit" class="text-xl font-bold text-white mt-1">0 Unit</p>
-                                </div>
-                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 relative overflow-hidden print-bg-transparent">
-                                    <div class="absolute inset-0 bg-gradient-to-r from-red-500/10 to-transparent print-hide"></div>
-                                    <p class="text-[10px] text-slate-300 font-bold uppercase relative z-10 print-text-dark">Wajib Dapat Calon Pembeli / Hari</p>
-                                    <p id="hasil-leads" class="text-xl font-bold text-red-400 mt-1 relative z-10">0 Leads/hari</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Result Section F&B -->
-                        <div id="hasil-fb" class="hidden mb-8">
-                            <h3 class="text-lg font-bold text-white mb-4">Ringkasan Target Operasional (F&B)</h3>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Omzet Bulanan</p>
-                                    <p id="fb-hasil-omzet-bln" class="text-lg font-bold text-emerald-400 mt-1">Rp 0</p>
-                                </div>
-                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Omzet Harian</p>
-                                    <p id="fb-hasil-omzet-hr" class="text-lg font-bold text-emerald-400 mt-1">Rp 0</p>
-                                </div>
-                                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Target Porsi Harian</p>
-                                    <p id="fb-hasil-porsi" class="text-lg font-bold text-white mt-1">0 Porsi</p>
-                                </div>
-                                <div class="bg-slate-800 p-4 rounded-xl border border-rose-500/30 relative overflow-hidden">
-                                    <div class="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-transparent"></div>
-                                    <p class="text-[10px] text-rose-300 font-bold uppercase relative z-10">Batas Belanja (HPP 45%)</p>
-                                    <p id="fb-hasil-belanja" class="text-lg font-bold text-rose-400 mt-1 relative z-10">Rp 0 / hari</p>
-                                </div>
-                            </div>
-
-                            <!-- CTA Integrasi Gemini -->
-                            <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-emerald-500/30 rounded-xl p-5 mb-8">
-                                <div class="flex flex-col sm:flex-row gap-4 items-center">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="text-xl">🛡️</span>
-                                            <h4 class="font-bold text-white">Tim Spesialis Operasional Kuliner Logaritma</h4>
-                                        </div>
-                                        <p class="text-sm text-slate-300" id="fb-gemini-desc">
-                                            Sistem mencatat Anda wajib menjual 0 porsi/hari dengan batas belanja bahan baku Rp 0/hari. Izinkan Tim Logaritma merancang SOP Dapur, Skrip Upselling Kasir, dan Checklist Audit Kas Malam Anda.
-                                        </p>
-                                    </div>
-                                    <button id="btn-generate-fb-sop" class="w-full sm:w-auto shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg shadow-emerald-500/20 text-sm">
-                                        Generate Dokumen Operasional Kuliner Saya
-                                    </button>
-                                </div>
-                                
-                                <!-- Container Output Gemini F&B -->
-                                <div id="fb-gemini-output" class="hidden mt-6 pt-6 border-t border-slate-700 relative">
-                                    <div class="flex justify-between items-center mb-4">
-                                        <h5 class="font-bold text-emerald-400 text-sm">HASIL RACIKAN TIM LOGARITMA</h5>
-                                        <div class="flex gap-2">
-                                            <button id="btn-copy-fb-sop" class="text-[10px] font-bold bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded flex items-center gap-2">📋 COPY</button>
-                                            <button class="trigger-paywall text-[10px] font-bold bg-amber-500 hover:bg-amber-400 text-black px-3 py-1.5 rounded flex items-center gap-2">📄 DOWNLOAD PDF</button>
-                                        </div>
-                                    </div>
-                                    <div id="fb-gemini-content" class="text-sm"></div>
-                                </div>
-                                <div id="fb-gemini-loading" class="hidden mt-6 pt-6 border-t border-slate-700 text-center">
-                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500 mx-auto mb-2"></div>
-                                    <p class="text-xs text-slate-400">Tim Spesialis sedang meracik SOP Kuliner Anda...</p>
-                                </div>
-                            </div>
-                        </div>                     
-                            <button id="btn-download-profit" class="trigger-paywall w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg border border-slate-600 transition print-hide mb-6">
-                                📄 Download Laporan (PDF) <span class="bg-amber-500 text-black text-[10px] px-2 py-0.5 rounded ml-2">PREMIUM</span>
-                            </button>
-
-                            <!-- Rekomendasi Tim Logaritma Box -->
-                            <div class="mt-8 border-t border-slate-700 pt-8 print-hide">
-                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                    <span class="w-8 h-8 rounded bg-emerald-900/50 flex items-center justify-center text-emerald-400 border border-emerald-500/30">⚡</span>
-                                    Rekomendasi Eksekusi Tim Logaritma
-                                </h3>
-                                
-                                <div id="rek-free-state" class="relative bg-slate-900 border border-slate-700 rounded-xl overflow-hidden p-6 hidden">
-                                    <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-6 text-center">
-                                        <div class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-3 border border-slate-600">🔒</div>
-                                        <h4 class="text-white font-bold mb-2">Solusi Otomatis Terkunci</h4>
-                                        <p class="text-xs text-slate-300 mb-4">Sistem mendeteksi bahwa Anda memerlukan rekayasa operasional khusus. Buka akses untuk melihat rancangan solusi dari Tim Spesialis kami.</p>
-                                        <button class="trigger-paywall bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-lg shadow-emerald-500/20 transition-all">
-                                            ⚡ Aktifkan Tim Spesialis <span id="rek-cat-name"></span>
-                                        </button>
-                                    </div>
-                                    <!-- Blurred dummy content -->
-                                    <div class="space-y-3 opacity-50 blur-[2px]">
-                                        <div class="h-4 bg-slate-800 rounded w-3/4"></div>
-                                        <div class="h-4 bg-slate-800 rounded w-full"></div>
-                                        <div class="h-4 bg-slate-800 rounded w-5/6"></div>
-                                        <div class="h-4 bg-slate-800 rounded w-1/2"></div>
-                                    </div>
-                                </div>
-                                
-                                <div id="rek-premium-state" class="bg-slate-900 border border-emerald-500/30 rounded-xl p-6 hidden relative shadow-[0_0_15px_-3px_rgba(16,185,129,0.1)]">
-                                    <div class="absolute top-0 right-0 px-3 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-bl-lg">PREMIUM ACCESS</div>
-                                    <h4 class="text-white font-bold mb-3 border-b border-slate-800 pb-2">Rancangan Operasional Siap Pakai:</h4>
-                                    <div id="rek-premium-content" class="text-sm text-slate-300 space-y-4 mb-4">
-                                        <!-- Diisi via JS -->
-                                    </div>
-                                    <div class="flex gap-3 mt-4 pt-4 border-t border-slate-800">
-                                        <button class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg border border-slate-600 transition text-xs">📋 Copy Dokumen</button>
-                                        <button class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg transition text-xs">⬇️ Download File Resmi</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Tab 2: AI SOP Generator -->
-                <div id="tab-sop" class="tab-content hidden animate-fade-in-up">
-                    <div class="w-full">
-                        <div class="flex flex-wrap items-center gap-2 mb-2">
-                            <h2 class="text-xl sm:text-2xl font-bold text-white font-heading">Pembuat SOP & Aturan Kerja Otomatis</h2>
-                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-1 rounded shrink-0">SYSTEM READY / TIM LOGARITMA AKTIF</span>
-                        </div>
-                        <p class="text-slate-400 text-sm mb-6">Ketik masalah atau kegiatan bisnis Anda, dan Sistem Rekayasa Logaritma akan membuatkan panduan kerja (SOP) otomatis agar hasilnya maksimal.</p>
-                        
-                        <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 shadow-inner">
-                            <div id="sop-target-badge" class="hidden mb-4 bg-emerald-900/30 border border-emerald-500/30 p-3 rounded-lg text-emerald-300 text-xs font-bold flex items-center gap-2">
-                                  <span>??</span> <span id="sop-target-text">Target Operasional Anda Saat Ini: ...</span>
-                              </div>
-                              <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Kegiatan Bisnis (Contoh: Cara Melayani Komplain Pelanggan)</label>
-                            <div class="flex flex-col sm:flex-row gap-3">
-                                <input type="text" id="input-sop" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Tulis kegiatan yang ingin dibuatkan aturannya...">
-                                <button id="btn-generate-sop" class="w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-bold px-5 py-3 rounded-lg transition-all shadow-lg shadow-purple-500/20 text-sm">
-                                    <span class="hidden sm:inline">Eksekusi Rekomendasi Tim Logaritma ⚡</span>
-                                    <span class="sm:hidden">Eksekusi ⚡</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Loading State -->
-                        <div id="ai-loading" class="hidden mt-8 text-center py-10">
-                            <div class="inline-block w-8 h-8 border-4 border-slate-700 border-t-purple-500 rounded-full animate-spin mb-4"></div>
-                            <p class="text-slate-400 text-sm animate-pulse">Tim Logaritma sedang merumuskan standar operasional...</p>
-                        </div>
-
-                        <!-- AI Result -->
-                        <div id="ai-result" class="hidden mt-8 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden relative">
-                            <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex flex-wrap justify-between items-center gap-2 print-hide">
-                                <span class="text-xs font-bold text-slate-300">HASIL PANDUAN KERJA (TIM LOGARITMA)</span>
-                                <div class="flex items-center gap-2">
-                                    <button id="btn-copy-sop" class="text-[10px] font-bold bg-slate-700 hover:bg-slate-600 transition text-white px-3 py-1.5 rounded flex items-center gap-2">
-                                        📋 COPY HASIL SOP/SKRIP
-                                    </button>
-                                    <button id="btn-download-sop" class="trigger-paywall text-[10px] font-bold bg-amber-500 hover:bg-amber-400 transition text-black px-3 py-1.5 rounded flex items-center gap-2">
-                                        📄 DOWNLOAD PDF RESMI LOGARITMA
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="print-only hidden mb-6 text-center border-b border-slate-700 pb-6">
-                                <div class="inline-flex w-12 h-12 rounded bg-gradient-to-br from-emerald-500 to-teal-600 items-center justify-center text-xl font-bold shadow-lg shadow-emerald-500/20 mb-4">∑</div>
-                                <h1 class="text-3xl font-bold text-white font-heading tracking-tight">Logaritma Tools</h1>
-                                <h2 class="text-xl font-medium text-emerald-400 mt-2">Standard Operating Procedure (SOP) Otomatis</h2>
-                            </div>
-                            <div class="p-6 relative bg-slate-900 print-bg-transparent">
-                                <div id="ai-content" class="text-sm text-slate-300 space-y-4">
-                                    <!-- Dinamis dari JS -->
-                                </div>
-                                
-                                <!-- Blur overlay for free user -->
-                                <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent flex items-end justify-center pb-6">
-                                    <button class="trigger-paywall bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold px-4 py-2 border border-slate-600 rounded-full shadow-lg">
-                                        Buka Seluruh Dokumen (Berlangganan Premium)
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Tab 3: LTM Checker -->
-                <div id="tab-ltm" class="tab-content hidden animate-fade-in-up w-full">
-                    <div class="ltm-locked-content text-center py-10 px-4">
-                        <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 border border-slate-700">🔒</div>
-                        <h2 class="text-2xl font-bold text-white mb-4 font-heading">Fitur Terkunci</h2>
-                        <p class="text-slate-400 mb-8 max-w-md mx-auto">Fitur Uji Dampak Kegiatan (LTM Checker) adalah alat untuk memvalidasi apakah pengeluaran Anda berdampak profit atau berpotensi jebakan, khusus untuk pengguna Premium.</p>
-                        <button class="trigger-paywall inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-1">
-                            Berlangganan Premium Sekarang
-                        </button>
-                    </div>
-
-                    <div class="ltm-premium-content hidden">
-                        <h2 class="text-2xl font-bold mb-2 font-heading text-white">Uji Dampak Kegiatan (LTM Checker)</h2>
-                        <p class="text-slate-400 text-sm mb-8">Apakah rencana promosi/kegiatan Anda akan berujung pada profit, atau hanya buang-buang anggaran? Masukkan datanya di sini untuk dianalisis oleh kalkulator Logaritma.</p>
-                        
-                        <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 mb-8 shadow-inner">
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Nama Rencana Kegiatan</label>
-                                    <input type="text" id="input-ltm-nama" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: Ikut Pameran JCC / Bikin Booth Bazaar / Sewa Influencer">
-                                    <p class="text-[10px] text-slate-500 mt-1">Kegiatan operasional atau marketing yang akan Anda eksekusi.</p>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Biaya yang Dibutuhkan (Rp)</label>
-                                    <input type="text" id="input-ltm-biaya" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 5.000.000">
-                                    <p class="text-[10px] text-slate-500 mt-1">Total uang yang akan Anda keluarkan untuk kegiatan tersebut (termasuk operasional tim).</p>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Target Hasil Langsung (Rupiah/Profit)</label>
-                                    <input type="text" id="input-ltm-target" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Contoh: 15.000.000">
-                                    <p class="text-[10px] text-slate-500 mt-1">Ekspektasi uang masuk atau kenaikan omzet yang BISA DIUKUR LANSUNG dari kegiatan tersebut.</p>
-                                </div>
-                                <button id="btn-hitung-ltm" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-emerald-500/20">Mulai Uji Dampak</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Hasil LTM Checker -->
-                        <div id="hasil-ltm" class="hidden animate-fade-in-up">
-                            <h3 class="text-lg font-bold text-white mb-4">Hasil Analisis LTM</h3>
-                            <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 relative overflow-hidden" id="ltm-result-box">
-                                <div id="ltm-badge" class="inline-block text-[10px] font-bold px-2 py-1 rounded w-max mb-3 uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">BERDAMPAK PROFIT</div>
-                                <h4 id="ltm-title" class="text-2xl font-bold font-heading text-white mb-2">Kegiatan Layak Dieksekusi</h4>
-                                <p id="ltm-desc" class="text-slate-300 text-sm mb-4">Rencana kegiatan ini memiliki rasio pengembalian (ROI) yang positif dan terukur secara matematis. Silakan susun SOP pelaksanaannya menggunakan fitur Tim Logaritma.</p>
-                                
-                                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-sm">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-slate-400">Rasio ROI:</span>
-                                        <span id="ltm-roi" class="font-bold text-white">0%</span>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-slate-400">Rekomendasi Tindakan:</span>
-                                        <span id="ltm-action" class="font-bold text-emerald-400 text-right">Lanjutkan & Kawal Target</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            <h1 class="text-4xl font-bold text-white font-heading tracking-tight mb-4">Pusat Kategori Industri</h1>
+            <p class="text-slate-400 max-w-2xl mx-auto">Sistem rekayasa operasional Logaritma disesuaikan secara khusus untuk masing-masing bidang usaha. Silakan pilih industri Anda di bawah ini untuk masuk ke Dashboard Workspace.</p>
         </div>
 
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="category-grid">
+            <!-- Diisi dari JS -->
         </div>
-
     </main>
 
-    <!-- Paywall Modal -->
-    <div id="paywall-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4">
-        <div id="paywall-modal-inner" class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md relative shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all duration-300">
-            
-            <!-- Paywall Content -->
-            <div id="paywall-content" class="flex flex-col h-full overflow-y-auto">
-                <!-- Header bg -->
-                <div class="h-32 bg-gradient-to-br from-slate-800 to-slate-950 border-b border-slate-800 relative p-6 flex flex-col justify-end shrink-0">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-                    <button id="close-paywall-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white z-10">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                    <div class="inline-block bg-amber-500 text-black text-[10px] font-bold px-2 py-1 rounded w-max mb-2">PREMIUM FEATURE</div>
-                    <h3 class="text-2xl font-bold font-heading text-white relative z-10">Tingkatkan Bisnis Anda</h3>
-                </div>
-                
-                <div class="p-6 shrink-0">
-                    <p class="text-slate-300 text-sm mb-6">Anda sudah pakai semua jatah gratis atau mencoba buka fitur premium. Yuk, aktifkan langganan Premium untuk UMKM.</p>
-                    
-                    <div class="bg-slate-950 border border-emerald-500/30 rounded-xl p-4 mb-6 shadow-inner relative">
-                        <div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-8 bg-emerald-500 rounded-r"></div>
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Paket UMKM Pro</p>
-                                <p class="text-xl font-bold text-white mt-1">Rp 99.000<span class="text-xs text-slate-500 font-normal">/bln</span></p>
-                            </div>
-                        </div>
-                        <ul class="mt-4 space-y-2 text-xs text-slate-300">
-                            <li class="flex items-center gap-2"><span>✔️</span> Bisa Download Laporan Target Untung Sepuasnya</li>
-                            <li class="flex items-center gap-2"><span>✔️</span> Bisa Bikin Aturan Kerja (SOP) Secara Otomatis Sepuasnya</li>
-                            <li class="flex items-center gap-2"><span>✔️</span> Akses Fitur Cek Kesehatan Bisnis</li>
-                        </ul>
+    <script src="/js/category-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('category-grid');
+            Object.values(CATEGORY_CONFIG).forEach(cat => {
+                const card = document.createElement('a');
+                card.href = '/tools/' + cat.id + '/index.html';
+                card.className = 'group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/50 hover:bg-slate-800/80 transition-all cursor-pointer relative overflow-hidden animate-fade-in-up shadow-xl';
+                card.innerHTML = `
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition"></div>
+                    <div class="w-12 h-12 bg-slate-800 rounded-xl border border-slate-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:border-emerald-500/30 group-hover:text-emerald-400 transition-all shadow-lg">
+                        ${cat.icon}
                     </div>
-
-                    <button id="btn-checkout-mayar" class="w-full text-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/20">
-                        Bayar Instant & Buka Akses Premium
-                    </button>
-                    <p class="text-[10px] text-center text-slate-500 mt-4">Checkout aman didukung oleh Mayar.</p>
-                </div>
-            </div>
-
-            <!-- Iframe Checkout Container (Hidden by default) -->
-            <div id="checkout-container" class="hidden flex-col h-full w-full">
-                <div class="flex justify-between items-center bg-slate-950 p-4 border-b border-slate-800 shrink-0">
-                    <span class="text-sm font-bold text-white">Secure Checkout</span>
-                    <button id="close-checkout-btn" class="text-slate-400 hover:text-white transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
-                <iframe id="mayar-iframe" class="w-full flex-1 border-0" src=""></iframe>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Error Modal Component -->
-    <div id="error-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-8 relative shadow-2xl flex flex-col items-center text-center">
-            <button id="close-error-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <div class="w-12 h-12 bg-red-900/30 rounded-xl flex items-center justify-center text-red-400 mb-5 border border-red-500/30">⚠️</div>
-            <h3 class="text-xl font-bold font-heading mb-2 text-white">Peringatan</h3>
-            <p class="text-slate-300 text-sm mb-6">Terjadi kesalahan.</p>
-            <button id="ok-error-modal-btn" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white text-center font-bold transition">Oke, Saya Mengerti</button>
-        </div>
-    </div>
-
-    <!-- Diagnostic Welcome Modal -->
-    <div id="diagnostic-welcome-modal" class="fixed inset-0 z-[110] hidden items-center justify-center modal-overlay px-4 backdrop-blur-sm">
-        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl w-full max-w-md p-8 relative shadow-[0_0_50px_-12px_rgba(16,185,129,0.3)] flex flex-col items-center text-center">
-            <div class="w-16 h-16 bg-emerald-900/30 rounded-2xl flex items-center justify-center text-emerald-400 mb-5 border border-emerald-500/30 text-3xl">🎉</div>
-            <h3 id="welcome-modal-title" class="text-2xl font-bold font-heading mb-2 text-white">Halo, Selamat Datang!</h3>
-            <p class="text-slate-300 text-sm mb-6">Kami telah menerima hasil analisis bisnis Anda. Silakan mulai eksplorasi solusi Logaritma Tools di bawah ini.</p>
-            <button id="btn-close-welcome" class="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-center font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20">Eksplorasi Tools</button>
-        </div>
-    </div>
-
-    <!-- Mobile Bottom Tab Bar (only shown on mobile) -->
-    <nav id="mobile-tab-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 print-hide safe-area-bottom">
-        <div class="flex items-stretch h-16">
-            <button data-target="tab-profit" class="mobile-tab-btn flex-1 flex flex-col items-center justify-center gap-1 text-emerald-400 bg-emerald-500/10 border-t-2 border-emerald-500 transition-all">
-                <span class="text-lg">📊</span>
-                <span class="text-[10px] font-bold">Target Untung</span>
-            </button>
-            <button data-target="tab-sop" class="mobile-tab-btn flex-1 flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800/50 border-t-2 border-transparent transition-all">
-                <span class="text-lg">📋</span>
-                <span class="text-[10px] font-bold">Buat SOP</span>
-            </button>
-            <button data-target="tab-ltm" class="mobile-tab-btn flex-1 flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white hover:bg-slate-800/50 border-t-2 border-transparent transition-all">
-                <span class="text-lg">🔗</span>
-                <span class="text-[10px] font-bold">Uji Dampak</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Scripts -->
-        <!-- Firebase SDK (Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="../js/db.js"></script>
-    <script src="../js/main.js?v=4"></script>
-    <script src="../js/workspace.js?v=4"></script>
+                    <h3 class="text-xl font-bold text-white mb-2 font-heading group-hover:text-emerald-400 transition-colors">${cat.name}</h3>
+                    <p class="text-sm text-slate-400">${cat.description}</p>
+                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-emerald-500 group-hover:translate-x-1 transition-transform">
+                        Masuk ke Workspace <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+    </script>
 </body>
 </html>
-
-
-
