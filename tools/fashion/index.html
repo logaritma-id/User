@@ -229,6 +229,25 @@
                 </div>
             </div>
             
+            <!-- Container Hasil AI LTM -->
+            <div id="ltm-ai-output-container" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl transition">
+                <div id="ltm-ai-loading" class="text-center py-8">
+                    <div class="inline-block w-8 h-8 border-4 border-slate-700 border-t-rose-500 rounded-full animate-spin mb-4"></div>
+                    <p class="text-slate-400 text-sm animate-pulse">Tim Logaritma merumuskan protokol darurat masa promo...</p>
+                </div>
+                <div id="ltm-ai-result" class="hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-bold text-rose-400 text-sm uppercase tracking-wider">PROTOKOL MASA PROMO (SOP)</h4>
+                        <div class="flex gap-2">
+                            <button onclick="copyLtmAiOutput()" class="text-[10px] font-bold bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded flex items-center gap-2 transition">📋 COPY ALL</button>
+                        </div>
+                    </div>
+                    <div id="ltm-ai-markdown-content" class="prose prose-invert prose-rose max-w-none text-sm break-words whitespace-pre-wrap overflow-x-auto">
+                        <!-- Rendered Markdown -->
+                    </div>
+                </div>
+            </div>
+            
         </div>
 
         <!-- COLUMN 3: RIGHT SIDEBAR (Status Engine) -->
@@ -476,15 +495,43 @@
                 const kesimpulan = `Untuk menutupi kebocoran profit akibat diskon ` + diskon + `%, tim Anda wajib menaikkan volume penjualan sebesar <strong>` + kenaikanPersen + `%</strong> (dari ` + baseTargetPorsi + ` menjadi ` + newTargetPorsi + ` ` + config.unit + `/hari) hanya untuk sekadar BALIK MODAL (Break-Even).`;
                 document.getElementById('ltm-kesimpulan').innerHTML = kesimpulan;
                 
-                document.getElementById('btn-terapkan-ltm').onclick = () => {
-                    // Overwrite DOM target for AI to read
-                    document.getElementById('hasil-porsi').innerHTML = newTargetPorsi + ` <span class="lbl-unit">` + config.unit + `</span>`;
-                    document.getElementById('summary-porsi').innerHTML = newTargetPorsi + ` <span class="lbl-unit">` + config.unit + `</span>/hari (TERINFLASI DISKON)`;
+                document.getElementById('btn-terapkan-ltm').onclick = async () => {
+                    const ltmOutContainer = document.getElementById('ltm-ai-output-container');
+                    const ltmLoading = document.getElementById('ltm-ai-loading');
+                    const ltmResult = document.getElementById('ltm-ai-result');
+                    const ltmContent = document.getElementById('ltm-ai-markdown-content');
                     
-                    document.getElementById('btn-generate-ai').click();
+                    ltmOutContainer.classList.remove('hidden');
+                    ltmLoading.classList.remove('hidden');
+                    ltmResult.classList.add('hidden');
+                    ltmContent.innerHTML = "";
+                    
+                    ltmOutContainer.scrollIntoView({ behavior: 'smooth' });
+                    
+                    const batasBelanja = document.getElementById('hasil-belanja').innerText;
+                    
+                    const ltmPrompt = `${config.prompt_persona}\n\nKonteks Keadaan Darurat / Promo:\n- Target Jualan HARUS NAIK menjadi: ${newTargetPorsi} ${config.unit}/hari (Naik ${kenaikanPersen}% akibat diskon ${diskon}%)\n- Batas Pengeluaran/HPP Harian tetap di: ${batasBelanja}\n\nBuat dokumen STANDAR OPERASIONAL PROSEDUR (SOP) KHUSUS MASA PROMO yang mengatur bagaimana tim harus bekerja ekstra keras dan efisien untuk mencapai target yang melonjak drastis ini tanpa mengorbankan kualitas atau over-budget. Gunakan format Markdown yang rapi (Heading, Bullet points, spasi antar paragraf).`;
+                    
+                    try {
+                        const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+                        const aiResult = await model.generateContent(ltmPrompt);
+                        const text = (await aiResult.response).text();
+                        
+                        ltmContent.innerHTML = marked.parse(text);
+                        ltmLoading.classList.add('hidden');
+                        ltmResult.classList.remove('hidden');
+                    } catch(e) {
+                        ltmLoading.classList.add('hidden');
+                        alert("Gagal meracik dokumen promo: " + e.message);
+                    }
                 };
             });
         });
+
+        window.copyLtmAiOutput = () => {
+            const text = document.getElementById('ltm-ai-markdown-content').innerText;
+            navigator.clipboard.writeText(text).then(() => alert('Dokumen Promo disalin!'));
+        };
 
         window.copyAiOutput = () => {
             const text = document.getElementById('ai-markdown-content').innerText;
