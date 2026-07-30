@@ -741,10 +741,22 @@
                 const fullPrompt = `${config.prompt_persona}\n\nKonteks Data:\n- Target Jualan: ${globalTargetPorsi} ${config.unit}\n- Batas Pengeluaran/HPP Harian: Rp ${Math.round(globalBatasBelanja).toLocaleString('id-ID')}\n\nBuat dokumen tersebut sekarang secara profesional. Gunakan format Markdown yang rapi (Heading, Bullet points, Table jika perlu, dan pastikan ADA SPASI antar paragraf agar mudah dibaca). Ganti kata AI dengan tim logaritma.`;
 
                 try {
-                    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
-                    const aiResult = await model.generateContent(fullPrompt);
-                    const response = await aiResult.response;
-                    let text = response.text();
+                    const aiModels = ["gemini-3.6-flash", "gemini-3.1-pro", "gemini-3.5-flash-lite"];
+                    let text = null;
+                    let lastError = null;
+                    for (let i = 0; i < aiModels.length; i++) {
+                        try {
+                            const model = genAI.getGenerativeModel({ model: aiModels[i] });
+                            const aiResult = await model.generateContent(fullPrompt);
+                            const response = await aiResult.response;
+                            text = response.text();
+                            break;
+                        } catch(e) {
+                            lastError = e;
+                            console.log(`Model ${aiModels[i]} failed:`, e);
+                        }
+                    }
+                    if (!text) throw lastError || new Error("Semua model gagal.");
                     
                     // Ganti AI dengan Tim Logaritma sesuai instruksi pengguna
                     text = text.replace(/\bAI\b/gi, 'Tim Logaritma');
@@ -821,9 +833,24 @@
                     result.classList.add('hidden');
                     content.innerHTML = "";
                     
-                    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
-                    model.generateContent(fullPrompt).then(res => {
-                        let text = res.response.text();
+                    const aiModels = ["gemini-3.6-flash", "gemini-3.1-pro", "gemini-3.5-flash-lite"];
+                    const fetchWithFallback = async () => {
+                        let lastError = null;
+                        for (let i = 0; i < aiModels.length; i++) {
+                            try {
+                                const model = genAI.getGenerativeModel({ model: aiModels[i] });
+                                const aiResult = await model.generateContent(fullPrompt);
+                                const response = await aiResult.response;
+                                return response.text();
+                            } catch(e) {
+                                lastError = e;
+                                console.log(`Model ${aiModels[i]} failed:`, e);
+                            }
+                        }
+                        throw lastError || new Error("Semua model gagal.");
+                    };
+
+                    fetchWithFallback().then(text => {
                         text = text.replace(/\bAI\b/gi, 'Tim Logaritma');
                         loading.classList.add('hidden');
                         result.classList.remove('hidden');
