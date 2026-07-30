@@ -1,6 +1,6 @@
 // Vercel Serverless Function: /api/config
 // API Key dibaca dari Environment Variable Vercel (bukan dari code/GitHub)
-export default function handler(req, res) {
+module.exports = function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'no-store');
     
