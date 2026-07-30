@@ -49,7 +49,7 @@
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 print-hide">
         <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/tools/index.html" class="text-white font-heading font-bold text-xl tracking-tight flex items-center gap-2 hover:opacity-80 transition">
+            <a href="/tools/" class="text-white font-heading font-bold text-xl tracking-tight flex items-center gap-2 hover:opacity-80 transition">
                 <span class="text-slate-500 hover:text-white transition mr-2">←</span>
                 <span id="hub-icon" class="w-8 h-8 rounded bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-sm shadow-lg shadow-emerald-500/20">🍔</span>
                 <span id="hub-title">Hub <span class="text-emerald-400">Kategori</span></span>
@@ -268,20 +268,37 @@
             // Render Form Metrics
             const formContainer = document.getElementById('form-kalkulator');
             config.metrics.forEach(metric => {
+                const isCurrency = metric.type === 'currency';
+                const defaultVal = isCurrency ? Number(metric.default).toLocaleString('id-ID') : metric.default;
+                
                 const div = document.createElement('div');
                 div.innerHTML = `
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-2">${metric.label}</label>
-                    <input type="number" id="input-${metric.id}" value="${metric.default}" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+                    <input type="${isCurrency ? 'text' : 'number'}" id="input-${metric.id}" value="${defaultVal}" data-type="${metric.type}" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
                 `;
                 formContainer.appendChild(div);
+            });
+            
+            // Format currency while typing
+            document.querySelectorAll('input[data-type="currency"]').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let val = this.value.replace(/\\D/g, '');
+                    if (val) {
+                        this.value = Number(val).toLocaleString('id-ID');
+                    } else {
+                        this.value = '';
+                    }
+                });
             });
 
             // Handle Hitung
             document.getElementById('btn-hitung').addEventListener('click', () => {
-                const targetProfit = parseFloat(document.getElementById('input-target_profit').value) || 0;
-                const hargaJual = parseFloat(document.getElementById('input-harga_jual').value) || 0;
-                const margin = parseFloat(document.getElementById('input-margin').value) || 0;
-                const hariBuka = parseFloat(document.getElementById('input-hari_buka').value) || 30;
+                const parseNum = (val) => parseFloat(val.toString().replace(/\\./g, '')) || 0;
+                
+                const targetProfit = parseNum(document.getElementById('input-target_profit').value);
+                const hargaJual = parseNum(document.getElementById('input-harga_jual').value);
+                const margin = parseNum(document.getElementById('input-margin').value);
+                const hariBuka = parseNum(document.getElementById('input-hari_buka').value);
 
                 // Logika Matematika Backward Mapping (Kuliner contoh)
                 // Profit = Omzet * (Margin/100) -> Omzet = Profit / (Margin/100)

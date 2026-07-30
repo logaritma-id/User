@@ -73,7 +73,7 @@
             const grid = document.getElementById('category-grid');
             Object.values(CATEGORY_CONFIG).forEach(cat => {
                 const card = document.createElement('a');
-                card.href = '/tools/' + cat.id + '/index.html';
+                card.href = '/tools/' + cat.id + '/';
                 card.className = 'group bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/50 hover:bg-slate-800/80 transition-all cursor-pointer relative overflow-hidden animate-fade-in-up shadow-xl';
                 card.innerHTML = `
                     <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition"></div>
