@@ -1300,7 +1300,7 @@ function generateHtml(category) {
                     loading.classList.add('hidden');
                     let msg = error.message;
                     if (msg.includes('429') || msg.includes('quota')) {
-                        msg = "Limit kuota harian AI gratis tercapai. Mohon coba beberapa saat lagi.";
+                        msg = "Limit kuota harian Tim Logaritma gratis tercapai. Mohon coba beberapa saat lagi.";
                     }
                     alert("Gagal meracik Dokumen Operasional: " + msg);
                 }
@@ -1373,7 +1373,7 @@ function generateHtml(category) {
                         loading.classList.add('hidden');
                         let msg = e.message;
                         if (msg.includes('429') || msg.includes('quota')) {
-                            msg = "Limit kuota harian AI gratis tercapai. Mohon coba beberapa saat lagi.";
+                            msg = "Limit kuota harian Tim Logaritma gratis tercapai. Mohon coba beberapa saat lagi.";
                         }
                         alert("Gagal meracik dokumen promo: " + msg);
                     });
