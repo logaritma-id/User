@@ -794,6 +794,9 @@ function generateHtml(category) {
                 <a href="#pos-section" class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 text-slate-400 hover:text-white transition-colors">
                     <span class="text-lg">💳</span> <span class="nav-text">Kasir POS</span>
                 </a>
+                <a href="#diskusi" class="nav-item w-full text-left px-3 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 text-slate-400 hover:text-white transition-colors mt-2">
+                    <span class="text-lg text-brand-accent1">💬</span> <span class="nav-text text-brand-accent1">Diskusi Tim Logaritma</span>
+                </a>
             </nav>
         </div>
 
@@ -1085,6 +1088,39 @@ function generateHtml(category) {
 
             <!-- TAB: POS -->
             ${posHtml}
+
+            <!-- TAB: DISKUSI -->
+            <div id="diskusi" class="tab-pane hidden flex-1 flex flex-col max-w-5xl h-full relative mx-auto w-full">
+                <div class="absolute inset-0 flex flex-col">
+                    <!-- Chat History Area -->
+                    <div id="chat-history" class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6 pb-40">
+                        <!-- Initial Welcome Message -->
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-accent1 to-brand-accent2 flex items-center justify-center shrink-0 shadow-lg shadow-brand-accent1/20">
+                                <span class="text-white font-bold text-sm">TL</span>
+                            </div>
+                            <div class="bg-brand-surface border border-white/5 rounded-2xl rounded-tl-sm p-4 text-white text-sm markdown-content shadow-lg max-w-[90%] sm:max-w-[80%]">
+                                <p>Halo! Saya dari <strong>Tim Logaritma</strong>. Ada pertanyaan seputar pengelolaan bisnis <strong class="text-brand-accent1">${category.name}</strong> Anda? Saya siap berdiskusi tentang strategi, operasional, pemasaran, hingga hitung-hitungan finansial.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Input Area (Gemini Style) -->
+                    <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-brand-bg via-brand-bg to-transparent">
+                        <div class="bg-brand-surface border border-white/10 rounded-[2rem] p-2 sm:p-3 shadow-2xl flex flex-col max-w-4xl mx-auto backdrop-blur-md relative z-10">
+                            <textarea id="chat-input" rows="1" class="bg-transparent text-white text-sm sm:text-base px-4 py-2 sm:py-3 focus:outline-none resize-none custom-scrollbar w-full" placeholder="Tanya Tim Logaritma..." oninput="this.style.height = ''; this.style.height = Math.min(this.scrollHeight, 200) + 'px'"></textarea>
+                            <div class="flex justify-between items-center px-2 mt-1">
+                                <div class="text-[10px] sm:text-xs text-slate-500 font-bold ml-2">Asisten Spesialis ${category.name}</div>
+                                <button id="chat-send" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-accent1 text-white flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </main>
@@ -1510,6 +1546,111 @@ function generateHtml(category) {
                 navigator.clipboard.writeText(el.innerText).then(() => alert('Tersalin ke clipboard!'));
             }
         };
+
+        // --- DISKUSI TIM LOGARITMA LOGIC ---
+        const chatHistory = document.getElementById('chat-history');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        let chatContext = [];
+
+        async function sendChatMessage() {
+            const userText = chatInput.value.trim();
+            if(!userText) return;
+
+            chatInput.value = '';
+            chatInput.style.height = '';
+            
+            const userMsgHtml = \`
+                <div class="flex items-start gap-4 justify-end">
+                    <div class="bg-brand-accent1/20 border border-brand-accent1/30 rounded-2xl p-4 text-white text-sm max-w-[85%] shadow-lg">
+                        \${userText}
+                    </div>
+                </div>
+            \`;
+            chatHistory.insertAdjacentHTML('beforeend', userMsgHtml);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            const loadingId = 'loading-' + Date.now();
+            const loadingHtml = \`
+                <div id="\${loadingId}" class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-accent1 to-brand-accent2 flex items-center justify-center shrink-0 shadow-lg shadow-brand-accent1/20">
+                        <span class="text-white font-bold text-sm animate-pulse">TL</span>
+                    </div>
+                    <div class="bg-[#0f0a1c] border border-white/10 rounded-2xl p-4 text-white text-sm flex items-center gap-2 shadow-lg">
+                        <div class="w-2 h-2 bg-brand-accent1 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-brand-accent2 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            \`;
+            chatHistory.insertAdjacentHTML('beforeend', loadingHtml);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            chatSend.disabled = true;
+
+            try {
+                // Using gemini-1.5-flash as the standard fast chat model
+                const model = genAI.getGenerativeModel({ 
+                    model: "gemini-1.5-flash",
+                    systemInstruction: "Anda adalah Tim Logaritma, asisten cerdas dan profesional untuk aplikasi Logaritma.id. Anda sedang melayani pengguna di kategori bisnis '${category.name}'. Anda HANYA BOLEH MENJAWAB pertanyaan yang relevan dengan pengelolaan bisnis, strategi, operasional, keuangan, atau pemasaran untuk bisnis '${category.name}'. Jika pengguna menanyakan topik di luar itu (seperti sejarah, politik, cuaca, teknologi umum, resep masakan yang tidak relevan, dll), tolak dengan sopan dan arahkan mereka kembali ke topik bisnis '${category.name}'. Jangan pernah menyebutkan nama Anda sebagai 'AI' atau 'Gemini', Anda adalah 'Tim Logaritma'."
+                });
+                
+                const chat = model.startChat({
+                    history: chatContext,
+                    generationConfig: { maxOutputTokens: 1000 },
+                });
+                
+                const result = await chat.sendMessage(userText);
+                const response = await result.response;
+                let text = response.text();
+                text = text.replace(/\\bAI\\b/gi, 'Tim Logaritma');
+
+                chatContext.push({ role: "user", parts: [{ text: userText }] });
+                chatContext.push({ role: "model", parts: [{ text: text }] });
+
+                document.getElementById(loadingId).remove();
+                const aiMsgHtml = \`
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-accent1 to-brand-accent2 flex items-center justify-center shrink-0 shadow-lg shadow-brand-accent1/20">
+                            <span class="text-white font-bold text-sm">TL</span>
+                        </div>
+                        <div class="bg-brand-surface border border-white/5 rounded-2xl rounded-tl-sm p-4 text-white text-sm markdown-content ai-response shadow-lg max-w-[90%] sm:max-w-[80%]">
+                            \${marked.parse(text)}
+                        </div>
+                    </div>
+                \`;
+                chatHistory.insertAdjacentHTML('beforeend', aiMsgHtml);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            } catch(e) {
+                document.getElementById(loadingId).remove();
+                let errMsg = e.message;
+                if(errMsg.includes('429')) errMsg = 'Limit kuota harian Tim Logaritma gratis tercapai. Mohon coba beberapa saat lagi.';
+                const errHtml = \`
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-rose-600 flex items-center justify-center shrink-0">
+                            <span class="text-white font-bold text-sm">!</span>
+                        </div>
+                        <div class="bg-rose-900/30 border border-rose-500/30 rounded-2xl p-4 text-white text-sm shadow-lg">
+                            Maaf, terjadi kesalahan: \${errMsg}
+                        </div>
+                    </div>
+                \`;
+                chatHistory.insertAdjacentHTML('beforeend', errHtml);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            } finally {
+                chatSend.disabled = false;
+            }
+        }
+
+        if(chatSend) {
+            chatSend.addEventListener('click', sendChatMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', () => renderDocs());
 
