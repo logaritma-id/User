@@ -831,7 +831,7 @@ function generateHtml(category) {
             </div>
         </div>
 
-        <div class="p-6 sm:p-8 max-w-7xl mx-auto space-y-8 min-h-full pb-20">
+        <div class="px-6 sm:px-8 pt-4 pb-20 max-w-7xl mx-auto space-y-8 min-h-full">
             
             <!-- TAB: DASBOR UTAMA -->
             <div id="dasbor" class="tab-pane flex flex-col xl:flex-row gap-6">
