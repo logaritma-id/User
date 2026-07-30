@@ -1151,6 +1151,15 @@ function generateHtml(category) {
                 
                 const engineDesc = document.getElementById('engine-status-desc');
                 if(engineDesc) engineDesc.innerText = 'Tim Logaritma siap membantu ' + businessName;
+                
+                // Update LTM and Kasir POS
+                document.querySelectorAll('h2').forEach(h2 => {
+                    if(h2.innerText.includes('Uji Dampak Kegiatan')) {
+                        h2.innerText = h2.innerText.replace('Uji Dampak Kegiatan', 'Uji Dampak - ' + businessName);
+                    } else if(h2.innerText.includes('Kasir POS') || h2.innerText.includes('Kasir PKL')) {
+                        h2.innerText = h2.innerText + ' (' + businessName + ')';
+                    }
+                });
             }
         });
 \n          const p1 = "AIzaSy";
