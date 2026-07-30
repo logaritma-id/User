@@ -251,7 +251,43 @@
                 </div>
             </div>
             
-        </div>
+        
+            <!-- POS PKL -->
+            <div id="pos-section" class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl scroll-mt-24 overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-orange-900/30 to-slate-900 border-b border-slate-800 p-6">
+                    <h2 class="text-xl font-bold text-white font-heading flex items-center gap-2">⛺ Kasir PKL — Super Simpel</h2>
+                    <p class="text-slate-400 text-xs mt-1">Satu ketuk = 1 transaksi. Tanpa keyboard.</p>
+                    <div class="grid grid-cols-3 gap-3 mt-4">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-center">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">Porsi</p>
+                            <p id="pkl-total-porsi" class="text-orange-400 font-bold text-xl">0</p>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-center">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">Pemasukan</p>
+                            <p id="pkl-total-pemasukan" class="text-white font-bold text-xl">Rp 0</p>
+                        </div>
+                        <div class="bg-slate-800 border border-emerald-500/30 rounded-xl p-3 text-center">
+                            <p class="text-[10px] text-emerald-400 uppercase font-bold">Laba Bersih</p>
+                            <p id="pkl-total-laba" class="text-emerald-400 font-bold text-xl">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-sm font-bold text-white">🛒 Tombol Menu</h3>
+                    </div>
+                    <div id="pkl-menu-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6"></div>
+                    <div class="border-t border-slate-800 pt-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-bold text-white">📋 Log Hari Ini</h3>
+                            <button onclick="posPkl.reset()" class="text-xs bg-rose-900/40 text-rose-400 px-3 py-1.5 rounded-lg">Reset Harian</button>
+                        </div>
+                        <div id="pkl-tx-list" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
 
         <!-- COLUMN 3: RIGHT SIDEBAR (Status Engine) -->
         <aside class="w-full lg:w-72 shrink-0 space-y-6 print-hide">

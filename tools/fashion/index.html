@@ -251,7 +251,84 @@
                 </div>
             </div>
             
-        </div>
+        
+            <!-- POS Fashion -->
+            <div id="pos-section" class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl scroll-mt-24 overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-pink-900/30 to-slate-900 border-b border-slate-800 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-white font-heading flex items-center gap-2">👕 Kasir POS — Fashion</h2>
+                        <p class="text-slate-400 text-xs mt-1">Kelola produk retail dan stok varian.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-center">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">Pcs Terjual</p>
+                            <p id="fsh-total-pcs" class="text-pink-400 font-bold text-lg">0</p>
+                        </div>
+                        <div class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-center">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">Omzet Hari Ini</p>
+                            <p id="fsh-total-omzet" class="text-white font-bold text-lg">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                    <div class="border-r border-slate-800 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold text-white">🏷️ Katalog Produk</h3>
+                            <button onclick="posFashion.openAddMenu()" class="text-xs font-bold bg-pink-600 hover:bg-pink-500 text-white px-3 py-1.5 rounded-lg transition">+ Tambah</button>
+                        </div>
+                        <div id="fsh-add-menu-form" class="hidden mb-4 bg-slate-950 border border-slate-700 rounded-xl p-4 space-y-3">
+                            <input id="fsh-menu-nama" type="text" placeholder="Nama Produk" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500">
+                            <input id="fsh-menu-harga" type="number" placeholder="Harga (Rp)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500">
+                            <div class="flex gap-2">
+                                <button onclick="posFashion.saveMenu()" class="flex-1 bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold py-2 rounded-lg transition">Simpan</button>
+                                <button onclick="posFashion.closeAddMenu()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-2 rounded-lg transition">Batal</button>
+                            </div>
+                        </div>
+                        <div id="fsh-menu-grid" class="grid grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="p-6 flex flex-col">
+                        <h3 class="text-sm font-bold text-white mb-4">🛍️ Keranjang Belanja</h3>
+                        <div id="fsh-order-list" class="flex-1 space-y-2 max-h-64 overflow-y-auto mb-4 min-h-[80px]">
+                            <p id="fsh-order-empty" class="text-xs text-slate-500 italic text-center py-4">Belum ada item</p>
+                        </div>
+                        <div class="border-t border-slate-800 pt-4 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <label class="text-xs text-slate-400 whitespace-nowrap">Diskon (%)</label>
+                                <input id="fsh-diskon" type="number" value="0" min="0" max="100" oninput="posFashion.updateTotal()" class="w-24 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-pink-500">
+                            </div>
+                            <div class="bg-slate-950 rounded-xl p-4 border border-slate-700">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-slate-400">Subtotal</span>
+                                    <span id="fsh-subtotal" class="text-white font-bold">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-400">Diskon</span>
+                                    <span id="fsh-diskon-rp" class="text-rose-400 font-bold">- Rp 0</span>
+                                </div>
+                                <div class="flex justify-between text-lg border-t border-slate-700 pt-2">
+                                    <span class="text-white font-bold">TOTAL</span>
+                                    <span id="fsh-total" class="text-pink-400 font-bold">Rp 0</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="posFashion.prosesOrder()" class="flex-1 bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-pink-500/20 text-sm">✅ Proses Penjualan</button>
+                                <button onclick="posFashion.clearOrder()" class="px-4 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl transition text-sm">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-800 p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-white">📋 Transaksi Hari Ini</h3>
+                        <button onclick="posFashion.resetHarian()" class="text-xs font-bold bg-rose-900/40 hover:bg-rose-700 text-rose-400 hover:text-white border border-rose-500/30 px-3 py-1.5 rounded-lg transition">Reset Harian</button>
+                    </div>
+                    <div id="fsh-tx-list" class="space-y-2 max-h-48 overflow-y-auto">
+                        <p id="fsh-tx-empty" class="text-xs text-slate-500 italic">Belum ada transaksi</p>
+                    </div>
+                </div>
+            </div>
+            </div>
+
 
         <!-- COLUMN 3: RIGHT SIDEBAR (Status Engine) -->
         <aside class="w-full lg:w-72 shrink-0 space-y-6 print-hide">
