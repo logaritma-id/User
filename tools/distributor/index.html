@@ -445,7 +445,7 @@
             </div>
 
             <!-- TAB: DISKUSI -->
-            <div id="diskusi" class="tab-pane hidden flex-col fixed top-16 lg:top-20 bottom-0 left-0 lg:left-72 right-0 z-20 bg-brand-bg">
+            <div id="diskusi" class="tab-pane hidden flex flex-col fixed top-16 lg:top-20 bottom-0 left-0 lg:left-72 right-0 z-20 bg-brand-bg">
                 <!-- Chat History Area -->
                 <div id="chat-history" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6 w-full max-w-4xl mx-auto pb-4">
                     <!-- Initial Welcome Message -->
@@ -527,7 +527,6 @@
             const target = document.getElementById(tabId);
             if (target) {
                 target.classList.remove('hidden');
-                target.classList.add('flex');
                 
                 // If it's POS, try to initialize
                 if (tabId === 'pos-section') {
