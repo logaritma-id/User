@@ -695,7 +695,11 @@
                     saveDoc('SOP Normal - ' + globalTargetPorsi + ' ' + config.unit, text);
                 } catch (error) {
                     loading.classList.add('hidden');
-                    alert("Gagal menghubungi Tim Logaritma: " + error.message);
+                    let msg = error.message;
+                    if (msg.includes('429') || msg.includes('quota')) {
+                        msg = "Limit kuota harian AI gratis tercapai. Mohon coba beberapa saat lagi.";
+                    }
+                    alert("Gagal meracik Dokumen Operasional: " + msg);
                 }
             });
 
@@ -764,7 +768,11 @@
                         saveDoc('SOP Promo ' + diskon + '% - ' + newTargetPorsi + ' ' + config.unit, text);
                     }).catch(e => {
                         loading.classList.add('hidden');
-                        alert("Gagal meracik dokumen promo: " + e.message);
+                        let msg = e.message;
+                        if (msg.includes('429') || msg.includes('quota')) {
+                            msg = "Limit kuota harian AI gratis tercapai. Mohon coba beberapa saat lagi.";
+                        }
+                        alert("Gagal meracik dokumen promo: " + msg);
                     });
                 };
             });
