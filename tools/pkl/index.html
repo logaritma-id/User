@@ -403,7 +403,14 @@
                     loading.classList.add('hidden');
                     result.classList.remove('hidden');
                     content.innerHTML = marked.parse(text);
+                    
                     document.getElementById('ai-output-container').scrollIntoView({ behavior: 'smooth' });
+                    
+                    const docStatus = document.getElementById('sidebar-dokumen-aktif');
+                    if (docStatus) {
+                        docStatus.innerText = 'SOP & Panduan Selesai';
+                        docStatus.classList.replace('text-slate-400', 'text-emerald-400');
+                    }
                 } catch (error) {
                     loading.classList.add('hidden');
                     alert("Gagal menghubungi AI: " + error.message);
@@ -419,6 +426,7 @@
     </script>
 </body>
 </html>
+
 
 
 
