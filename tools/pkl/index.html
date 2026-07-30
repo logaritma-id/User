@@ -458,7 +458,7 @@
             </div>
 
             <!-- TAB: DISKUSI -->
-            <div id="diskusi" class="tab-pane hidden flex-col w-full h-[calc(100vh-12rem)] relative">
+            <div id="diskusi" class="tab-pane hidden flex-col absolute top-16 lg:top-20 bottom-0 left-0 right-0 z-20 bg-brand-bg">
                 <!-- Chat History Area -->
                 <div id="chat-history" class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6 pb-40 w-full max-w-4xl mx-auto">
                     <!-- Initial Welcome Message -->
@@ -477,7 +477,10 @@
                     <div class="bg-brand-surface border border-white/10 rounded-[2rem] p-2 sm:p-3 shadow-2xl flex flex-col max-w-4xl mx-auto backdrop-blur-md">
                         <textarea id="chat-input" rows="1" class="bg-transparent text-white text-sm sm:text-base px-4 py-2 sm:py-3 focus:outline-none resize-none custom-scrollbar w-full" placeholder="Tanya Tim Logaritma..." oninput="this.style.height = ''; this.style.height = Math.min(this.scrollHeight, 200) + 'px'"></textarea>
                         <div class="flex justify-between items-center px-2 mt-1">
-                            <div class="text-[10px] sm:text-xs text-slate-500 font-bold ml-2">Asisten Spesialis PKL</div>
+                            <div class="text-[10px] sm:text-xs text-slate-500 font-bold ml-2 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                                Asisten Spesialis PKL
+                            </div>
                             <button id="chat-send" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-accent1 text-white flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
@@ -535,16 +538,39 @@
             
             // Show target tab
             const target = document.getElementById(tabId);
-            if(target) {
+            if (target) {
                 target.classList.remove('hidden');
+                if (tabId !== 'diskusi') {
+                    target.classList.add('flex');
+                }
                 
                 // If it's POS, try to initialize
-                if(tabId === 'pos-section') {
+                if (tabId === 'pos-section') {
                     if(CATEGORY_ID === 'kuliner' && window.posKuliner && window.posKuliner.init) window.posKuliner.init();
                     if(CATEGORY_ID === 'fashion' && window.posFashion && window.posFashion.init) window.posFashion.init();
                     if(CATEGORY_ID === 'percetakan' && window.posPercetakan && window.posPercetakan.init) window.posPercetakan.init();
                     if(CATEGORY_ID === 'pkl' && window.posPkl && window.posPkl.init) window.posPkl.init();
                     if(CATEGORY_ID === 'distributor' && window.posDistributor && window.posDistributor.init) window.posDistributor.init();
+                }
+
+                // Clear chat if Diskusi tab is opened
+                if (tabId === 'diskusi') {
+                    const historyEl = document.getElementById('chat-history');
+                    if (historyEl) {
+                        historyEl.innerHTML = `
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-accent1 to-brand-accent2 flex items-center justify-center shrink-0 shadow-lg shadow-brand-accent1/20">
+                                    <span class="text-white font-bold text-sm">TL</span>
+                                </div>
+                                <div class="bg-brand-surface border border-white/5 rounded-2xl rounded-tl-sm p-4 text-white text-sm markdown-content shadow-lg max-w-[90%] sm:max-w-[80%]">
+                                    <p>Halo! Saya dari <strong>Tim Logaritma</strong>. Ada pertanyaan seputar pengelolaan bisnis <strong class="text-brand-accent1">${CATEGORY_CONFIG[CATEGORY_ID].name}</strong> Anda? Saya siap berdiskusi tentang strategi, operasional, pemasaran, hingga hitung-hitungan finansial.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    if (window.chatContext) {
+                        window.chatContext = [];
+                    }
                 }
             }
             
@@ -917,7 +943,7 @@
         const chatHistory = document.getElementById('chat-history');
         const chatInput = document.getElementById('chat-input');
         const chatSend = document.getElementById('chat-send');
-        let chatContext = [];
+        window.chatContext = [];
 
         async function sendChatMessage() {
             const userText = chatInput.value.trim();
@@ -953,25 +979,40 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
             chatSend.disabled = true;
 
-            try {
-                // Using gemini-3.6-flash as the standard fast chat model
-                const model = genAI.getGenerativeModel({ 
-                    model: "gemini-3.6-flash",
-                    systemInstruction: "Anda adalah Tim Logaritma, asisten cerdas dan profesional untuk aplikasi Logaritma.id. Anda sedang melayani pengguna di kategori bisnis 'PKL'. Anda HANYA BOLEH MENJAWAB pertanyaan yang relevan dengan pengelolaan bisnis, strategi, operasional, keuangan, atau pemasaran untuk bisnis 'PKL'. Jika pengguna menanyakan topik di luar itu (seperti sejarah, politik, cuaca, teknologi umum, resep masakan yang tidak relevan, dll), tolak dengan sopan dan arahkan mereka kembali ke topik bisnis 'PKL'. Jangan pernah menyebutkan nama Anda sebagai 'AI' atau 'Gemini', Anda adalah 'Tim Logaritma'."
-                });
-                
-                const chat = model.startChat({
-                    history: chatContext,
-                    generationConfig: { maxOutputTokens: 1000 },
-                });
-                
-                const result = await chat.sendMessage(userText);
-                const response = await result.response;
-                let text = response.text();
-                text = text.replace(/\bAI\b/gi, 'Tim Logaritma');
+            const aiModels = ["gemini-3.6-flash", "gemini-3.1-pro", "gemini-3.5-flash-lite"];
+            let text = null;
+            let success = false;
+            let lastError = null;
 
-                chatContext.push({ role: "user", parts: [{ text: userText }] });
-                chatContext.push({ role: "model", parts: [{ text: text }] });
+            for (let i = 0; i < aiModels.length; i++) {
+                try {
+                    const modelName = aiModels[i];
+                    const model = genAI.getGenerativeModel({ 
+                        model: modelName,
+                        systemInstruction: "Anda adalah Tim Logaritma, asisten cerdas dan profesional untuk aplikasi Logaritma.id. Anda sedang melayani pengguna di kategori bisnis 'PKL'. Anda HANYA BOLEH MENJAWAB pertanyaan yang relevan dengan pengelolaan bisnis, strategi, operasional, keuangan, atau pemasaran untuk bisnis 'PKL'. Jika pengguna menanyakan topik di luar itu (seperti sejarah, politik, cuaca, teknologi umum, resep masakan yang tidak relevan, dll), tolak dengan sopan dan arahkan mereka kembali ke topik bisnis 'PKL'. Jangan pernah menyebutkan nama Anda sebagai 'AI' atau 'Gemini', Anda adalah 'Tim Logaritma'."
+                    });
+                    
+                    const chat = model.startChat({
+                        history: window.chatContext || [],
+                        generationConfig: { maxOutputTokens: 1000 },
+                    });
+                    
+                    const result = await chat.sendMessage(userText);
+                    const response = await result.response;
+                    text = response.text();
+                    text = text.replace(/\bAI\b/gi, 'Tim Logaritma');
+                    success = true;
+                    break;
+                } catch (e) {
+                    lastError = e;
+                    console.log(`Model ${aiModels[i]} failed:`, e);
+                }
+            }
+
+            if (success) {
+                if (!window.chatContext) window.chatContext = [];
+                window.chatContext.push({ role: "user", parts: [{ text: userText }] });
+                window.chatContext.push({ role: "model", parts: [{ text: text }] });
 
                 document.getElementById(loadingId).remove();
                 const aiMsgHtml = `
@@ -986,10 +1027,9 @@
                 `;
                 chatHistory.insertAdjacentHTML('beforeend', aiMsgHtml);
                 chatHistory.scrollTop = chatHistory.scrollHeight;
-
-            } catch(e) {
+            } else {
                 document.getElementById(loadingId).remove();
-                let errMsg = e.message;
+                let errMsg = lastError ? lastError.message : 'Semua model sedang sibuk.';
                 if(errMsg.includes('429')) errMsg = 'Limit kuota harian Tim Logaritma gratis tercapai. Mohon coba beberapa saat lagi.';
                 const errHtml = `
                     <div class="flex items-start gap-4">
@@ -1003,9 +1043,8 @@
                 `;
                 chatHistory.insertAdjacentHTML('beforeend', errHtml);
                 chatHistory.scrollTop = chatHistory.scrollHeight;
-            } finally {
-                chatSend.disabled = false;
             }
+            chatSend.disabled = false;
         }
 
         if(chatSend) {
