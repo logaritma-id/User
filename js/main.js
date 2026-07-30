@@ -317,6 +317,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 kategoriId: kategoriId,
                 whatsapp: document.getElementById("diag-wa").value,
                 alamat: document.getElementById("diag-alamat").value,
+                skor: Math.round(totalScore / 2),
                 skorKesehatan: statusKesehatan,
                 status: "Calon Pelanggan",
                 sumber: "Form Diagnostik Landing Page",
@@ -887,7 +888,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-slate-300">${lead.kategori}</div>
-                        <div class="text-xs text-slate-500">${lead.skor}/5</div>
+                        <div class="text-xs text-slate-500">${lead.skor || 0}/5</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 py-1 text-xs font-bold rounded-full border ${badgeClass}">${lead.kesehatan || lead.skorKesehatan}</span>
