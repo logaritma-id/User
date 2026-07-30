@@ -286,7 +286,7 @@
             // Format currency while typing
             document.querySelectorAll('input[data-type="currency"]').forEach(input => {
                 input.addEventListener('input', function(e) {
-                    let val = this.value.replace(/\\D/g, '');
+                    let val = this.value.replace(/\D/g, '');
                     if (val) {
                         this.value = Number(val).toLocaleString('id-ID');
                     } else {
@@ -297,7 +297,7 @@
 
             // Handle Hitung
             document.getElementById('btn-hitung').addEventListener('click', () => {
-                const parseNum = (val) => parseFloat(val.toString().replace(/\\./g, '')) || 0;
+                const parseNum = (val) => parseFloat(val.toString().replace(/\./g, '')) || 0;
                 
                 const targetProfit = parseNum(document.getElementById('input-target_profit').value);
                 const hargaJual = parseNum(document.getElementById('input-harga_jual').value);
@@ -375,6 +375,7 @@
     </script>
 </body>
 </html>
+
 
 
 
