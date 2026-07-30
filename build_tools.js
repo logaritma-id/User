@@ -1465,7 +1465,9 @@ function generateHtml(category) {
 
     </script>
     
+    <script>
     ${posJs}
+    </script>
 </body>
 </html>`;
 }
