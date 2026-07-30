@@ -1126,15 +1126,46 @@ document.addEventListener("DOMContentLoaded", async function() {
                 foundUser = leads.find(l => l.whatsapp === inputWA || l.wa === inputWA);
             }
             
+            
             if(foundUser) {
-                // Set sesi aktif
                 localStorage.setItem("logarithm_current_user", JSON.stringify(foundUser));
-                // Redirect ke dashboard
                 window.location.href = "/tools/";
             } else {
                 errorMsg.classList.remove("hidden");
+                setTimeout(() => {
+                    document.getElementById('login-modal').classList.add('hidden');
+                    document.getElementById('login-modal').classList.remove('flex');
+                    document.body.style.overflow = "auto";
+                    window.location.href = "#kalkulator";
+                }, 1500);
             }
+
         });
+    }
+
+    
+    // Login Modal Toggle
+    const loginModal = document.getElementById("login-modal");
+    const openLoginBtns = document.querySelectorAll(".open-login-btn");
+    const closeLoginBtn = document.getElementById("close-login-btn");
+    
+    if(loginModal) {
+        openLoginBtns.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                loginModal.classList.remove("hidden");
+                loginModal.classList.add("flex");
+                document.body.style.overflow = "hidden";
+            });
+        });
+        if(closeLoginBtn) {
+            closeLoginBtn.addEventListener("click", () => {
+                loginModal.classList.add("hidden");
+                loginModal.classList.remove("flex");
+                document.body.style.overflow = "auto";
+                document.getElementById("login-error").classList.add("hidden");
+            });
+        }
     }
 
     // 2. Member Dashboard Protection & Personalization (/tools/index.html)
