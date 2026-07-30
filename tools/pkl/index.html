@@ -271,8 +271,13 @@
                         <p class="text-sm font-bold text-white truncate" id="sidebar-target-omzet">Belum Dihitung</p>
                     </div>
                     <div class="bg-slate-950/50 rounded-lg p-3 border border-slate-800">
-                        <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Dokumen Aktif</p>
-                        <p class="text-sm font-bold text-slate-400" id="sidebar-dokumen-aktif">Belum di-generate</p>
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase">Riwayat Dokumen</p>
+                            <span id="doc-count-badge" class="hidden text-[9px] font-bold bg-emerald-600 text-white px-1.5 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div id="doc-history-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                            <p id="doc-empty-state" class="text-xs text-slate-500 italic">Belum ada dokumen tersimpan</p>
+                        </div>
                     </div>
                 </div>
                 
@@ -447,11 +452,9 @@
                     
                     document.getElementById('ai-output-container').scrollIntoView({ behavior: 'smooth' });
                     
-                    const docStatus = document.getElementById('sidebar-dokumen-aktif');
-                    if (docStatus) {
-                        docStatus.innerText = 'SOP & Panduan Selesai';
-                        docStatus.classList.replace('text-slate-400', 'text-emerald-400');
-                    }
+                    // Simpan ke riwayat dokumen
+                    const targetPorsiLabel = document.getElementById('hasil-porsi').innerText;
+                    saveDoc('SOP Normal - ' + targetPorsiLabel, text, 'ai-output-container');
                 } catch (error) {
                     loading.classList.add('hidden');
                     alert("Gagal menghubungi AI: " + error.message);
@@ -520,6 +523,9 @@
                         ltmContent.innerHTML = marked.parse(text);
                         ltmLoading.classList.add('hidden');
                         ltmResult.classList.remove('hidden');
+                        
+                        // Simpan ke riwayat dokumen
+                        saveDoc('SOP Promo ' + diskon + '% - ' + newTargetPorsi + ' ' + config.unit, text, 'ltm-ai-output-container');
                     } catch(e) {
                         ltmLoading.classList.add('hidden');
                         alert("Gagal meracik dokumen promo: " + e.message);
@@ -527,6 +533,105 @@
                 };
             });
         });
+
+        // ===== DOCUMENT HISTORY ENGINE =====
+        const DOC_STORAGE_KEY = 'logaritma_docs_' + CATEGORY_ID;
+
+        function getDocs() {
+            try { return JSON.parse(localStorage.getItem(DOC_STORAGE_KEY)) || []; } catch(e) { return []; }
+        }
+
+        function saveDocs(docs) {
+            localStorage.setItem(DOC_STORAGE_KEY, JSON.stringify(docs));
+        }
+
+        function saveDoc(title, markdown, scrollTargetId) {
+            const docs = getDocs();
+            docs.unshift({
+                id: Date.now(),
+                title: title,
+                markdown: markdown,
+                scrollTargetId: scrollTargetId,
+                ts: new Date().toLocaleString('id-ID', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+            });
+            saveDocs(docs);
+            renderDocs();
+        }
+
+        function deleteDoc(id) {
+            const docs = getDocs().filter(d => d.id !== id);
+            saveDocs(docs);
+            renderDocs();
+        }
+
+        function viewDoc(id) {
+            const doc = getDocs().find(d => d.id === id);
+            if (!doc) return;
+
+            // Find or create a viewer panel
+            let viewer = document.getElementById('doc-viewer-panel');
+            if (!viewer) {
+                viewer = document.createElement('div');
+                viewer.id = 'doc-viewer-panel';
+                viewer.className = 'bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-xl';
+                const mainCol = document.querySelector('.flex-1.space-y-8');
+                if (mainCol) mainCol.appendChild(viewer);
+            }
+            viewer.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h4 class="font-bold text-emerald-400 text-sm uppercase tracking-wider">${doc.title}</h4>
+                        <p class="text-xs text-slate-500 mt-1">${doc.ts}</p>
+                    </div>
+                    <button onclick="document.getElementById('doc-viewer-panel').classList.add('hidden')" class="text-slate-500 hover:text-white transition text-xl leading-none">&times;</button>
+                </div>
+                <div class="prose prose-invert prose-emerald max-w-none text-sm break-words whitespace-pre-wrap overflow-x-auto">
+                    ${marked.parse(doc.markdown)}
+                </div>
+            `;
+            viewer.classList.remove('hidden');
+            viewer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderDocs() {
+            const docs = getDocs();
+            const list = document.getElementById('doc-history-list');
+            const emptyState = document.getElementById('doc-empty-state');
+            const badge = document.getElementById('doc-count-badge');
+            if (!list) return;
+
+            // Remove old items (keep the empty state el)
+            list.querySelectorAll('.doc-item').forEach(el => el.remove());
+
+            if (docs.length === 0) {
+                if (emptyState) emptyState.classList.remove('hidden');
+                if (badge) badge.classList.add('hidden');
+                return;
+            }
+
+            if (emptyState) emptyState.classList.add('hidden');
+            if (badge) { badge.textContent = docs.length; badge.classList.remove('hidden'); }
+
+            docs.forEach(doc => {
+                const item = document.createElement('div');
+                item.className = 'doc-item group flex items-start gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg p-2 cursor-pointer transition';
+                item.innerHTML = `
+                    <div class="flex-1 min-w-0" onclick="viewDoc(${doc.id})">
+                        <p class="text-xs font-bold text-white truncate">${doc.title}</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">${doc.ts}</p>
+                    </div>
+                    <button onclick="event.stopPropagation(); deleteDoc(${doc.id})" class="shrink-0 text-slate-600 hover:text-rose-400 transition text-lg leading-none mt-0.5" title="Hapus dokumen">&times;</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Expose globally (called from onclick attrs)
+        window.viewDoc = viewDoc;
+        window.deleteDoc = deleteDoc;
+
+        // Load history on page init
+        document.addEventListener('DOMContentLoaded', () => renderDocs());
 
         window.copyLtmAiOutput = () => {
             const text = document.getElementById('ltm-ai-markdown-content').innerText;
