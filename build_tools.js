@@ -1586,9 +1586,9 @@ function generateHtml(category) {
             chatSend.disabled = true;
 
             try {
-                // Using gemini-1.5-flash as the standard fast chat model
+                // Using gemini-3.6-flash as the standard fast chat model
                 const model = genAI.getGenerativeModel({ 
-                    model: "gemini-1.5-flash",
+                    model: "gemini-3.6-flash",
                     systemInstruction: "Anda adalah Tim Logaritma, asisten cerdas dan profesional untuk aplikasi Logaritma.id. Anda sedang melayani pengguna di kategori bisnis '${category.name}'. Anda HANYA BOLEH MENJAWAB pertanyaan yang relevan dengan pengelolaan bisnis, strategi, operasional, keuangan, atau pemasaran untuk bisnis '${category.name}'. Jika pengguna menanyakan topik di luar itu (seperti sejarah, politik, cuaca, teknologi umum, resep masakan yang tidak relevan, dll), tolak dengan sopan dan arahkan mereka kembali ke topik bisnis '${category.name}'. Jangan pernah menyebutkan nama Anda sebagai 'AI' atau 'Gemini', Anda adalah 'Tim Logaritma'."
                 });
                 
