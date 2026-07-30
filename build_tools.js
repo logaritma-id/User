@@ -1172,9 +1172,7 @@ function generateHtml(category) {
             const target = document.getElementById(tabId);
             if (target) {
                 target.classList.remove('hidden');
-                if (tabId !== 'diskusi') {
-                    target.classList.add('flex');
-                }
+                target.classList.add('flex');
                 
                 // If it's POS, try to initialize
                 if (tabId === 'pos-section') {
