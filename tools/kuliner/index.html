@@ -247,11 +247,26 @@
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
         
-        // SETUP: API Key dari env / setting (DUMMY/PLACEHOLDER untuk client-side demo)
-        // Di environment production yang aman, SDK dipanggil di Cloud Functions.
-        // Untuk kebutuhan request Anda (Client Side SDK), ini contoh integrasinya:
-        const API_KEY = "YOUR_GEMINI_API_KEY"; // Akan diisi jika Anda memilikinya, namun untuk demo biarkan dummy
-        const genAI = new GoogleGenerativeAI(API_KEY);
+        // Fetch API Key secara aman dari Vercel Serverless Function
+        // Key disimpan di Environment Variable Vercel, tidak ada di kode/GitHub
+        let genAI = null;
+        async function initGemini() {
+            try {
+                const res = await fetch('/api/config');
+                if (!res.ok) throw new Error('Config fetch failed');
+                const data = await res.json();
+                genAI = new GoogleGenerativeAI(data.key);
+            } catch (e) {
+                // Fallback untuk local development - baca dari js/config.js
+                if (window.LOGARITMA_API_KEY) {
+                    genAI = new GoogleGenerativeAI(window.LOGARITMA_API_KEY);
+                }
+                console.log('Running in local mode');
+            }
+        }
+        
+        // Panggil init Gemini saat halaman dimuat
+        const geminiReady = initGemini();
         
         const CATEGORY_ID = "kuliner";
         const config = CATEGORY_CONFIG[CATEGORY_ID];
@@ -340,37 +355,16 @@
                 const targetPorsi = document.getElementById('hasil-porsi').innerText;
                 const batasBelanja = document.getElementById('hasil-belanja').innerText;
 
-                const fullPrompt = `${config.prompt_persona}\n\nKonteks Data:\n- Target Jualan: ${targetPorsi}\n- Batas Belanja Harian (HPP): ${batasBelanja}\n\nBuat dokumen tersebut sekarang secara profesional.`;
+                const fullPrompt = `${config.prompt_persona}\n\nKonteks Data:\n- Target Jualan: ${targetPorsi}\n- Batas Pengeluaran/HPP Harian: ${batasBelanja}\n\nBuat dokumen tersebut sekarang secara profesional.`;
 
                 try {
-                    // Karena Client Side memerlukan API Key valid, jika tidak ada fallback ke Dummy Delay
-                    if (API_KEY === "YOUR_GEMINI_API_KEY") {
-                        console.warn("API Key Gemini belum diset. Menggunakan mock response.");
-                        setTimeout(() => {
-                            loading.classList.add('hidden');
-                            result.classList.remove('hidden');
-                            const mockMd = `
-### 1. SOP Dapur & Pengendalian Food Waste
-* **Batas Belanja:** ${batasBelanja} / hari.
-* **Standar Porsi:** Timbang semua bahan baku. Dilarang melebihi gramasi standar.
-* **Sisa Bahan:** Catat setiap bahan terbuang di log harian sebelum tutup shift.
-
-### 2. Skrip Upselling Kasir
-* **Sapaan:** "Selamat datang! Untuk minuman pendampingnya mau coba varian best-seller kami?"
-* **Target:** Capai ${targetPorsi} secara tim hari ini.
-
-### 3. Checklist Tutup Kasir
-* [ ] Hitung fisik uang di laci
-* [ ] Cocokkan dengan laporan sistem EDC / POS
-* [ ] Serahkan laporan ke Supervisor
-                            `;
-                            content.innerHTML = marked.parse(mockMd);
-                            document.getElementById('ai-output-container').scrollIntoView({ behavior: 'smooth' });
-                        }, 2500);
-                        return;
+                    // Tunggu Gemini siap
+                    await geminiReady;
+                    
+                    if (!genAI) {
+                        throw new Error('Gemini AI tidak terinisialisasi. Cek API Key.');
                     }
 
-                    // Panggilan Asli Gemini API
                     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                     const aiResult = await model.generateContent(fullPrompt);
                     const response = await aiResult.response;
@@ -382,7 +376,7 @@
                     document.getElementById('ai-output-container').scrollIntoView({ behavior: 'smooth' });
                 } catch (error) {
                     loading.classList.add('hidden');
-                    alert("Gagal menghubungi AI. Pastikan API Key valid atau cek koneksi internet.");
+                    alert("Gagal menghubungi AI: " + error.message);
                     console.error(error);
                 }
             });
@@ -395,3 +389,6 @@
     </script>
 </body>
 </html>
+
+
+
