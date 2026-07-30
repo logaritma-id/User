@@ -534,11 +534,12 @@ function getPosJs(categoryId) {
                 localStorage.setItem(KEY, JSON.stringify(txs));
                 render();
             };
-            window.posPkl.deleteMenu = id => {
+            function deleteMenu(id) {
+                if(!confirm('Yakin ingin menghapus menu ini?')) return;
                 const m = getMenus().filter(x => x.id !== id);
                 localStorage.setItem(MENU_KEY, JSON.stringify(m));
                 render();
-            };
+            }
             function render() {
                 const txs = getTxs();
                 const currentMenus = getMenus();
@@ -582,7 +583,7 @@ function getPosJs(categoryId) {
                     document.getElementById('pkl-total-laba').innerText = fmtRp(p - m);
                 }
             }
-            window.posPkl.addMenu = () => {
+            function addMenu() {
                 const nama = document.getElementById('pkl-new-nama').value;
                 const harga = parseFloat(document.getElementById('pkl-new-harga').value);
                 const hpp = parseFloat(document.getElementById('pkl-new-hpp').value);
@@ -594,13 +595,13 @@ function getPosJs(categoryId) {
                 document.getElementById('pkl-new-harga').value = '';
                 document.getElementById('pkl-new-hpp').value = '';
                 render();
-            };
+            }
             function reset() { if(confirm('Reset?')) { localStorage.removeItem(KEY); render(); } }
             
             function init() { render(); }
             document.addEventListener('DOMContentLoaded', init);
             
-            return { reset, init, addMenu: window.posPkl.addMenu, deleteMenu: window.posPkl.deleteMenu };
+            return { reset, init, addMenu, deleteMenu };
         })();`;
     } else if (categoryId === 'distributor') {
         return `
