@@ -141,11 +141,11 @@ window.LogaritmaDB = {
     // 6. Melacak Pengunjung Unik Harian
     trackVisitor: async function() {
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        const lastVisit = localStorage.getItem("logaritma_last_visit_date");
+        const lastVisit = sessionStorage.getItem("logaritma_last_visit_session");
         
         if(lastVisit !== today) {
-            // Pengunjung baru hari ini
-            localStorage.setItem("logaritma_last_visit_date", today);
+            // Pengunjung baru sesi ini
+            sessionStorage.setItem("logaritma_last_visit_session", today);
             
             if(db) {
                 try {
@@ -267,4 +267,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // Heartbeat every 1 minute
         setInterval(track, 60000);
     }, 1500); 
+});
+
+// Instant Offline on Browser Close
+window.addEventListener('beforeunload', () => {
+    if(window.LogaritmaDB && window.LogaritmaDB.db) {
+        const cuStr = localStorage.getItem("logarithm_current_user");
+        if(cuStr) {
+            try {
+                const u = JSON.parse(cuStr);
+                const wa = u.wa || u.whatsapp;
+                if(wa) {
+                    // Set active time to 5 minutes ago so it's instantly > 2 mins
+                    const pastTime = new Date(Date.now() - 5 * 60000).toISOString();
+                    // Using firestore direct update to be as fast as possible before kill
+                    window.LogaritmaDB.db.collection("leads").doc(wa).update({
+                        last_active: pastTime
+                    });
+                }
+            } catch(e) {}
+        }
+    }
 });
