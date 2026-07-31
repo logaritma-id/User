@@ -228,5 +228,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch(e) {}
         }
     };
-    setTimeout(track, 1500); 
+    
+    // Initial track
+    setTimeout(() => {
+        track();
+        // Heartbeat every 1 minute
+        setInterval(track, 60000);
+    }, 1500); 
 });

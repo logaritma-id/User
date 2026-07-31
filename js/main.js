@@ -879,7 +879,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const d = new Date(dateValue);
             if(isNaN(d.getTime())) return false;
             const diffMinutes = (new Date() - d) / (1000 * 60);
-            return diffMinutes <= 15; // Online if active within last 15 mins
+            return diffMinutes <= 2; // Online if active within last 2 mins
         };
 
         const generateWAUrl = (lead, type) => {
@@ -1053,6 +1053,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Initial Load
         window.refreshAdminData();
+        // Auto-refresh every 30 seconds for real-time feel
+        setInterval(window.refreshAdminData, 30000);
     });
 
 
