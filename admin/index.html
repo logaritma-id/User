@@ -132,19 +132,19 @@
                 <!-- Top Stat Cards (Visitor Stats) -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     <!-- Card 1 -->
-                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 relative overflow-hidden">
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 relative overflow-hidden cursor-pointer hover:bg-slate-800 transition" onclick="window.openVisitorModal()">
                         <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/10 rounded-full blur-xl"></div>
                         <p class="text-xs font-bold text-slate-400 uppercase mb-1">Pengunjung Hari Ini</p>
                         <p class="text-3xl font-bold text-white" id="stat-visitors-today">0</p>
                     </div>
                     <!-- Card 2 -->
-                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 relative overflow-hidden">
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 relative overflow-hidden cursor-pointer hover:bg-slate-800 transition" onclick="window.openVisitorModal()">
                         <div class="absolute -right-4 -top-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
                         <p class="text-xs font-bold text-slate-400 uppercase mb-1">Pengunjung 7 Hari Terakhir</p>
                         <p class="text-3xl font-bold text-white" id="stat-visitors-week">0</p>
                     </div>
                     <!-- Card 3 -->
-                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 relative overflow-hidden">
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 relative overflow-hidden cursor-pointer hover:bg-slate-800 transition" onclick="window.openVisitorModal()">
                         <div class="absolute -right-4 -top-4 w-16 h-16 bg-purple-500/10 rounded-full blur-xl"></div>
                         <p class="text-xs font-bold text-slate-400 uppercase mb-1">Total Pengunjung (All Time)</p>
                         <p class="text-3xl font-bold text-white" id="stat-visitors-all">0</p>
@@ -235,11 +235,40 @@
         </div>
     </main>
 
-        <!-- Firebase SDK (Compat) -->
+    <!-- Visitor History Modal -->
+    <div id="visitor-history-modal" class="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl max-w-4xl w-full mx-4 max-h-[85vh] flex flex-col">
+            <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-heading font-bold text-white">Riwayat Pengunjung Detail</h2>
+                    <p class="text-sm text-slate-400 mt-1">Data IP Address, Wilayah, dan Perangkat</p>
+                </div>
+                <button onclick="document.getElementById('visitor-history-modal').classList.add('hidden')" class="text-slate-400 hover:text-white p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-auto p-0">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-800/50 sticky top-0 z-10">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Waktu Kunjungan</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">IP Address</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Lokasi / Wilayah</th>
+                            <th class="px-6 py-4 font-bold text-slate-400 uppercase tracking-wider">Perangkat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitor-logs-table" class="divide-y divide-slate-800">
+                        <tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Memuat data pengunjung...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="/js/db.js?v=3"></script>
-    <script src="/js/main.js?v=5"></script>
+    <script src="/js/db.js?v=4"></script>
+    <script src="/js/main.js?v=6"></script>
 </body>
-</html>
 

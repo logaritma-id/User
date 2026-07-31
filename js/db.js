@@ -165,6 +165,37 @@ window.LogaritmaDB = {
                     } else {
                         await allTimeRef.update({ count: firebase.firestore.FieldValue.increment(1) });
                     }
+                    
+                    // Track detailed logs
+                    try {
+                        let ipInfo = { ip: "Unknown", city: "Unknown", region: "Unknown", country_name: "Unknown" };
+                        try {
+                            const res = await fetch("https://ipapi.co/json/");
+                            if(res.ok) ipInfo = await res.json();
+                        } catch(e) {}
+                        
+                        const ua = navigator.userAgent;
+                        let device = "Desktop";
+                        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) device = "Mobile";
+                        
+                        let os = "Unknown OS";
+                        if (ua.indexOf("Win") != -1) os = "Windows";
+                        else if (ua.indexOf("Mac") != -1) os = "MacOS";
+                        else if (ua.indexOf("Android") != -1) os = "Android";
+                        else if (ua.indexOf("like Mac") != -1) os = "iOS";
+                        else if (ua.indexOf("Linux") != -1) os = "Linux";
+                        
+                        await db.collection("visitor_logs").add({
+                            timestamp: new Date().toISOString(),
+                            date: today,
+                            ip: ipInfo.ip || "Unknown",
+                            location: `${ipInfo.city || 'Unknown'}, ${ipInfo.region || 'Unknown'}, ${ipInfo.country_name || 'Unknown'}`,
+                            device: `${device} (${os})`,
+                            userAgent: ua
+                        });
+                    } catch(e) {
+                        console.error("Error logging detailed visitor: ", e);
+                    }
                 } catch(e) {
                     console.error("Error tracking visitor: ", e);
                 }

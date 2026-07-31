@@ -1452,3 +1452,58 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     if(window.LogaritmaDB) track(); else setTimeout(track, 1500); 
 });
+
+window.openVisitorModal = async function() {
+    const modal = document.getElementById('visitor-history-modal');
+    if(modal) {
+        modal.classList.remove('hidden');
+        const tableBody = document.getElementById('visitor-logs-table');
+        if(tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Memuat data pengunjung...</td></tr>';
+            
+            if(window.LogaritmaDB && window.LogaritmaDB.db) {
+                try {
+                    const snapshot = await window.LogaritmaDB.db.collection("visitor_logs")
+                        .orderBy("timestamp", "desc")
+                        .limit(100)
+                        .get();
+                        
+                    if(snapshot.empty) {
+                        tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Belum ada riwayat pengunjung terperinci.</td></tr>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        let timeStr = data.timestamp;
+                        try {
+                            const d = new Date(data.timestamp);
+                            timeStr = d.toLocaleString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+                        } catch(e){}
+                        
+                        html += `
+                            <tr class="hover:bg-slate-800/50 transition">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">${timeStr}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-blue-400">${data.ip || '-'}</td>
+                                <td class="px-6 py-4 text-sm text-slate-300">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                        ${data.location || '-'}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-300">${data.device || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                    tableBody.innerHTML = html;
+                } catch(e) {
+                    console.error("Error fetching logs", e);
+                    tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-red-400">Gagal memuat riwayat pengunjung.</td></tr>';
+                }
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-red-400">Koneksi database terputus.</td></tr>';
+            }
+        }
+    }
+};
