@@ -1145,8 +1145,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                 setTimeout(() => {
                     document.getElementById('login-modal').classList.add('hidden');
                     document.getElementById('login-modal').classList.remove('flex');
-                    document.body.style.overflow = "auto";
-                    window.location.href = "#kalkulator";
+                    
+                    const diagModal = document.getElementById('diagnostic-modal');
+                    if(diagModal) {
+                        diagModal.classList.remove('hidden');
+                        diagModal.classList.add('flex');
+                        document.body.style.overflow = "hidden";
+                    } else {
+                        document.body.style.overflow = "auto";
+                        window.location.href = "#kalkulator";
+                    }
                 }, 1500);
             }
 
