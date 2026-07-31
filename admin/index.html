@@ -37,6 +37,52 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen flex selection:bg-blue-500/30 selection:text-blue-200">
+    
+    <!-- Admin Login Overlay -->
+    <div id="admin-login-overlay" class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-xl shadow-2xl max-w-sm w-full mx-4">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">∑</span>
+                <h1 class="text-2xl font-heading font-bold text-white">Logaritma<span class="text-blue-400">Admin</span></h1>
+            </div>
+            <p class="text-sm text-slate-400 mb-6">Silakan login untuk mengakses dashboard admin.</p>
+            <form id="admin-login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Email</label>
+                    <input type="email" id="admin-email" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition" placeholder="admin@logaritma.id">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Password</label>
+                    <input type="password" id="admin-password" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition" placeholder="••••••••">
+                </div>
+                <div id="admin-login-error" class="hidden text-red-400 text-sm py-1">Email atau Password salah!</div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg shadow-lg shadow-blue-500/20 transition">
+                    Login Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const isLoggedIn = sessionStorage.getItem('logaritma_admin_auth') === 'true';
+        const overlay = document.getElementById('admin-login-overlay');
+        if (isLoggedIn) {
+            overlay.remove();
+        } else {
+            document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('admin-email').value;
+                const password = document.getElementById('admin-password').value;
+                if (email === 'logaritma.tim@gmail.com' && password === 'adminlog2026') {
+                    sessionStorage.setItem('logaritma_admin_auth', 'true');
+                    overlay.style.opacity = '0';
+                    overlay.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => overlay.remove(), 300);
+                } else {
+                    document.getElementById('admin-login-error').classList.remove('hidden');
+                }
+            });
+        }
+    </script>
 
     <!-- Sidebar Navigasi -->
     <aside id="admin-sidebar" class="w-64 bg-slate-900 border-r border-slate-800 flex-col hidden md:flex shrink-0 absolute md:relative z-50 inset-y-0 left-0 h-full">
