@@ -532,35 +532,125 @@
     <script src="/js/category-config.js"></script>
     
     <!-- MAIN APPLICATION LOGIC -->
+    
+    <!-- Premium Paywall Modal -->
+    <div id="paywall-modal" class="fixed inset-0 z-[100] hidden items-center justify-center modal-overlay px-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg p-8 relative shadow-2xl overflow-hidden">
+            <button id="close-paywall-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white z-20">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="text-center relative z-10">
+                <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full mx-auto flex items-center justify-center text-3xl shadow-lg shadow-orange-500/30 mb-4">👑</div>
+                <h3 class="text-2xl font-bold text-white mb-2 font-heading">Fitur Eksklusif Premium</h3>
+                <p class="text-slate-400 text-sm mb-6">Tingkatkan keanggotaan Anda untuk mengakses Kalkulator LTM, Kasir POS, dan AI Pembuat Dokumen secara tanpa batas.</p>
+                
+                <div class="space-y-3">
+                    <a href="https://baimwarunkarsi.myr.id/m/logaritma-umkm-pro-akses-ai-profit-engine" target="_blank" class="block w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-orange-500/25">
+                        🌟 Langganan Baru (PRO)
+                    </a>
+                    <a href="https://baimwarunkarsi.myr.id/pay-membership" target="_blank" class="block w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-3.5 rounded-xl transition">
+                        🔄 Perpanjang Layanan
+                    </a>
+                </div>
+                <p class="text-xs text-slate-500 mt-6">Setelah pembayaran berhasil, Admin akan memverifikasi dan mengaktifkan fitur PRO Anda.</p>
+            </div>
+            
+            <!-- BG Decor -->
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl"></div>
+    </div>
+    
+    <!-- MAIN APPLICATION LOGIC -->
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
         
         // Setup API (Obfuscated slightly for frontend)
         
+        
+        let isPremiumUser = false;
         const _userStr = localStorage.getItem('logarithm_current_user');
-        let _userData = {};
-        try { if(_userStr) _userData = JSON.parse(_userStr); } catch(e) {}
-        const businessName = _userData.namaBisnis || '';
-        const ownerName = _userData.namaPemilik || '';
+        let businessName = '';
+        let ownerName = '';
+        let waNumber = '';
+        
+        try { 
+            if(_userStr) {
+                const _userData = JSON.parse(_userStr); 
+                businessName = _userData.namaBisnis || _userData.bisnis || '';
+                ownerName = _userData.namaPemilik || _userData.nama || '';
+                waNumber = _userData.whatsapp || _userData.wa || '';
+                const st = (_userData.status || '').toUpperCase();
+                if(st.includes('PRO') || st.includes('PREMIUM')) isPremiumUser = true;
+            } 
+        } catch(e) {}
+        
         const businessContextStr = businessName ? ` bernama '${businessName}' milik ${ownerName}` : '';
         
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // DB Sync
+            if(waNumber && window.LogaritmaDB) {
+                try {
+                    const dbUser = await window.LogaritmaDB.getUserByWA(waNumber);
+                    if(dbUser) {
+                        const status = (dbUser.status || '').toUpperCase();
+                        isPremiumUser = status.includes('PREMIUM') || status.includes('PRO');
+                        localStorage.setItem('logarithm_current_user', JSON.stringify(dbUser));
+                    }
+                } catch(e) {
+                    console.error("DB Sync Error:", e);
+                }
+            }
+
+            if(isPremiumUser) {
+                const badge = document.getElementById('plan-badge');
+                if(badge) {
+                    badge.innerText = 'PREMIUM PRO';
+                    badge.classList.remove('bg-slate-800', 'text-slate-300');
+                    badge.classList.add('bg-amber-500/20', 'text-amber-400');
+                }
+                document.querySelectorAll('.trigger-paywall').forEach(btn => btn.style.display = 'none');
+            }
+            
             if(businessName) {
                 const titleEl = document.getElementById('dashboard-cat-title');
-                if(titleEl) titleEl.innerText += ' - ' + businessName;
+                if(titleEl && !titleEl.innerText.includes(businessName)) titleEl.innerText += ' - ' + businessName;
                 
                 const engineDesc = document.getElementById('engine-status-desc');
                 if(engineDesc) engineDesc.innerText = 'Tim Logaritma siap membantu ' + businessName;
                 
-                // Update LTM and Kasir POS
                 document.querySelectorAll('h2').forEach(h2 => {
-                    if(h2.innerText.includes('Uji Dampak Kegiatan')) {
+                    if(h2.innerText.includes('Uji Dampak Kegiatan') && !h2.innerText.includes(businessName)) {
                         h2.innerText = h2.innerText.replace('Uji Dampak Kegiatan', 'Uji Dampak - ' + businessName);
-                    } else if(h2.innerText.includes('Kasir POS') || h2.innerText.includes('Kasir PKL')) {
+                    } else if((h2.innerText.includes('Kasir POS') || h2.innerText.includes('Kasir PKL')) && !h2.innerText.includes(businessName)) {
                         h2.innerText = h2.innerText + ' (' + businessName + ')';
                     }
                 });
             }
+            
+            // Paywall Modal Close Logic
+            const closePaywallBtn = document.getElementById('close-paywall-btn');
+            const paywallModal = document.getElementById('paywall-modal');
+            if(closePaywallBtn && paywallModal) {
+                closePaywallBtn.addEventListener('click', () => {
+                    paywallModal.classList.add('hidden');
+                    paywallModal.classList.remove('flex');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            document.querySelectorAll('.trigger-paywall, .trigger-premium').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if(!isPremiumUser) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if(paywallModal) {
+                            paywallModal.classList.remove('hidden');
+                            paywallModal.classList.add('flex');
+                            document.body.style.overflow = 'hidden';
+                        }
+                    }
+                });
+            });
         });
 
           const p1 = "AIzaSy";
@@ -1370,5 +1460,10 @@
         });
     };
     </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="../../js/db.js"></script>
 </body>
 </html>

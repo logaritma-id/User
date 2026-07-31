@@ -858,7 +858,10 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const renderAdmin = () => {
             let totalLeads = leads.length;
-            let premiumLeads = leads.filter(l => l.status === "Member Premium").length;
+            let premiumLeads = leads.filter(l => {
+                  const s = (l.status || "").toUpperCase();
+                  return s.includes("PREMIUM") || s.includes("PRO");
+              }).length;
             
             // Update stats cards
             const totalLeadsEl = document.getElementById("stat-total-leads");
@@ -901,7 +904,8 @@ document.addEventListener("DOMContentLoaded", async function() {
                         <select onchange="updateLeadStatus(${index}, this.value)" class="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
                             <option value="Calon Pelanggan" ${lead.status === 'Calon Pelanggan' ? 'selected' : ''}>Calon Pelanggan</option>
                             <option value="Di-Follow Up" ${lead.status === 'Di-Follow Up' ? 'selected' : ''}>Di-Follow Up</option>
-                            <option value="Member Premium" ${lead.status === 'Member Premium' ? 'selected' : ''}>Member Premium</option>
+                            <option value="Member Premium" ${(lead.status || '').toUpperCase().includes('PREMIUM') ? 'selected' : ''}>Member Premium</option>
+                              <option value="PRO" ${(lead.status || '').toUpperCase() === 'PRO' ? 'selected' : ''}>PRO</option>
                         </select>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
