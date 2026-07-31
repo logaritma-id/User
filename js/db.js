@@ -21,6 +21,7 @@ if (firebaseConfig.apiKey !== "GANTI_DENGAN_API_KEY") {
 
 // Helper Functions untuk Global Scope
 window.LogaritmaDB = {
+    db: db, // Export db instance
     // 1. Menyimpan Lead Baru dari Form Diagnostik
     saveLead: async function(leadData) {
         if (!db) {
