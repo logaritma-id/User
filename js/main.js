@@ -1129,7 +1129,17 @@ document.addEventListener("DOMContentLoaded", async function() {
             
             if(foundUser) {
                 localStorage.setItem("logarithm_current_user", JSON.stringify(foundUser));
-                window.location.href = "/tools/";
+                let catId = foundUser.categoryId;
+                if(!catId) {
+                    const k = foundUser.kategori || "";
+                    if(k.includes("Kuliner") || k.includes("F&B")) catId = "kuliner";
+                    else if(k.includes("Fashion") || k.includes("Retail") || k.includes("Olshop")) catId = "fashion";
+                    else if(k.includes("Percetakan") || k.includes("Jasa") || k.includes("Kriya") || k.includes("Bengkel")) catId = "percetakan";
+                    else if(k.includes("PKL") || k.includes("Lapakan")) catId = "pkl";
+                    else if(k.includes("Distributor") || k.includes("Agen") || k.includes("Grosir")) catId = "distributor";
+                    else catId = "kuliner"; // default
+                }
+                window.location.href = "/tools/" + catId + "/";
             } else {
                 errorMsg.classList.remove("hidden");
                 setTimeout(() => {
