@@ -819,7 +819,8 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (adminMenuBtn && adminSidebar) {
             adminMenuBtn.addEventListener("click", () => {
-                adminSidebar.classList.toggle("-translate-x-full");
+                adminSidebar.classList.toggle("hidden");
+                adminSidebar.classList.toggle("flex");
             });
         }
 
