@@ -714,6 +714,397 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
+            if(window.LogaritmaDB && window.LogaritmaDB.trackActivity) {
+                const currentUserStr = localStorage.getItem("logarithm_current_user");
+                if(currentUserStr) {
+                    const u = JSON.parse(currentUserStr);
+                    window.LogaritmaDB.trackActivity(u.wa || u.whatsapp, "Kalkulator Profit");
+                }
+            }
+            const omzet = profit / (margin / 100);
+            const salesUnit = omzet / harga;
+            const leadsTotal = salesUnit / (cr / 100);
+            const leadsHarian = leadsTotal / 30;
+
+            const targetDefaultData = {
+                omzetBulan: omzet,
+                targetUnitBulan: salesUnit,
+                leadsHarian: leadsHarian
+            };
+            localStorage.setItem("logaritma_default_target", JSON.stringify(targetDefaultData));
+            
+            // Try updating sop badge if it exists
+            if (typeof window.updateSopBadge === "function") {
+                window.updateSopBadge();
+            }
+
+            const formatRp = (num) => "Rp " + Math.round(num).toLocaleString("id-ID");
+
+            document.getElementById("hasil-omzet").textContent = formatRp(omzet);
+            document.getElementById("hasil-unit").textContent = Math.round(salesUnit).toLocaleString("id-ID") + " Unit";
+            document.getElementById("hasil-leads").textContent = Math.ceil(leadsHarian) + " Leads/hari";
+
+            document.getElementById("hasil-profit").classList.remove("hidden");
+
+            // Rekomendasi Eksekusi Tim Logaritma Logic
+            const rekFreeState = document.getElementById("rek-free-state");
+            const rekPremiumState = document.getElementById("rek-premium-state");
+            const rekPremiumContent = document.getElementById("rek-premium-content");
+            
+            if (currentUser.status === "FREE") {
+                if(rekFreeState) rekFreeState.classList.remove("hidden");
+                if(rekPremiumState) rekPremiumState.classList.add("hidden");
+            } else {
+                if(rekFreeState) rekFreeState.classList.add("hidden");
+                if(rekPremiumState) {
+                    rekPremiumState.classList.remove("hidden");
+                    let premiumHTML = `<ul class="list-disc list-inside space-y-2">`;
+                    if (currentUser.kategori === "Kuliner & F&B") {
+                        premiumHTML += `<li>SOP Quality Control Bahan Baku (Mencegah Wastage)</li>`;
+                        premiumHTML += `<li>Draft Instruksi Kerja Kasir untuk Upselling</li>`;
+                        premiumHTML += `<li>Format Rekap Penjualan Harian via WA Group</li>`;
+                    } else if (currentUser.kategori === "Fashion & Olshop") {
+                        premiumHTML += `<li>Skrip Balas Chat WA (Meningkatkan Konversi Sales)</li>`;
+                        premiumHTML += `<li>SOP Packing Barang Anti Salah Kirim</li>`;
+                        premiumHTML += `<li>Matriks Re-stock Barang Fast Moving</li>`;
+                    } else if (currentUser.kategori === "Jasa & Percetakan" || currentUser.kategori === "Jasa & Kriya") {
+                        premiumHTML += `<li>SOP Maintenance Mesin Mingguan (Mencegah Downtime)</li>`;
+                        premiumHTML += `<li>SLA Pengerjaan Order & Sistem Antrian</li>`;
+                        premiumHTML += `<li>Formulir Quality Control Hasil Cetak</li>`;
+                    } else if (currentUser.kategori === "PKL & Lapakan") {
+                        premiumHTML += `<li>Aturan Pisah Uang Kas Pribadi & Jualan</li>`;
+                        premiumHTML += `<li>SOP Persiapan Buka Lapak & Bersih-bersih</li>`;
+                        premiumHTML += `<li>Tabel Pencatatan Laba Bersih Sederhana</li>`;
+                    } else {
+                        premiumHTML += `<li>SOP Standar Operasional Harian</li>`;
+                        premiumHTML += `<li>Draft Evaluasi Kinerja Karyawan Bulanan</li>`;
+                    }
+                    premiumHTML += `</ul>`;
+                    if(rekPremiumContent) rekPremiumContent.innerHTML = premiumHTML;
+                }
+            }
+        });
+    }
+
+    // AI SOP Logic & Quota
+    const btnSop = document.getElementById("btn-generate-sop");
+    if (btnSop) {
+        let aiQuota = parseInt(localStorage.getItem("logaritma_ai_quota") || "2");
+        updateQuotaUI(aiQuota);
+
+        // Event listener dipindahkan ke js/workspace.js
+    }
+
+    function updateQuotaUI(quota) {
+        const quotaText = document.getElementById("ai-quota-text");
+        const quotaBar = document.getElementById("ai-quota-bar");
+        if(quotaText && quotaBar) {
+            quotaText.textContent = `${quota}/3`;
+            quotaBar.style.width = `${(quota/3)*100}%`;
+            
+            if(quota === 0) {
+                quotaBar.classList.replace("bg-emerald-500", "bg-red-500");
+            }
+        }
+    }
+
+    // ==========================================
+    // ADMIN DASHBOARD LOGIC (/admin/index.html)
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", async function() {
+        // Admin Mobile Menu Toggle
+        const adminMenuBtn = document.getElementById("admin-menu-btn");
+        const adminSidebar = document.getElementById("admin-sidebar");
+        
+        if (adminMenuBtn && adminSidebar) {
+            adminMenuBtn.addEventListener("click", () => {
+                adminSidebar.classList.toggle("-translate-x-full");
+            });
+        }
+
+        // Hanya jalankan jika di halaman admin
+        if (!document.getElementById("view-dashboard")) return;
+
+        let leads = [];
+        let visitorStats = { today: 0, lastWeek: 0, allTime: 0 };
+
+        // Tab Switching Logic
+        const navs = {
+            'dashboard': { btn: document.getElementById('nav-dashboard'), view: document.getElementById('view-dashboard') },
+            'leads': { btn: document.getElementById('nav-leads'), view: document.getElementById('view-leads') },
+            'premium': { btn: document.getElementById('nav-premium'), view: document.getElementById('view-premium') }
+        };
+
+        function switchTab(tabId) {
+            Object.keys(navs).forEach(key => {
+                const n = navs[key];
+                if(n.btn && n.view) {
+                    if(key === tabId) {
+                        n.btn.classList.add('bg-blue-600/10', 'text-blue-400', 'active');
+                        n.btn.classList.remove('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+                        n.view.classList.remove('hidden');
+                        n.view.classList.add('block');
+                    } else {
+                        n.btn.classList.remove('bg-blue-600/10', 'text-blue-400', 'active');
+                        n.btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+                        n.view.classList.remove('block');
+                        n.view.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        Object.keys(navs).forEach(key => {
+            if(navs[key].btn) {
+                navs[key].btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchTab(key);
+                });
+            }
+        });
+
+        // Helper functions
+        const formatDate = (dateValue) => {
+            if(!dateValue) return '-';
+            if(typeof dateValue === 'string' && dateValue.includes('/')) return dateValue;
+            const d = new Date(dateValue);
+            if(isNaN(d.getTime())) return '-';
+            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        };
+
+        const isOnline = (dateValue) => {
+            if(!dateValue) return false;
+            const d = new Date(dateValue);
+            if(isNaN(d.getTime())) return false;
+            const diffMinutes = (new Date() - d) / (1000 * 60);
+            return diffMinutes <= 15; // Online if active within last 15 mins
+        };
+
+        const generateWAUrl = (lead, type) => {
+            let text = "";
+            if(type === "free") {
+                text = `Halo Bapak/Ibu ${lead.nama}, saya dari Logaritma.id melihat bisnis Anda berstatus ${lead.kesehatan}. Mari diskusikan bagaimana Logaritma bisa membantu.`;
+            } else {
+                text = `Halo Bapak/Ibu ${lead.nama}, terima kasih telah berlangganan Logaritma UMKM PRO. Apakah ada kendala saat menggunakan fitur kami?`;
+            }
+            return `https://wa.me/${lead.wa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
+        };
+
+        // Render Functions
+        function renderDashboard() {
+            // Visitor Stats
+            document.getElementById('stat-visitors-today').textContent = visitorStats.today;
+            document.getElementById('stat-visitors-week').textContent = visitorStats.lastWeek; // We can improve this query later
+            document.getElementById('stat-visitors-all').textContent = visitorStats.allTime;
+
+            // Activity Log Table (All users sorted by last_active)
+            const tbody = document.getElementById('admin-dashboard-table');
+            if(!tbody) return;
+
+            const activeLeads = leads.filter(l => l.last_active).sort((a,b) => new Date(b.last_active) - new Date(a.last_active)).slice(0, 50);
+            
+            if(activeLeads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Belum ada aktivitas terekam.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = activeLeads.map(lead => {
+                const online = isOnline(lead.last_active);
+                return `
+                <tr class="border-b border-slate-700/50 hover:bg-slate-800/30 transition">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${formatDate(lead.last_active)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full ${online ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]' : 'bg-slate-600'}"></span>
+                            ${lead.nama || lead.namaPemilik}
+                        </div>
+                        <div class="text-xs text-slate-500">${lead.kategori}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                        Membuka: <span class="font-bold text-blue-400">${lead.last_feature_opened || 'Dashboard / General'}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-[10px] font-bold rounded-full border ${online ? 'bg-green-500/10 text-green-400 border-green-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}">${online ? 'ONLINE' : 'OFFLINE'}</span>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderLeads() {
+            const tbody = document.getElementById('admin-leads-table');
+            if(!tbody) return;
+
+            const freeLeads = leads.filter(l => {
+                const s = (l.status || "").toUpperCase();
+                return !s.includes("PREMIUM") && !s.includes("PRO");
+            });
+
+            if(freeLeads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Belum ada calon pelanggan.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = freeLeads.map((lead, index) => {
+                const online = isOnline(lead.last_active);
+                return `
+                <tr class="border-b border-slate-700/50 hover:bg-slate-800/30 transition">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-bold rounded-full border bg-slate-800 text-slate-400 border-slate-700">FREE PLAN</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full ${online ? 'bg-green-500' : 'bg-slate-600'}" title="${online ? 'Online' : 'Offline'}"></span>
+                            ${lead.nama || lead.namaPemilik}
+                        </div>
+                        <div class="text-sm text-slate-400">${lead.wa || lead.whatsapp}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-slate-300">${lead.kategori}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-xs text-slate-400">${lead.last_active ? formatDate(lead.last_active) : 'Belum pernah login'}</div>
+                        <div class="text-[10px] text-slate-500 mt-1">${lead.last_feature_opened ? 'Buka: ' + lead.last_feature_opened : ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap flex gap-2">
+                        <a href="${generateWAUrl(lead, 'free')}" target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded shadow transition flex items-center gap-1">
+                            Hubungi WA
+                        </a>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderPremium() {
+            const tbody = document.getElementById('admin-premium-table');
+            if(!tbody) return;
+
+            const premiumLeads = leads.filter(l => {
+                const s = (l.status || "").toUpperCase();
+                return s.includes("PREMIUM") || s.includes("PRO");
+            });
+
+            if(premiumLeads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Belum ada pelanggan premium.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = premiumLeads.map((lead, index) => {
+                const online = isOnline(lead.last_active);
+                return `
+                <tr class="border-b border-slate-700/50 hover:bg-slate-800/30 transition">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-bold rounded-full border bg-amber-500/20 text-amber-400 border-amber-500/30">PRO MEMBER</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full ${online ? 'bg-green-500' : 'bg-slate-600'}" title="${online ? 'Online' : 'Offline'}"></span>
+                            ${lead.nama || lead.namaPemilik}
+                        </div>
+                        <div class="text-sm text-slate-400">${lead.wa || lead.whatsapp}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-slate-300">${lead.kategori}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-xs text-slate-400">${lead.last_active ? formatDate(lead.last_active) : '-'}</div>
+                        <div class="text-[10px] text-slate-500 mt-1">${lead.last_feature_opened ? 'Buka: ' + lead.last_feature_opened : ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap flex gap-2">
+                        <a href="${generateWAUrl(lead, 'pro')}" target="_blank" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded shadow transition flex items-center gap-1">
+                            Support WA
+                        </a>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // Main Data Fetcher
+        window.refreshAdminData = async function() {
+            if(window.LogaritmaDB) {
+                leads = await window.LogaritmaDB.getAllLeads();
+                visitorStats = await window.LogaritmaDB.getVisitorStats();
+            } else {
+                leads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
+            }
+            
+            renderDashboard();
+            renderLeads();
+            renderPremium();
+        };
+
+        // Attach Refresh Buttons
+        document.querySelectorAll('.btn-refresh').forEach(btn => {
+            btn.addEventListener("click", () => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "🔄 Memuat...";
+                window.refreshAdminData().then(() => {
+                    btn.innerHTML = originalText;
+                });
+            });
+        });
+
+        // Initial Load
+        window.refreshAdminData();
+    });
+
+    // Input Formatter
+    function formatRibuan(angka) {
+        let number_string = angka.replace(/[^,\d]/g, '').toString();
+        let split = number_string.split(',');
+        let sisa = split[0].length % 3;
+        let rupiah = split[0].substr(0, sisa);
+        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+        return rupiah;
+    }
+
+    const inputsNominal = ["input-profit", "input-harga", "input-ltm-biaya", "input-ltm-target", "fb-input-profit", "fb-input-harga"];
+    inputsNominal.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.addEventListener("input", function(e) {
+                this.value = formatRibuan(this.value);
+            });
+        }
+    });
+
+    const printDate = document.getElementById("print-date");
+    if(printDate) {
+        const d = new Date();
+        printDate.textContent = "Dibuat pada: " + d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
+    }
+
+    // Profit Calculator Logic
+    const btnProfit = document.getElementById("btn-kalkulasi-profit");
+    if (btnProfit) {
+        btnProfit.addEventListener("click", () => {
+            const rawProfit = document.getElementById("input-profit").value.replace(/\./g, "");
+            const rawHarga = document.getElementById("input-harga").value.replace(/\./g, "");
+            
+            const profit = parseFloat(rawProfit);
+            const margin = parseFloat(document.getElementById("input-margin").value);
+            const harga = parseFloat(rawHarga);
+            const cr = parseFloat(document.getElementById("input-cr").value);
+
+            if (!profit || !margin || !harga || !cr) {
+                Swal.fire({text: "Harap isi semua kolom dengan angka yang valid.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
+                return;
+            }
+
+            if(window.LogaritmaDB && window.LogaritmaDB.trackActivity) {
+                const currentUserStr = localStorage.getItem("logarithm_current_user");
+                if(currentUserStr) {
+                    const u = JSON.parse(currentUserStr);
+                    window.LogaritmaDB.trackActivity(u.wa || u.whatsapp, "Kalkulator Profit");
+                }
+            }
             const omzet = profit / (margin / 100);
             const salesUnit = omzet / harga;
             const leadsTotal = salesUnit / (cr / 100);
@@ -803,152 +1194,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-// =// ==========================================
-// ADMIN DASHBOARD LOGIC (/admin/index.html)
-// ==========================================
-document.addEventListener("DOMContentLoaded", async function() {
-    // Admin Mobile Menu Toggle
-    const adminMenuBtn = document.getElementById("admin-menu-btn");
-    const adminSidebar = document.getElementById("admin-sidebar");
-    
-    if (adminMenuBtn && adminSidebar) {
-        adminMenuBtn.addEventListener("click", () => {
-            adminSidebar.classList.toggle("-translate-x-full");
-        });
-    }
 
-    // Populate Data leads
-    const tableBody = document.getElementById("admin-leads-table");
-    if(tableBody) {
-        let leads = [];
-        if(window.LogaritmaDB) {
-            leads = await window.LogaritmaDB.getAllLeads();
-        } else {
-            leads = JSON.parse(localStorage.getItem("logarithm_admin_leads") || "[]");
-        }
-
-        window.refreshAdminData = async function() {
-            if(window.LogaritmaDB) leads = await window.LogaritmaDB.getAllLeads();
-            renderAdmin();
-        };
-
-        const btnRefresh = document.getElementById("btn-refresh-data");
-        if(btnRefresh) {
-            btnRefresh.addEventListener("click", () => {
-                btnRefresh.innerHTML = "🔄 Memuat...";
-                window.refreshAdminData().then(() => {
-                    btnRefresh.innerHTML = "🔄 Refresh Data";
-                });
-            });
-        }
-
-        // Helper date format
-        const formatDate = (dateValue) => {
-            if(!dateValue) return '-';
-            
-            // Jika dateValue sudah format dd/mm/yyyy
-            if(typeof dateValue === 'string' && dateValue.includes('/')) {
-                return dateValue;
-            }
-            
-            const d = new Date(dateValue);
-            if(isNaN(d.getTime())) return '-'; // Invalid date
-            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        };
-
-        const renderAdmin = () => {
-            let totalLeads = leads.length;
-            let premiumLeads = leads.filter(l => {
-                  const s = (l.status || "").toUpperCase();
-                  return s.includes("PREMIUM") || s.includes("PRO");
-              }).length;
-            
-            // Update stats cards
-            const totalLeadsEl = document.getElementById("stat-total-leads");
-            const premiumLeadsEl = document.getElementById("stat-premium-leads");
-            if(totalLeadsEl) totalLeadsEl.textContent = totalLeads;
-            if(premiumLeadsEl) premiumLeadsEl.textContent = premiumLeads;
-
-            if(leads.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500">Belum ada data lead diagnostik.</td></tr>`;
-                return;
-            }
-
-            tableBody.innerHTML = "";
-            leads.forEach((lead, index) => {
-                let badgeClass = "bg-slate-500/20 text-slate-400";
-                if(lead.kesehatan === "Sehat") badgeClass = "bg-green-500/20 text-green-400 border-green-500/30";
-                if(lead.kesehatan === "Transisi") badgeClass = "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
-                if(lead.kesehatan === "Kritis") badgeClass = "bg-red-500/20 text-red-400 border-red-500/30";
-
-                let tr = document.createElement("tr");
-                tr.className = "border-b border-slate-700/50 hover:bg-slate-800/30 transition";
-                tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">${formatDate(lead.timestamp || lead.tanggal)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="font-medium text-white">${lead.nama || lead.namaPemilik}</div>
-                        <div class="text-sm text-slate-400">${lead.wa || lead.whatsapp}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-slate-300">${lead.kategori}</div>
-                        <div class="text-xs text-slate-500">${lead.skor || 0}/5</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs font-bold rounded-full border ${badgeClass}">${lead.kesehatan || lead.skorKesehatan}</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-white">${lead.activity_count || 0} Aksi</div>
-                        <div class="text-xs text-slate-500">${lead.last_active ? formatDate(lead.last_active) : '-'}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <select onchange="updateLeadStatus(${index}, this.value)" class="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
-                            <option value="Calon Pelanggan" ${lead.status === 'Calon Pelanggan' ? 'selected' : ''}>Calon Pelanggan</option>
-                            <option value="Di-Follow Up" ${lead.status === 'Di-Follow Up' ? 'selected' : ''}>Di-Follow Up</option>
-                            <option value="Member Premium" ${(lead.status || '').toUpperCase().includes('PREMIUM') ? 'selected' : ''}>Member Premium</option>
-                              <option value="PRO" ${(lead.status || '').toUpperCase() === 'PRO' ? 'selected' : ''}>PRO</option>
-                        </select>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <button onclick="sendWA(${index})" class="px-3 py-1 bg-green-600 hover:bg-green-500 text-white text-sm rounded shadow transition">Kirim WA</button>
-                    </td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        };
-
-        window.updateLeadStatus = async function(index, newStatus) {
-            leads[index].status = newStatus;
-            if(window.LogaritmaDB) {
-                await window.LogaritmaDB.updateLeadStatus(leads[index].wa || leads[index].whatsapp, newStatus);
-            } else {
-                localStorage.setItem("logarithm_admin_leads", JSON.stringify(leads));
-            }
-            renderAdmin();
-        };
-
-        window.sendWA = async function(index) {
-            const lead = leads[index];
-            const text = `Halo Bapak/Ibu ${lead.nama}, saya dari Logaritma.id melihat bisnis ${lead.kategori} Anda berstatus ${lead.kesehatan}. Mari diskusikan bagaimana Logaritma bisa membantu.`;
-            const waUrl = `https://wa.me/${lead.wa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
-            
-            if(lead.status === "Calon Pelanggan") {
-                leads[index].status = "Di-Follow Up";
-                if(window.LogaritmaDB) {
-                    await window.LogaritmaDB.updateLeadStatus(leads[index].wa || leads[index].whatsapp, "Di-Follow Up");
-                } else {
-                    localStorage.setItem("logarithm_admin_leads", JSON.stringify(leads));
-                }
-                renderAdmin();
-            }
-            
-            window.open(waUrl, "_blank");
-        };
-
-        renderAdmin();
-    }
-});
-
-document.getElementById("admin-sidebar");
 // LTM CHECKER LOGIC (/tools/index.html)
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
@@ -965,6 +1211,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
+            if(window.LogaritmaDB && window.LogaritmaDB.trackActivity) {
+                const currentUserStr = localStorage.getItem("logarithm_current_user");
+                if(currentUserStr) {
+                    const u = JSON.parse(currentUserStr);
+                    window.LogaritmaDB.trackActivity(u.wa || u.whatsapp, "LTM Checker");
+                }
+            }
             const roi = ((target - biaya) / biaya) * 100;
             
             const badge = document.getElementById("ltm-badge");
@@ -1326,3 +1579,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+d o c u m e n t . a d d E v e n t L i s t e n e r ( ' D O M C o n t e n t L o a d e d ' ,   ( )   = >   {   i f ( w i n d o w . L o g a r i t m a D B   & &   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r )   {   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r ( ) ;   }   e l s e   {   s e t T i m e o u t ( ( )   = >   {   i f ( w i n d o w . L o g a r i t m a D B   & &   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r )   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r ( ) ;   } ,   1 5 0 0 ) ;   }   } ) ;  
+ 
