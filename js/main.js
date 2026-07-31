@@ -1302,7 +1302,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if(k.includes('Agen') || k.includes('Distributor') || k.includes('Grosir')) catId = 'distributor';
                 else catId = 'kuliner';
             }
-            window.location.href = '/tools/' + catId + '/#dasbor';
+            window.top.location.href = '/tools/' + catId + '/#dasbor';
         }
     }
 });
