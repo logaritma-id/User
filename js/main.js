@@ -1283,3 +1283,26 @@ document.addEventListener("DOMContentLoaded", async function() {
 });
 
 
+
+// ==========================================
+// MAYAR PAYMENT AUTO-REDIRECT
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    if(window.location.pathname === '/' || window.location.pathname === '/index.html') {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (localStorage.getItem('logarithm_current_user') && urlParams.get('payment') === 'success') {
+            const user = JSON.parse(localStorage.getItem('logarithm_current_user'));
+            let catId = user.categoryId;
+            if(!catId) {
+                const k = user.kategori || '';
+                if(k.includes('Kuliner') || k.includes('F&B')) catId = 'kuliner';
+                else if(k.includes('Fashion') || k.includes('Retail') || k.includes('Olshop')) catId = 'fashion';
+                else if(k.includes('Percetakan') || k.includes('Sablon')) catId = 'percetakan';
+                else if(k.includes('Kaki Lima') || k.includes('Gerobak')) catId = 'pkl';
+                else if(k.includes('Agen') || k.includes('Distributor') || k.includes('Grosir')) catId = 'distributor';
+                else catId = 'kuliner';
+            }
+            window.location.href = '/tools/' + catId + '/#dasbor';
+        }
+    }
+});
