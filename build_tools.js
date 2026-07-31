@@ -1272,6 +1272,17 @@ function generateHtml(category) {
         
         // --- SPA TAB LOGIC ---
         window.switchTab = (tabId) => {
+            const lockedTabs = ['dokumen', 'uji-dampak', 'pos-section', 'diskusi'];
+            if (lockedTabs.includes(tabId) && !isPremiumUser) {
+                const paywallModal = document.getElementById('paywall-modal');
+                if(paywallModal) {
+                    paywallModal.classList.remove('hidden');
+                    paywallModal.classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                }
+                return;
+            }
+            
             // Update Navigation active state
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.classList.remove('active', 'bg-white/10', 'text-white');
