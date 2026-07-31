@@ -883,12 +883,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const generateWAUrl = (lead, type) => {
             let text = "";
+            const nama = lead.nama || lead.namaPemilik || "";
+            const wa = lead.wa || lead.whatsapp || "";
+            
             if(type === "free") {
-                text = `Halo Bapak/Ibu ${lead.nama}, saya dari Logaritma.id melihat bisnis Anda berstatus ${lead.kesehatan}. Mari diskusikan bagaimana Logaritma bisa membantu.`;
+                text = `Halo Bapak/Ibu ${nama}, saya dari Logaritma.id melihat bisnis Anda berstatus ${lead.kesehatan || ''}. Mari diskusikan bagaimana Logaritma bisa membantu.`;
             } else {
-                text = `Halo Bapak/Ibu ${lead.nama}, terima kasih telah berlangganan Logaritma UMKM PRO. Apakah ada kendala saat menggunakan fitur kami?`;
+                text = `Halo Bapak/Ibu ${nama}, terima kasih telah berlangganan Logaritma UMKM PRO. Apakah ada kendala saat menggunakan fitur kami?`;
             }
-            return `https://wa.me/${lead.wa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
+            return `https://wa.me/${wa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`;
         };
 
         // Render Functions
