@@ -204,3 +204,29 @@ window.LogaritmaDB = {
         }
     }
 };
+
+// Auto-track activity on page load for any logged-in user
+document.addEventListener('DOMContentLoaded', () => {
+    const track = () => {
+        if(!window.LogaritmaDB) return;
+        const cuStr = localStorage.getItem("logarithm_current_user");
+        if(cuStr && window.LogaritmaDB.trackActivity) {
+            try {
+                const u = JSON.parse(cuStr);
+                const wa = u.wa || u.whatsapp;
+                if(wa) {
+                    let pageName = "Dashboard / General";
+                    const path = window.location.pathname;
+                    if(path.includes("/tools/kuliner/")) pageName = "Dashboard Kuliner";
+                    else if(path.includes("/tools/fashion/")) pageName = "Dashboard Fashion";
+                    else if(path.includes("/tools/percetakan/")) pageName = "Dashboard Percetakan";
+                    else if(path.includes("/tools/distributor/")) pageName = "Dashboard Distributor";
+                    else if(path.includes("/tools/pkl/")) pageName = "Dashboard PKL";
+                    
+                    window.LogaritmaDB.trackActivity(wa, pageName);
+                }
+            } catch(e) {}
+        }
+    };
+    setTimeout(track, 1500); 
+});

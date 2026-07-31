@@ -1447,14 +1447,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const track = () => {
         if(!window.LogaritmaDB) return;
         if(window.LogaritmaDB.trackVisitor) window.LogaritmaDB.trackVisitor(); 
-        const cuStr = localStorage.getItem("logarithm_current_user");
-        if(cuStr && window.LogaritmaDB.trackActivity) {
-            try {
-                const u = JSON.parse(cuStr);
-                const wa = u.wa || u.whatsapp;
-                if(wa) window.LogaritmaDB.trackActivity(wa, "Dashboard / General");
-            } catch(e) {}
-        }
     };
     if(window.LogaritmaDB) track(); else setTimeout(track, 1500); 
 });
