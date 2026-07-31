@@ -34,9 +34,9 @@
                 </span>
             </a>
             <div class="flex items-center gap-3">
-                <div class="text-xs font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full border border-amber-500/30 animate-pulse">
-                    ⚠️ Pastikan klik "Kembali ke Website" setelah pembayaran sukses
-                </div>
+                <button id="btn-konfirmasi" class="hidden bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white text-xs font-bold py-1.5 px-4 rounded-full shadow-lg shadow-emerald-500/25 transition-all animate-bounce">
+                    ✅ Selesai Membayar?
+                </button>
                 <div class="text-xs font-medium bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700 hidden sm:block">
                     Secure Checkout 🔒
                 </div>
@@ -64,6 +64,72 @@
         } else {
             window.location.href = '/';
         }
+
+        // Tampilkan tombol konfirmasi HANYA setelah 45 detik (estimasi waktu user selesai bayar)
+        // Ini mencegah user asal klik sebelum benar-benar membayar.
+        setTimeout(() => {
+            const btn = document.getElementById('btn-konfirmasi');
+            if(btn) {
+                btn.classList.remove('hidden');
+            }
+        }, 45000);
+
+        document.getElementById('btn-konfirmasi').addEventListener('click', async () => {
+            const userStr = localStorage.getItem('logarithm_current_user');
+            if(!userStr) {
+                window.location.href = '/login/';
+                return;
+            }
+
+            const confirm = await Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda sudah melihat layar "Transaction Success" pada form di bawah?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Sudah!',
+                cancelButtonText: 'Belum',
+                background: '#0f172a',
+                color: '#cbd5e1',
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#ef4444'
+            });
+
+            if(confirm.isConfirmed) {
+                const user = JSON.parse(userStr);
+                
+                // Force upgrade locally
+                user.status = "PRO";
+                localStorage.setItem('logarithm_current_user', JSON.stringify(user));
+                localStorage.setItem('show_premium_popup', 'true');
+
+                // Sync to Firebase
+                if(window.LogaritmaDB && window.LogaritmaDB.updateLeadStatus) {
+                    try {
+                        Swal.fire({title: 'Memverifikasi...', allowOutsideClick: false, background: '#0f172a', color: '#cbd5e1'});
+                        Swal.showLoading();
+                        
+                        await Promise.race([
+                            window.LogaritmaDB.updateLeadStatus(user.whatsapp || user.wa, "PRO"),
+                            new Promise(r => setTimeout(r, 2000))
+                        ]);
+                    } catch(e) { console.error(e); }
+                }
+
+                // Redirect back to dashboard
+                let catId = user.categoryId;
+                if(!catId) {
+                    const k = user.kategori || '';
+                    if(k.includes('Kuliner') || k.includes('F&B')) catId = 'kuliner';
+                    else if(k.includes('Fashion') || k.includes('Retail') || k.includes('Olshop')) catId = 'fashion';
+                    else if(k.includes('Percetakan') || k.includes('Sablon')) catId = 'percetakan';
+                    else if(k.includes('Kaki Lima') || k.includes('Gerobak')) catId = 'pkl';
+                    else if(k.includes('Agen') || k.includes('Distributor') || k.includes('Grosir')) catId = 'distributor';
+                    else catId = 'kuliner';
+                }
+                
+                window.top.location.href = '/tools/' + catId + '/#dasbor';
+            }
+        });
 
     </script>
 </body>
