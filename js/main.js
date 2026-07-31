@@ -1292,6 +1292,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         if (localStorage.getItem('logarithm_current_user') && urlParams.get('payment') === 'success') {
             const user = JSON.parse(localStorage.getItem('logarithm_current_user'));
+            
+            // Auto upgrade status client-side
+            user.status = "PRO";
+            localStorage.setItem('logarithm_current_user', JSON.stringify(user));
+            // Set flag to show popup in dashboard
+            localStorage.setItem('show_premium_popup', 'true');
+            
             let catId = user.categoryId;
             if(!catId) {
                 const k = user.kategori || '';
@@ -1302,7 +1309,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if(k.includes('Agen') || k.includes('Distributor') || k.includes('Grosir')) catId = 'distributor';
                 else catId = 'kuliner';
             }
-            window.top.location.href = '/tools/' + catId + '/#dasbor';
+            
+            if(window.LogaritmaDB && window.LogaritmaDB.updateLeadStatus) {
+                // Wait for DB update, but timeout after 2 seconds to not freeze user
+                Promise.race([
+                    window.LogaritmaDB.updateLeadStatus(user.whatsapp || user.wa, "PRO"),
+                    new Promise(r => setTimeout(r, 2000))
+                ]).then(() => {
+                    window.top.location.href = '/tools/' + catId + '/#dasbor';
+                }).catch(() => {
+                    window.top.location.href = '/tools/' + catId + '/#dasbor';
+                });
+            } else {
+                window.top.location.href = '/tools/' + catId + '/#dasbor';
+            }
         }
     }
 });

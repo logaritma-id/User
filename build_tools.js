@@ -1201,6 +1201,10 @@ function generateHtml(category) {
                 }
             }
 
+            if(localStorage.getItem('show_premium_popup') === 'true') {
+                isPremiumUser = true; // Force premium if they just paid
+            }
+
             if(isPremiumUser) {
                 const badge = document.getElementById('plan-badge');
                 if(badge) {
@@ -1236,6 +1240,20 @@ function generateHtml(category) {
                     paywallModal.classList.remove('flex');
                     document.body.style.overflow = 'auto';
                 });
+            }
+            
+            // Premium Success Popup Logic
+            if(localStorage.getItem('show_premium_popup') === 'true') {
+                localStorage.removeItem('show_premium_popup');
+                if(typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Pembayaran Berhasil! 👑',
+                        text: 'Selamat! Akun Anda kini berstatus PREMIUM PRO. Anda sekarang memiliki akses tanpa batas ke Kalkulator LTM, Dokumen Operasional, dan Kasir POS.',
+                        background: '#0f172a', 
+                        color: '#cbd5e1', 
+                        confirmButtonColor: '#10b981'
+                    });
+                }
             }
             
             document.querySelectorAll('.trigger-paywall, .trigger-premium').forEach(btn => {
