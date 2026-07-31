@@ -229,8 +229,60 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         // Step 1 Submit
-        formStep1.addEventListener("submit", (e) => {
+        formStep1.addEventListener("submit", async (e) => {
             e.preventDefault();
+            
+            // Validate WA Number before proceeding
+            const waInput = document.getElementById("diag-wa");
+            if(waInput && window.LogaritmaDB && window.LogaritmaDB.db) {
+                let wa = waInput.value.replace(/\D/g, '');
+                if (wa.startsWith('62')) wa = '0' + wa.substring(2);
+                
+                try {
+                    const btnSubmit = formStep1.querySelector('button[type="submit"]');
+                    const originalText = btnSubmit.innerHTML;
+                    btnSubmit.innerHTML = 'Memeriksa...';
+                    btnSubmit.disabled = true;
+                    
+                    const docSnap = await window.LogaritmaDB.db.collection("leads").doc(wa).get();
+                    
+                    btnSubmit.innerHTML = originalText;
+                    btnSubmit.disabled = false;
+                    
+                    if(docSnap.exists) {
+                        Swal.fire({
+                            title: 'Nomor Sudah Terdaftar!',
+                            text: 'Nomor WhatsApp ini sudah terdaftar di sistem kami. Silakan masuk melalui menu Login.',
+                            icon: 'info',
+                            background: '#0f172a',
+                            color: '#cbd5e1',
+                            confirmButtonColor: '#3b82f6',
+                            confirmButtonText: 'Menuju Halaman Login'
+                        }).then((result) => {
+                            if(result.isConfirmed) {
+                                // Close diagnostic modal if open
+                                const diagModal = document.getElementById("diagnostic-modal");
+                                if(diagModal) diagModal.classList.add("hidden");
+                                document.body.style.overflow = "auto";
+                                // Open Login Modal
+                                const loginModal = document.getElementById("login-modal");
+                                if(loginModal) {
+                                    loginModal.classList.remove("hidden");
+                                    loginModal.classList.add("flex");
+                                    document.body.style.overflow = "hidden";
+                                    const loginWaInput = document.getElementById("input-login-wa");
+                                    if(loginWaInput) loginWaInput.value = waInput.value;
+                                }
+                            }
+                        });
+                        return; // Stop form submission
+                    }
+                } catch(err) {
+                    console.error("Error checking WA:", err);
+                    // On error, let them proceed normally
+                }
+            }
+            
             const selectEl = document.getElementById("diag-kategori");
             const kategori = selectEl.value;
             const kategoriName = selectEl.options[selectEl.selectedIndex].text;
