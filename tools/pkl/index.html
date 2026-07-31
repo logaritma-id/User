@@ -748,36 +748,8 @@
                 });
             });
 
-            // Premium Access Logic
-            const isPremium = localStorage.getItem('is_premium') === 'true';
-            if (isPremium) {
-                document.querySelectorAll('.trigger-paywall').forEach(btn => btn.style.display = 'none');
-                const badge = document.getElementById('plan-badge');
-                if(badge) {
-                    badge.innerText = 'PREMIUM PRO';
-                    badge.classList.replace('bg-slate-800', 'bg-brand-accent1/20');
-                    badge.classList.replace('text-slate-300', 'text-brand-accent1');
-                }
-                const ujiDampak = document.querySelector('a[href="#uji-dampak"]');
-                if (ujiDampak) {
-                    ujiDampak.classList.remove('trigger-premium');
-                    // remove lock icon if any
-                }
-            } else {
-                document.querySelectorAll('.trigger-paywall, .trigger-premium').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        if(btn.tagName === 'A') { e.preventDefault(); e.stopPropagation(); }
-                        const phone = prompt('Masukkan Nomor WhatsApp yang terdaftar (Premium):');
-                        if (phone === '085179660408') {
-                            localStorage.setItem('is_premium', 'true');
-                            Swal.fire({text: 'Akses Premium Berhasil Diverifikasi! Selamat datang kembali.', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
-                            location.reload();
-                        } else if (phone !== null) {
-                            Swal.fire({text: 'Nomor belum terdaftar atau langganan tidak aktif. Silakan hubungi admin.', background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
-                        }
-                    });
-                });
-            }
+            // Legacy premium logic removed, handled globally above.
+            localStorage.removeItem('is_premium');
 
             // Update UI based on config
             document.title = `Sistem ${config.name} - Logaritma`;
