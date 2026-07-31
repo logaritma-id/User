@@ -363,19 +363,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("diag-result-kategori").textContent = kategoriName;
                 
                 if(percentage <= 30) {
-                    iconEl.innerHTML = "🚨";
+                    iconEl.innerHTML = "ðŸš¨";
                     iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-red-900/50 border-2 border-red-500/50";
                     badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-red-950 text-red-400 border-red-500/30";
                     badgeEl.textContent = "STATUS: KRITIS";
                     descEl.innerHTML = `Bisnis ${kategoriName} Anda berpotensi mengalami <strong>kebocoran operasional yang fatal</strong>. Segera evaluasi ulang struktur biaya, harga jual, dan alur kerja harian sebelum kehabisan modal kas.`;
                 } else if(percentage <= 70) {
-                    iconEl.innerHTML = "⚠️";
+                    iconEl.innerHTML = "âš ï¸";
                     iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-yellow-900/50 border-2 border-yellow-500/50";
                     badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-yellow-950 text-yellow-400 border-yellow-500/30";
                     badgeEl.textContent = "STATUS: TRANSISI";
                     descEl.innerHTML = `Bisnis ${kategoriName} Anda berjalan cukup stabil, namun <strong>masih ada inefisiensi</strong>. Anda membuang potensi profit yang seharusnya bisa lebih besar jika operasional diperketat.`;
                 } else {
-                    iconEl.innerHTML = "🏆";
+                    iconEl.innerHTML = "ðŸ†";
                     iconEl.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 shadow-xl bg-emerald-900/50 border-2 border-emerald-500/50";
                     badgeEl.className = "inline-block px-4 py-1.5 rounded-full text-sm font-bold border mb-6 bg-emerald-950 text-emerald-400 border-emerald-500/30";
                     badgeEl.textContent = "STATUS: SEHAT";
@@ -558,7 +558,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const iconContainer = errorModal.querySelector(".w-12");
                 if (iconContainer) {
                     iconContainer.className = "w-12 h-12 bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-400 mb-5 border border-emerald-500/30";
-                    iconContainer.textContent = "🎉";
+                    iconContainer.textContent = "ðŸŽ‰";
                 }
                 const h3 = errorModal.querySelector("h3");
                 if (h3) {
@@ -584,7 +584,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 errorModal.classList.add("flex");
                 document.body.style.overflow = "hidden";
             } else {
-                Swal.fire({text: "🎉 Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
+                Swal.fire({text: "ðŸŽ‰ Selamat! Akses Logarithm UMKM PRO Anda Telah Aktif. Detail akses juga telah dikirim via WhatsApp.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
             }
         }
     }
@@ -617,7 +617,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
                 <h4 class="text-xs font-bold text-slate-400 mb-1">Lisensi Operasional</h4>
                 <div class="mt-2 inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg w-full">
-                    <span class="text-emerald-400">✨</span>
+                    <span class="text-emerald-400">âœ¨</span>
                     <span class="text-emerald-400 font-bold text-sm drop-shadow">UNLIMITED ACCESS</span>
                 </div>
             `;
@@ -637,7 +637,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if(btnDownloadProfit) {
             btnDownloadProfit.classList.remove("trigger-paywall", "bg-slate-800");
             btnDownloadProfit.classList.add("bg-emerald-600", "hover:bg-emerald-500", "border-emerald-500");
-            btnDownloadProfit.innerHTML = `📄 Download / Cetak Laporan (PDF)`;
+            btnDownloadProfit.innerHTML = `ðŸ“„ Download / Cetak Laporan (PDF)`;
             btnDownloadProfit.addEventListener("click", (e) => {
                 e.preventDefault();
                 document.title = "Target_Untung_Logaritma";
@@ -807,6 +807,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     }
+});
 
     // ==========================================
     // ADMIN DASHBOARD LOGIC (/admin/index.html)
@@ -1039,7 +1040,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll('.btn-refresh').forEach(btn => {
             btn.addEventListener("click", () => {
                 const originalText = btn.innerHTML;
-                btn.innerHTML = "🔄 Memuat...";
+                btn.innerHTML = "ðŸ”„ Memuat...";
                 window.refreshAdminData().then(() => {
                     btn.innerHTML = originalText;
                 });
@@ -1050,148 +1051,7 @@ document.addEventListener("DOMContentLoaded", function() {
         window.refreshAdminData();
     });
 
-    // Input Formatter
-    function formatRibuan(angka) {
-        let number_string = angka.replace(/[^,\d]/g, '').toString();
-        let split = number_string.split(',');
-        let sisa = split[0].length % 3;
-        let rupiah = split[0].substr(0, sisa);
-        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-        if (ribuan) {
-            let separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-        rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-        return rupiah;
-    }
 
-    const inputsNominal = ["input-profit", "input-harga", "input-ltm-biaya", "input-ltm-target", "fb-input-profit", "fb-input-harga"];
-    inputsNominal.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) {
-            el.addEventListener("input", function(e) {
-                this.value = formatRibuan(this.value);
-            });
-        }
-    });
-
-    const printDate = document.getElementById("print-date");
-    if(printDate) {
-        const d = new Date();
-        printDate.textContent = "Dibuat pada: " + d.toLocaleDateString("id-ID") + " " + d.toLocaleTimeString("id-ID");
-    }
-
-    // Profit Calculator Logic
-    const btnProfit = document.getElementById("btn-kalkulasi-profit");
-    if (btnProfit) {
-        btnProfit.addEventListener("click", () => {
-            const rawProfit = document.getElementById("input-profit").value.replace(/\./g, "");
-            const rawHarga = document.getElementById("input-harga").value.replace(/\./g, "");
-            
-            const profit = parseFloat(rawProfit);
-            const margin = parseFloat(document.getElementById("input-margin").value);
-            const harga = parseFloat(rawHarga);
-            const cr = parseFloat(document.getElementById("input-cr").value);
-
-            if (!profit || !margin || !harga || !cr) {
-                Swal.fire({text: "Harap isi semua kolom dengan angka yang valid.", background: '#0f172a', color: '#cbd5e1', confirmButtonColor: '#10b981'});
-                return;
-            }
-
-            if(window.LogaritmaDB && window.LogaritmaDB.trackActivity) {
-                const currentUserStr = localStorage.getItem("logarithm_current_user");
-                if(currentUserStr) {
-                    const u = JSON.parse(currentUserStr);
-                    window.LogaritmaDB.trackActivity(u.wa || u.whatsapp, "Kalkulator Profit");
-                }
-            }
-            const omzet = profit / (margin / 100);
-            const salesUnit = omzet / harga;
-            const leadsTotal = salesUnit / (cr / 100);
-            const leadsHarian = leadsTotal / 30;
-
-            const targetDefaultData = {
-                omzetBulan: omzet,
-                targetUnitBulan: salesUnit,
-                leadsHarian: leadsHarian
-            };
-            localStorage.setItem("logaritma_default_target", JSON.stringify(targetDefaultData));
-            
-            // Try updating sop badge if it exists
-            if (typeof window.updateSopBadge === "function") {
-                window.updateSopBadge();
-            }
-
-            const formatRp = (num) => "Rp " + Math.round(num).toLocaleString("id-ID");
-
-            document.getElementById("hasil-omzet").textContent = formatRp(omzet);
-            document.getElementById("hasil-unit").textContent = Math.round(salesUnit).toLocaleString("id-ID") + " Unit";
-            document.getElementById("hasil-leads").textContent = Math.ceil(leadsHarian) + " Leads/hari";
-
-            document.getElementById("hasil-profit").classList.remove("hidden");
-
-            // Rekomendasi Eksekusi Tim Logaritma Logic
-            const rekFreeState = document.getElementById("rek-free-state");
-            const rekPremiumState = document.getElementById("rek-premium-state");
-            const rekPremiumContent = document.getElementById("rek-premium-content");
-            
-            if (currentUser.status === "FREE") {
-                if(rekFreeState) rekFreeState.classList.remove("hidden");
-                if(rekPremiumState) rekPremiumState.classList.add("hidden");
-            } else {
-                if(rekFreeState) rekFreeState.classList.add("hidden");
-                if(rekPremiumState) {
-                    rekPremiumState.classList.remove("hidden");
-                    let premiumHTML = `<ul class="list-disc list-inside space-y-2">`;
-                    if (currentUser.kategori === "Kuliner & F&B") {
-                        premiumHTML += `<li>SOP Quality Control Bahan Baku (Mencegah Wastage)</li>`;
-                        premiumHTML += `<li>Draft Instruksi Kerja Kasir untuk Upselling</li>`;
-                        premiumHTML += `<li>Format Rekap Penjualan Harian via WA Group</li>`;
-                    } else if (currentUser.kategori === "Fashion & Olshop") {
-                        premiumHTML += `<li>Skrip Balas Chat WA (Meningkatkan Konversi Sales)</li>`;
-                        premiumHTML += `<li>SOP Packing Barang Anti Salah Kirim</li>`;
-                        premiumHTML += `<li>Matriks Re-stock Barang Fast Moving</li>`;
-                    } else if (currentUser.kategori === "Jasa & Percetakan" || currentUser.kategori === "Jasa & Kriya") {
-                        premiumHTML += `<li>SOP Maintenance Mesin Mingguan (Mencegah Downtime)</li>`;
-                        premiumHTML += `<li>SLA Pengerjaan Order & Sistem Antrian</li>`;
-                        premiumHTML += `<li>Formulir Quality Control Hasil Cetak</li>`;
-                    } else if (currentUser.kategori === "PKL & Lapakan") {
-                        premiumHTML += `<li>Aturan Pisah Uang Kas Pribadi & Jualan</li>`;
-                        premiumHTML += `<li>SOP Persiapan Buka Lapak & Bersih-bersih</li>`;
-                        premiumHTML += `<li>Tabel Pencatatan Laba Bersih Sederhana</li>`;
-                    } else {
-                        premiumHTML += `<li>SOP Standar Operasional Harian</li>`;
-                        premiumHTML += `<li>Draft Evaluasi Kinerja Karyawan Bulanan</li>`;
-                    }
-                    premiumHTML += `</ul>`;
-                    if(rekPremiumContent) rekPremiumContent.innerHTML = premiumHTML;
-                }
-            }
-        });
-    }
-
-    // AI SOP Logic & Quota
-    const btnSop = document.getElementById("btn-generate-sop");
-    if (btnSop) {
-        let aiQuota = parseInt(localStorage.getItem("logaritma_ai_quota") || "2");
-        updateQuotaUI(aiQuota);
-
-        // Event listener dipindahkan ke js/workspace.js
-    }
-
-    function updateQuotaUI(quota) {
-        const quotaText = document.getElementById("ai-quota-text");
-        const quotaBar = document.getElementById("ai-quota-bar");
-        if(quotaText && quotaBar) {
-            quotaText.textContent = `${quota}/3`;
-            quotaBar.style.width = `${(quota/3)*100}%`;
-            
-            if(quota === 0) {
-                quotaBar.classList.replace("bg-emerald-500", "bg-red-500");
-            }
-        }
-    }
-});
 
 
 
@@ -1579,5 +1439,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-d o c u m e n t . a d d E v e n t L i s t e n e r ( ' D O M C o n t e n t L o a d e d ' ,   ( )   = >   {   i f ( w i n d o w . L o g a r i t m a D B   & &   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r )   {   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r ( ) ;   }   e l s e   {   s e t T i m e o u t ( ( )   = >   {   i f ( w i n d o w . L o g a r i t m a D B   & &   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r )   w i n d o w . L o g a r i t m a D B . t r a c k V i s i t o r ( ) ;   } ,   1 5 0 0 ) ;   }   } ) ;  
- 
+document.addEventListener('DOMContentLoaded', () => { if(window.LogaritmaDB && window.LogaritmaDB.trackVisitor) { window.LogaritmaDB.trackVisitor(); } else { setTimeout(() => { if(window.LogaritmaDB && window.LogaritmaDB.trackVisitor) window.LogaritmaDB.trackVisitor(); }, 1500); } });
+
