@@ -1021,13 +1021,10 @@
         </div>
     </div>
     
-    <!-- FLOATING AI BUTTON (shows when AI panel is closed) -->
-    <button id="floating-ai-btn" onclick="window.LogaritmaAIUI && window.LogaritmaAIUI.togglePanel()" class="fixed bottom-6 right-6 z-[90] w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center text-white text-xl hover:scale-110 transition-transform group hidden" title="Buka Logaritma AI">
+    <!-- FLOATING AI BUTTON (selalu terlihat, toggle panel AI) -->
+    <button id="floating-ai-btn" onclick="window.LogaritmaAIUI && window.LogaritmaAIUI.togglePanel()" class="fixed bottom-6 right-6 z-[90] w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center text-white text-xl hover:scale-110 transition-transform group" title="Logaritma AI">
         <i class="fa-solid fa-robot group-hover:animate-pulse"></i>
         <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-slate-900 rounded-full hidden" id="notif-badge"></div>
-        <!-- Tooltip -->
-        <span class="absolute right-16 bg-slate-800 text-white text-xs font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-slate-700">Buka AI Panel</span>
     </button>
 
 </body>
-
