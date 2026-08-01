@@ -5,9 +5,9 @@ window.LogaritmaGeminiAdapter = {
 
     // Model tiers - update here jika model name berubah
     MODELS: {
-        pro:        'gemini-2.5-pro',        // Complex reasoning, strategy
-        flash:      'gemini-2.5-flash',       // General purpose, copywriting, summary
-        flashLite:  'gemini-2.0-flash-lite'   // Simple checks, SLA monitor
+        pro:        'gemini-3.1-pro',          // Complex reasoning, strategy
+        flash:      'gemini-3.6-flash',        // General purpose, copywriting, summary
+        flashLite:  'gemini-3.5-flash-lite'    // Simple checks, SLA monitor
     },
 
     // API Key di-encode base64 agar lolos dari GitHub Secret Scanner
