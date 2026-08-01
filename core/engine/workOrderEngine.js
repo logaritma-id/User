@@ -9,12 +9,12 @@ window.LogaritmaWorkOrderEngine = {
     createDraft: function(payload) {
         const wo = {
             id: payload.id || this.generateId(),
-            serviceId: payload.serviceId,
+            serviceId: payload.serviceId || (payload.service ? payload.service.id : null),
             workflowId: payload.workflowId,
             checklistId: payload.checklistId,
-            priceId: payload.priceId,
+            priceId: payload.priceId || (payload.package ? payload.package.id : null),
             status: payload.status || 'draft',
-            client: payload.client || {},
+            client: payload.client || payload.clientData || {},
             brief: payload.brief || {},
             assets: payload.assets || {},
             finances: payload.finances || { total: 0, adsBudget: 0, fee: 0 },
@@ -73,7 +73,7 @@ window.LogaritmaWorkOrderEngine = {
                 // Actually, the dummy UI used payload.id (the dummy ORD-BP-xxx ID) but workOrderEngine.createDraft ignores it and makes a new WO-xxx ID.
                 // I need to fix createDraft to respect an existing ID if provided, or find it by some reference. For this demo, let's update createDraft to respect payload.id if provided.
                 
-                this.updateStatus(payload.work_order_id, 'payment_verified');
+                this.updateStatus(payload.work_order_id, 'waiting_setup');
                 
                 if(window.LogaritmaNotificationCenter) {
                     window.LogaritmaNotificationCenter.addNotification(

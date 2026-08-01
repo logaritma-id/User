@@ -663,7 +663,7 @@
                 
                 const srv = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getService(w.serviceId) || {name: 'Unknown Service'} : {name: w.serviceType};
                 const pkg = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getRegistry('pricing').find(p => p.id === w.priceId) || {name: 'Unknown Package'} : {name: w.package};
-                const clientName = w.brief && w.brief.name ? w.brief.name : (w.clientName || 'Unassigned');
+                const clientName = (w.client && w.client.name) ? w.client.name : ((w.brief && w.brief.name) ? w.brief.name : (w.clientName || 'Unassigned'));
 
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-800/50 transition cursor-pointer';
@@ -720,7 +720,7 @@
                 wosInStatus.forEach(w => {
                     const srv = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getService(w.serviceId) || {name: 'Unknown Service'} : {name: w.serviceType};
                     const pkg = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getRegistry('pricing').find(p => p.id === w.priceId) || {name: 'Unknown Package'} : {name: w.package};
-                    const clientName = w.brief && w.brief.name ? w.brief.name : (w.clientName || 'Unassigned');
+                    const clientName = (w.client && w.client.name) ? w.client.name : ((w.brief && w.brief.name) ? w.brief.name : (w.clientName || 'Unassigned'));
                     const lastLog = w.activityLog && w.activityLog.length > 0 ? timeAgo(w.activityLog[w.activityLog.length-1].time) : 'Just now';
 
                     const card = document.createElement('div');
@@ -772,10 +772,15 @@
                 window.LogaritmaEventBus.emit('context.changed', { type: w.status === 'draft' ? 'work_order_draft' : 'work_order_active', data: w });
             }
 
+            // Extract Data
+            const srv = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getService(w.serviceId) || {name: 'Unknown Service'} : {name: w.serviceType};
+            const pkg = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getRegistry('pricing').find(p => p.id === w.priceId) || {name: 'Unknown Package'} : {name: w.package};
+            const clientName = (w.client && w.client.name) ? w.client.name : ((w.brief && w.brief.name) ? w.brief.name : (w.clientName || 'Unassigned'));
+
             // Update Header
             document.getElementById('drawer-wo-id').textContent = w.id;
-            document.getElementById('drawer-client-name').textContent = w.clientName;
-            document.getElementById('drawer-service-type').textContent = `Layanan: ${w.serviceType} (${w.package})`;
+            document.getElementById('drawer-client-name').textContent = clientName;
+            document.getElementById('drawer-service-type').textContent = `Layanan: ${srv.name} (${pkg.name})`;
             
             const st = getStatusCfg(w.status);
             const dSt = document.getElementById('drawer-wo-status');
