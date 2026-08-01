@@ -198,9 +198,50 @@
                             </button>
                             <div id="acc-asset" class="px-5 pb-5 pt-2 space-y-4 hidden">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-400 mb-1">Link Google Drive / Canva / Dokumen *</label>
-                                    <p class="text-[10px] text-slate-500 mb-2">Pastikan link dapat diakses (Anyone with the link can view).</p>
-                                    <input type="url" id="bf_asset" required placeholder="https://drive.google.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-blue-400 focus:border-blue-500 focus:outline-none" oninput="saveDraft()">
+                                    <label class="block text-xs font-bold text-slate-400 mb-3">Opsi Materi Iklan *</label>
+                                    <div class="space-y-3">
+                                        <!-- Opsi 1: Logaritma -->
+                                        <label class="flex items-center gap-3 p-3 border border-slate-700 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                                            <input type="radio" name="asset_option" value="logaritma" class="w-4 h-4 text-brand-accent1 bg-slate-900 border-slate-600 focus:ring-brand-accent1" onchange="toggleAssetInput()" checked>
+                                            <div class="flex-1">
+                                                <p class="text-sm font-bold text-white">Serahkan ke Logaritma</p>
+                                                <p class="text-[10px] text-slate-400">Tim kami akan mendesain materi iklan untuk Anda.</p>
+                                            </div>
+                                        </label>
+                                        <!-- Opsi 2: Link Sendiri -->
+                                        <label class="flex items-center gap-3 p-3 border border-slate-700 rounded-lg cursor-pointer hover:bg-slate-800/50 transition">
+                                            <input type="radio" name="asset_option" value="link" class="w-4 h-4 text-brand-accent1 bg-slate-900 border-slate-600 focus:ring-brand-accent1" onchange="toggleAssetInput()">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-bold text-white">Tautkan Link (Aset Sendiri)</p>
+                                                <p class="text-[10px] text-slate-400">Gunakan desain/video dari Anda sendiri.</p>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Asset Link Input (Hidden by default) -->
+                                    <div id="asset-link-container" class="hidden mt-4 pt-4 border-t border-slate-700">
+                                        <label class="block text-xs font-bold text-slate-400 mb-1">Link Google Drive / Canva *</label>
+                                        <p class="text-[10px] text-slate-500 mb-2">Pastikan pengaturan akses terbuka (Anyone with the link can view).</p>
+                                        <input type="url" id="bf_asset" placeholder="https://drive.google.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-blue-400 focus:border-blue-500 focus:outline-none" oninput="saveDraft()" value="Disediakan oleh tim Logaritma">
+                                    </div>
+                                    <script>
+                                        function toggleAssetInput() {
+                                            const isLink = document.querySelector('input[name="asset_option"]:checked').value === 'link';
+                                            const container = document.getElementById('asset-link-container');
+                                            const input = document.getElementById('bf_asset');
+                                            
+                                            if(isLink) {
+                                                container.classList.remove('hidden');
+                                                if(input.value === 'Disediakan oleh tim Logaritma') input.value = '';
+                                                input.required = true;
+                                            } else {
+                                                container.classList.add('hidden');
+                                                input.value = 'Disediakan oleh tim Logaritma';
+                                                input.required = false;
+                                            }
+                                            saveDraft();
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         </div>
