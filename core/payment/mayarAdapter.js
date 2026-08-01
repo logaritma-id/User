@@ -11,14 +11,14 @@ const MayarAdapter = {
     /**
      * Create a payment link using Mayar API
      */
-    async createPaymentLink(orderData) {
+    async createPaymentLink(payloadData) {
         try {
             const payload = {
-                name: orderData.customer.name || "Pelanggan Logaritma",
-                email: orderData.customer.email || "customer@logaritma.id",
-                mobile: orderData.customer.phone || "081234567890",
-                amount: orderData.summary.total,
-                description: `Pembayaran Layanan Logaritma (${orderData.service.id} - ${orderData.package.id})`,
+                name: payloadData.clientData?.name || "Pelanggan Logaritma",
+                email: payloadData.clientData?.email || "customer@logaritma.id",
+                mobile: payloadData.clientData?.whatsapp || "081234567890",
+                amount: payloadData.finances?.total || 0,
+                description: `Pembayaran Layanan Logaritma (${payloadData.package?.name || 'Paket'})`,
                 // Expired in 24 hours
                 expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
             };

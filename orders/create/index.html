@@ -708,7 +708,7 @@
             });
 
             // Call Real API via Adapter
-            const result = await window.MayarAdapter.createPaymentLink(orderData);
+            const result = await window.MayarAdapter.createPaymentLink(payload);
             
             if(!result.success) {
                 Swal.fire('Error', 'Gagal membuat link pembayaran: ' + result.error, 'error');
