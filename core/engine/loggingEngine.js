@@ -1,16 +1,22 @@
 window.LogaritmaLoggingEngine = {
     logActivity: function(workOrderId, type, message) {
-        // In real app, save to a separate DB collection
-        // Here we just attach it to the work order
-        const wo = window.LogaritmaWorkOrderEngine.getWorkOrder(workOrderId);
+        // Fallback sync version for legacy components
+        if (!window.LogaritmaWorkOrderEngine.getWorkOrder) return;
+        Promise.resolve(window.LogaritmaWorkOrderEngine.getWorkOrder(workOrderId)).then(wo => {
+            if (wo) {
+                wo.activityLog = wo.activityLog || [];
+                wo.activityLog.push({ type: type, msg: message, time: new Date().toISOString() });
+                window.LogaritmaWorkOrderEngine.saveWorkOrder(wo);
+            }
+        });
+    },
+    logActivityAsync: async function(workOrderId, type, message) {
+        if (!window.LogaritmaWorkOrderEngine.getWorkOrder) return;
+        const wo = await window.LogaritmaWorkOrderEngine.getWorkOrder(workOrderId);
         if (wo) {
             wo.activityLog = wo.activityLog || [];
-            wo.activityLog.push({
-                type: type,
-                msg: message,
-                time: new Date().toISOString()
-            });
-            window.LogaritmaWorkOrderEngine.saveWorkOrder(wo);
+            wo.activityLog.push({ type: type, msg: message, time: new Date().toISOString() });
+            await window.LogaritmaWorkOrderEngine.saveWorkOrder(wo);
         }
     }
 };

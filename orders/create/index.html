@@ -695,7 +695,7 @@
             
             // Create Draft Work Order via Engine
             if(window.LogaritmaWorkOrderEngine) {
-                window.LogaritmaWorkOrderEngine.createDraft(payload);
+                await window.LogaritmaWorkOrderEngine.createDraft(payload);
             }
             
             Swal.fire({

@@ -124,7 +124,7 @@ window.LogaritmaAIWorkers = {
             let woStats = { total: 0, running: 0, pending: 0, needAttention: 0, revenue: 0 };
             if (window.LogaritmaWorkOrderEngine) {
                 try {
-                    const allWO = window.LogaritmaWorkOrderEngine.getAllWorkOrders() || [];
+                    const allWO = await window.LogaritmaWorkOrderEngine.getAllWorkOrders() || [];
                     woStats.total = allWO.length;
                     woStats.running = allWO.filter(w => w.status === 'running_ads').length;
                     woStats.pending = allWO.filter(w =>
