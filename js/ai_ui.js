@@ -36,15 +36,20 @@ window.LogaritmaAIUI = {
     applyPanelState: function() {
         const panel = document.getElementById('ai-panel');
         const icon = document.getElementById('ai-toggle-icon');
+        const floatBtn = document.getElementById('floating-ai-btn');
         
         if(this.panelOpen) {
             panel.classList.remove('w-0', 'overflow-hidden', 'opacity-0', 'invisible');
             panel.classList.add('w-80');
             if(icon) icon.className = 'fa-solid fa-angles-right';
+            // Hide floating button when panel is visible
+            if(floatBtn) floatBtn.classList.add('hidden');
         } else {
             panel.classList.remove('w-80');
             panel.classList.add('w-0', 'overflow-hidden', 'opacity-0', 'invisible');
             if(icon) icon.className = 'fa-solid fa-angles-left';
+            // Show floating button so user can re-open the panel
+            if(floatBtn) floatBtn.classList.remove('hidden');
         }
     },
     
