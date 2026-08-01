@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Service - Logaritma.id</title>
+    
+    <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Space Grotesk"', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#141e33',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .step-transition { transition: all 0.3s ease-in-out; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+
+    <!-- Core Architecture -->
+    <script src="../../core/events/eventBus.js"></script>
+    <script src="../../core/storage/localStorage.js"></script>
+    <script src="../../core/ai/aiContext.js"></script>
+    <script src="../../core/ai/index.js"></script>
+    
+    <!-- Registries (Data) -->
+    <script src="../../core/registry/services.js"></script>
+    <script src="../../core/registry/workflows.js"></script>
+    <script src="../../core/registry/checklists.js"></script>
+    <script src="../../core/registry/pricing.js"></script>
+    <script src="../../core/registry/payment.js"></script>
+    <script src="../../core/registry/roles.js"></script>
+    <script src="../../core/registry/index.js"></script>
+    
+    
+    <!-- Adapters & Mocks -->
+    <script src="../../core/adapters/mayarAdapter.js"></script>
+    <script src="../../core/adapters/mockWebhookSource.js"></script>
+
+    <!-- Engines (Logic) -->
+    <script src="../../core/engine/registryEngine.js"></script>
+    <script src="../../core/engine/workflowEngine.js"></script>
+    <script src="../../core/engine/loggingEngine.js"></script>
+    <script src="../../core/engine/workOrderEngine.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen selection:bg-blue-500/30 selection:text-blue-200 flex flex-col">
+
+    <!-- Topbar -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold font-heading">Σ</div>
+                <span class="font-heading font-bold text-lg text-white">Logaritma <span class="text-blue-400">Order</span></span>
+            </div>
+            <div class="text-xs font-mono text-slate-500 transition-colors duration-300" id="auto-save-indicator">
+                Draft belum tersimpan
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl mx-auto w-full px-4 py-8 flex flex-col md:flex-row gap-8">
+        
+        <!-- Stepper Sidebar -->
+        <div class="md:w-64 shrink-0">
+            <div class="sticky top-24 space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-white font-heading mb-1">Create Order</h2>
+                    <p class="text-xs text-slate-400">Ikuti langkah berikut untuk memulai campaign Anda.</p>
+                </div>
+                
+                <div class="space-y-4 relative before:absolute before:inset-0 before:ml-3.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-800 before:to-transparent hidden md:block">
+                    <!-- Steps Injected via JS -->
+                    <div id="stepper-container" class="space-y-6 relative"></div>
+                </div>
+
+                <!-- Mobile Progress Bar -->
+                <div class="md:hidden">
+                    <div class="flex justify-between text-xs font-bold text-slate-400 mb-2">
+                        <span id="mobile-step-text">Step 1 of 5</span>
+                        <span id="mobile-step-title">Pilih Layanan</span>
+                    </div>
+                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="mobile-progress-bar" class="h-full bg-blue-500 transition-all duration-300" style="width: 20%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wizard Content -->
+        <div class="flex-1 min-w-0">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-6 md:p-8 min-h-[500px] flex flex-col relative">
+                
+                <!-- STEP 1: SERVICE -->
+                <div id="step-1" class="wizard-step block">
+                    <h3 class="text-2xl font-bold text-white font-heading mb-2">Pilih Layanan</h3>
+                    <p class="text-sm text-slate-400 mb-8">Pilih layanan Logaritma yang ingin Anda gunakan.</p>
+                    <div class="grid sm:grid-cols-2 gap-4" id="services-grid">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- STEP 2: PACKAGE -->
+                <div id="step-2" class="wizard-step hidden">
+                    <h3 class="text-2xl font-bold text-white font-heading mb-2">Pilih Paket</h3>
+                    <p class="text-sm text-slate-400 mb-8">Sesuaikan dengan kebutuhan dan skala bisnis Anda.</p>
+                    <div class="grid sm:grid-cols-3 gap-4" id="packages-grid">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- STEP 3: BRIEF -->
+                <div id="step-3" class="wizard-step hidden">
+                    <h3 class="text-2xl font-bold text-white font-heading mb-2">Campaign Brief</h3>
+                    <p class="text-sm text-slate-400 mb-6">Lengkapi data berikut untuk memudahkan tim kami meracik strategi.</p>
+                    
+                    <form id="form-brief" class="space-y-4">
+                        <!-- Accordion 1: Data Diri -->
+                        <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-800/20">
+                            <button type="button" class="w-full px-5 py-4 flex justify-between items-center text-left hover:bg-slate-800/50 transition" onclick="toggleAccordion('acc-data')">
+                                <span class="font-bold text-white">1. Data Diri & Keanggotaan</span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-sm transition-transform" id="acc-data-icon"></i>
+                            </button>
+                            <div id="acc-data" class="px-5 pb-5 pt-2 space-y-4 block">
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Nama Lengkap *</label><input type="text" id="bf_name" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></div>
+                                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Nomor WhatsApp *</label><input type="text" id="bf_wa" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></div>
+                                </div>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div><label class="block text-xs font-bold text-slate-400 mb-1">Email</label><input type="email" id="bf_email" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></div>
+                                    <div><label class="block text-xs font-bold text-slate-400 mb-1">ID Member Coway (Opsional)</label><input type="text" id="bf_member" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion 2: Produk & Target -->
+                        <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-800/20">
+                            <button type="button" class="w-full px-5 py-4 flex justify-between items-center text-left hover:bg-slate-800/50 transition" onclick="toggleAccordion('acc-target')">
+                                <span class="font-bold text-white">2. Produk & Target Wilayah</span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-sm transition-transform -rotate-90" id="acc-target-icon"></i>
+                            </button>
+                            <div id="acc-target" class="px-5 pb-5 pt-2 space-y-4 hidden">
+                                <div><label class="block text-xs font-bold text-slate-400 mb-1">Produk Fokus *</label><input type="text" id="bf_product" required placeholder="Contoh: Coway Cinnamon & Ombak" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></div>
+                                <div><label class="block text-xs font-bold text-slate-400 mb-1">Target Area / Kota *</label><input type="text" id="bf_area" required placeholder="Contoh: Jabodetabek, Bandung, Surabaya" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion 3: Objektif & Promo -->
+                        <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-800/20">
+                            <button type="button" class="w-full px-5 py-4 flex justify-between items-center text-left hover:bg-slate-800/50 transition" onclick="toggleAccordion('acc-promo')">
+                                <span class="font-bold text-white">3. Objektif & Promosi</span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-sm transition-transform -rotate-90" id="acc-promo-icon"></i>
+                            </button>
+                            <div id="acc-promo" class="px-5 pb-5 pt-2 space-y-4 hidden">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 mb-1">Objektif Iklan *</label>
+                                    <select id="bf_objective" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" onchange="saveDraft()">
+                                        <option value="">-- Pilih Objektif --</option>
+                                        <option value="leads">Dapatkan Leads (Nomor WA prospek)</option>
+                                        <option value="traffic">Kunjungan ke Website / Landing Page</option>
+                                        <option value="awareness">Brand Awareness / Jangkauan Luas</option>
+                                    </select>
+                                </div>
+                                <div><label class="block text-xs font-bold text-slate-400 mb-1">Detail Promo / Penawaran *</label><textarea id="bf_promo" required rows="3" placeholder="Contoh: Gratis biaya admin, cicilan ringan 0%, dll" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></textarea></div>
+                                <div><label class="block text-xs font-bold text-slate-400 mb-1">Catatan Tambahan</label><textarea id="bf_notes" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none" oninput="saveDraft()"></textarea></div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion 4: Asset -->
+                        <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-800/20">
+                            <button type="button" class="w-full px-5 py-4 flex justify-between items-center text-left hover:bg-slate-800/50 transition" onclick="toggleAccordion('acc-asset')">
+                                <span class="font-bold text-white">4. Upload Aset (Materi Iklan)</span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-sm transition-transform -rotate-90" id="acc-asset-icon"></i>
+                            </button>
+                            <div id="acc-asset" class="px-5 pb-5 pt-2 space-y-4 hidden">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 mb-1">Link Google Drive / Canva / Dokumen *</label>
+                                    <p class="text-[10px] text-slate-500 mb-2">Pastikan link dapat diakses (Anyone with the link can view).</p>
+                                    <input type="url" id="bf_asset" required placeholder="https://drive.google.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-blue-400 focus:border-blue-500 focus:outline-none" oninput="saveDraft()">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- STEP 4: REVIEW -->
+                <div id="step-4" class="wizard-step hidden">
+                    <h3 class="text-2xl font-bold text-white font-heading mb-2">Review Pesanan</h3>
+                    <p class="text-sm text-slate-400 mb-6">Periksa kembali ringkasan pesanan Anda sebelum melanjutkan.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Order Summary -->
+                        <div class="bg-slate-800/30 border border-slate-700 rounded-xl p-5">
+                            <h4 class="text-sm font-bold text-white mb-4 border-b border-slate-700 pb-2">Detail Layanan</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between"><span class="text-slate-400">Layanan:</span> <span class="text-white font-bold" id="rev_service">-</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400">Paket:</span> <span class="text-white" id="rev_package">-</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400">Klien:</span> <span class="text-white" id="rev_name">-</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400">Target Area:</span> <span class="text-white" id="rev_area">-</span></div>
+                            </div>
+                            
+                            <div class="mt-6 p-3 bg-blue-900/20 border border-blue-500/20 rounded-lg flex gap-3">
+                                <i class="fa-solid fa-clock text-blue-400 mt-0.5"></i>
+                                <div>
+                                    <p class="text-xs font-bold text-blue-400 mb-1">Estimasi SLA</p>
+                                    <p class="text-[11px] text-slate-300">Jika dibayar hari ini, campaign diproyeksikan mulai berjalan pada: <br><strong class="text-white" id="rev_sla_date"></strong></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financials -->
+                        <div class="bg-slate-800/30 border border-slate-700 rounded-xl p-5 flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-sm font-bold text-white mb-4 border-b border-slate-700 pb-2">Rincian Biaya</h4>
+                                <div class="space-y-3 text-sm mb-6">
+                                    <div class="flex justify-between"><span class="text-slate-400">Budget Ads (Saldo Iklan):</span> <span class="text-white" id="rev_budget">-</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-400">Fee Logaritma:</span> <span class="text-white" id="rev_fee">-</span></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="border-t border-slate-700 pt-3 flex justify-between items-center mb-4">
+                                    <span class="text-sm font-bold text-slate-300">Total Pembayaran</span>
+                                    <span class="text-2xl font-bold text-emerald-400" id="rev_total">-</span>
+                                </div>
+                                <label class="flex items-start gap-3 cursor-pointer group">
+                                    <div class="mt-0.5">
+                                        <input type="checkbox" id="rev_agree" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500 focus:ring-offset-slate-950" onchange="checkAgreement()">
+                                    </div>
+                                    <span class="text-xs text-slate-400 group-hover:text-slate-300 transition">Saya telah memeriksa data di atas dan menyetujui <a href="#" class="text-blue-400 hover:underline">Syarat & Ketentuan Layanan Logaritma</a>.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: PAYMENT -->
+                <div id="step-5" class="wizard-step hidden">
+                    <div class="text-center max-w-md mx-auto py-8">
+                        <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-6">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white font-heading mb-2">Satu Langkah Lagi!</h3>
+                        <p class="text-sm text-slate-400 mb-8">Work Order Anda telah di-generate. Silakan lanjutkan ke portal pembayaran aman kami untuk mengaktifkan campaign.</p>
+                        
+                        <div class="bg-slate-800/50 border border-slate-700 p-4 rounded-xl mb-8">
+                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Total Tagihan</p>
+                            <p class="text-3xl font-bold text-emerald-400" id="pay_total">-</p>
+                            <p class="text-xs text-slate-400 mt-2">ID Pesanan: <span class="font-mono text-slate-300" id="pay_id"></span></p>
+                        </div>
+
+                        <button onclick="processPayment()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex justify-center items-center gap-2">
+                            Lanjut ke Pembayaran <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <p class="text-[10px] text-slate-500 mt-4"><i class="fa-solid fa-lock"></i> Secured by Payment Provider Adapter</p>
+                    </div>
+                </div>
+
+                <!-- Wizard Navigation Footer -->
+                <div class="mt-auto pt-8 border-t border-slate-800 flex justify-between items-center" id="wizard-footer">
+                    <button id="btn-prev" onclick="prevStep()" class="px-6 py-2.5 rounded-lg font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition hidden">Kembali</button>
+                    <div class="ml-auto">
+                        <button id="btn-next" onclick="nextStep()" class="px-6 py-2.5 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-200 transition shadow-lg">Selanjutnya</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // CONFIGURATION
+        let SERVICES = [];
+        let PACKAGES = [];
+
+        const STEPS = [
+            { num: 1, title: 'Layanan', desc: 'Pilih Service' },
+            { num: 2, title: 'Paket', desc: 'Skala Budget' },
+            { num: 3, title: 'Brief', desc: 'Detail Campaign' },
+            { num: 4, title: 'Review', desc: 'Konfirmasi' },
+            { num: 5, title: 'Payment', desc: 'Pembayaran' }
+        ];
+
+        let currentStep = 1;
+        let orderData = {
+            serviceId: null,
+            packageId: null,
+            brief: {},
+            agreed: false
+        };
+        let saveTimeout;
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.LogaritmaRegistryEngine) {
+                window.LogaritmaRegistryEngine.init();
+                SERVICES = window.LogaritmaRegistryEngine.getAllServices();
+                PACKAGES = window.LogaritmaRegistryEngine.getRegistry('pricing');
+                
+                if(window.LogaritmaEventBus) {
+                    window.LogaritmaEventBus.on('registry.updated', (e) => {
+                        if(e.type === 'services') {
+                            SERVICES = window.LogaritmaRegistryEngine.getAllServices();
+                            renderServices();
+                            updateUI();
+                        }
+                    });
+                }
+            }
+            
+            // Load Draft first
+            loadDraft();
+
+            // Parse URL parameters for pre-selection (Overrides Draft)
+            const urlParams = new URLSearchParams(window.location.search);
+            const preselectedServiceId = urlParams.get('serviceId');
+            const preselectedPackageId = urlParams.get('packageId');
+            
+            if (preselectedServiceId) {
+                orderData.serviceId = preselectedServiceId;
+            }
+            
+            if (preselectedPackageId) {
+                orderData.packageId = preselectedPackageId;
+                // Disable all other packages to lock the selection
+                PACKAGES.forEach(p => {
+                    if (p.id !== preselectedPackageId) {
+                        p.active = false;
+                    } else {
+                        p.active = true;
+                    }
+                });
+            }
+
+            // Auto-advance if everything is pre-selected
+            if (preselectedServiceId && preselectedPackageId) {
+                currentStep = 3;
+                document.getElementById('step-1').classList.add('hidden');
+                document.getElementById('step-1').classList.remove('block');
+                document.getElementById('step-3').classList.remove('hidden');
+                document.getElementById('step-3').classList.add('block');
+            } else if (preselectedServiceId) {
+                currentStep = 2;
+                document.getElementById('step-1').classList.add('hidden');
+                document.getElementById('step-1').classList.remove('block');
+                document.getElementById('step-2').classList.remove('hidden');
+                document.getElementById('step-2').classList.add('block');
+            }
+            
+            renderStepper();
+            renderServices();
+            updateUI();
+        });
+
+        // AUTO SAVE / DRAFT MANAGEMENT
+        function saveDraft() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                orderData.brief = {
+                    name: document.getElementById('bf_name').value,
+                    wa: document.getElementById('bf_wa').value,
+                    email: document.getElementById('bf_email').value,
+                    memberId: document.getElementById('bf_member').value,
+                    product: document.getElementById('bf_product').value,
+                    area: document.getElementById('bf_area').value,
+                    objective: document.getElementById('bf_objective').value,
+                    promo: document.getElementById('bf_promo').value,
+                    notes: document.getElementById('bf_notes').value,
+                    assetUrl: document.getElementById('bf_asset').value
+                };
+                orderData.agreed = document.getElementById('rev_agree').checked;
+                
+                localStorage.setItem('logaritma_order_draft', JSON.stringify(orderData));
+                
+                const ind = document.getElementById('auto-save-indicator');
+                const now = new Date();
+                const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                ind.textContent = 'Draft tersimpan hari ini ' + timeStr;
+                ind.classList.add('text-emerald-400');
+                setTimeout(() => ind.classList.remove('text-emerald-400'), 2000);
+            }, 500); // debounce
+        }
+
+        function loadDraft() {
+            const draft = localStorage.getItem('logaritma_order_draft');
+            if(draft) {
+                try {
+                    orderData = JSON.parse(draft);
+                    
+                    if(orderData.brief) {
+                        document.getElementById('bf_name').value = orderData.brief.name || '';
+                        document.getElementById('bf_wa').value = orderData.brief.wa || '';
+                        document.getElementById('bf_email').value = orderData.brief.email || '';
+                        document.getElementById('bf_member').value = orderData.brief.memberId || '';
+                        document.getElementById('bf_product').value = orderData.brief.product || '';
+                        document.getElementById('bf_area').value = orderData.brief.area || '';
+                        document.getElementById('bf_objective').value = orderData.brief.objective || '';
+                        document.getElementById('bf_promo').value = orderData.brief.promo || '';
+                        document.getElementById('bf_notes').value = orderData.brief.notes || '';
+                        document.getElementById('bf_asset').value = orderData.brief.assetUrl || '';
+                    }
+                    if(orderData.agreed) {
+                        document.getElementById('rev_agree').checked = true;
+                    }
+                    
+                    document.getElementById('auto-save-indicator').textContent = 'Draft diload dari sesi sebelumnya';
+                } catch(e) {
+                    console.error('Failed to load draft');
+                }
+            }
+        }
+
+        // RENDERERS
+        function renderStepper() {
+            const c = document.getElementById('stepper-container');
+            c.innerHTML = STEPS.map((s, i) => `
+                <div class="relative flex items-start group">
+                    <div class="h-9 flex items-center">
+                        <div class="relative z-10 w-7 h-7 flex items-center justify-center ${currentStep > s.num ? 'bg-blue-500' : (currentStep === s.num ? 'bg-blue-600 ring-4 ring-blue-900/50' : 'bg-slate-800')} rounded-full text-white transition-all">
+                            ${currentStep > s.num ? '<i class="fa-solid fa-check text-[10px]"></i>' : '<span class="text-[10px] font-bold">'+s.num+'</span>'}
+                        </div>
+                    </div>
+                    <div class="ml-4 min-w-0 flex flex-col">
+                        <span class="text-sm font-bold ${currentStep >= s.num ? 'text-white' : 'text-slate-500'}">${s.title}</span>
+                        <span class="text-[10px] ${currentStep >= s.num ? 'text-blue-400' : 'text-slate-600'}">${s.desc}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            const pct = ((currentStep - 1) / (STEPS.length - 1)) * 100;
+            document.getElementById('mobile-progress-bar').style.width = pct + '%';
+            document.getElementById('mobile-step-text').textContent = `Step ${currentStep} of ${STEPS.length}`;
+            document.getElementById('mobile-step-title').textContent = STEPS[currentStep-1].title;
+        }
+
+        function renderServices() {
+            const g = document.getElementById('services-grid');
+            g.innerHTML = SERVICES.map(s => `
+                <div class="relative rounded-xl border ${orderData.serviceId === s.id ? 'border-blue-500 bg-blue-900/20' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'} ${!s.active ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} p-5 transition-all" ${s.active ? `onclick="selectService('${s.id}')"` : ''}>
+                    ${!s.active ? '<span class="absolute top-3 right-3 text-[9px] font-bold bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">COMING SOON</span>' : ''}
+                    <div class="w-10 h-10 rounded-lg ${s.active ? 'bg-blue-600' : 'bg-slate-800'} flex items-center justify-center text-white mb-4">
+                        <i class="fa-solid ${s.icon}"></i>
+                    </div>
+                    <h4 class="font-bold text-white mb-1">${s.name}</h4>
+                    <p class="text-xs text-slate-400">${s.category}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderPackages() {
+            const g = document.getElementById('packages-grid');
+            g.innerHTML = PACKAGES.map(p => `
+                <div class="relative rounded-xl border ${orderData.packageId === p.id ? 'border-blue-500 bg-blue-900/20 shadow-lg shadow-blue-500/10' : 'border-slate-800 bg-slate-900/50 hover:border-slate-700'} ${!p.active ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} p-5 flex flex-col transition-all" ${p.active ? `onclick="selectPackage('${p.id}')"` : ''}>
+                    ${!p.active ? '<span class="absolute -top-2 -right-2 text-[9px] font-bold bg-amber-500 text-amber-950 px-2 py-1 rounded shadow-lg">BETA</span>' : ''}
+                    <h4 class="font-bold text-white text-lg mb-1">${p.name}</h4>
+                    <p class="text-[10px] text-slate-400 mb-4">${p.desc}</p>
+                    <div class="mt-auto">
+                        <p class="text-xl font-bold text-emerald-400 mb-2">Rp ${(p.price).toLocaleString('id-ID')}</p>
+                        <div class="space-y-1 text-[10px] text-slate-500">
+                            <p class="flex justify-between"><span>Ads Budget:</span> <span>Rp ${(p.adsBudget).toLocaleString('id-ID')}</span></p>
+                            <p class="flex justify-between"><span>Service Fee:</span> <span>Rp ${(p.fee).toLocaleString('id-ID')}</span></p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ACTIONS
+        function selectService(id) {
+            orderData.serviceId = id;
+            saveDraft();
+            renderServices();
+        }
+
+        function selectPackage(id) {
+            orderData.packageId = id;
+            saveDraft();
+            renderPackages();
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(id+'-icon');
+            if(content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                content.classList.add('block');
+                icon.classList.remove('-rotate-90');
+            } else {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+                icon.classList.add('-rotate-90');
+            }
+        }
+
+        function checkAgreement() {
+            saveDraft();
+            updateUI();
+        }
+
+        // NAVIGATION
+        function nextStep() {
+            // Validation
+            if(currentStep === 1 && !orderData.serviceId) {
+                Swal.fire({ icon: 'error', title: 'Oops', text: 'Silakan pilih layanan terlebih dahulu.', background: '#0f172a', color: '#fff' }); return;
+            }
+            if(currentStep === 2 && !orderData.packageId) {
+                Swal.fire({ icon: 'error', title: 'Oops', text: 'Silakan pilih paket.', background: '#0f172a', color: '#fff' }); return;
+            }
+            if(currentStep === 3) {
+                const form = document.getElementById('form-brief');
+                if(!form.checkValidity()) {
+                    // Open all accordions so user can see errors
+                    document.querySelectorAll('[id^="acc-"]').forEach(el => {
+                        if(el.id.includes('-icon')) { el.classList.remove('-rotate-90'); }
+                        else { el.classList.remove('hidden'); el.classList.add('block'); }
+                    });
+                    form.reportValidity();
+                    return;
+                }
+                saveDraft();
+                prepareReview();
+            }
+
+            if(currentStep < STEPS.length) {
+                document.querySelectorAll('.wizard-step').forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
+                currentStep++;
+                document.getElementById('step-'+currentStep).classList.remove('hidden');
+                document.getElementById('step-'+currentStep).classList.add('block');
+                updateUI();
+            }
+        }
+
+        function prevStep() {
+            if(currentStep > 1) {
+                document.querySelectorAll('.wizard-step').forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
+                currentStep--;
+                document.getElementById('step-'+currentStep).classList.remove('hidden');
+                document.getElementById('step-'+currentStep).classList.add('block');
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            renderStepper();
+            
+            if(currentStep === 2) renderPackages();
+            
+            // Buttons
+            document.getElementById('btn-prev').classList.toggle('hidden', currentStep === 1 || currentStep === 5);
+            
+            const btnNext = document.getElementById('btn-next');
+            if(currentStep === 5) {
+                document.getElementById('wizard-footer').classList.add('hidden'); // Hide footer in step 5
+            } else {
+                document.getElementById('wizard-footer').classList.remove('hidden');
+            }
+
+            if(currentStep === 4) {
+                btnNext.textContent = 'Setuju & Lanjutkan';
+                btnNext.disabled = !document.getElementById('rev_agree').checked;
+                btnNext.className = btnNext.disabled ? 'px-6 py-2.5 bg-slate-700 text-slate-500 rounded-lg font-bold cursor-not-allowed' : 'px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-500/20';
+            } else {
+                btnNext.textContent = 'Selanjutnya';
+                btnNext.disabled = false;
+                btnNext.className = 'px-6 py-2.5 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-200 transition shadow-lg';
+            }
+        }
+
+        function prepareReview() {
+            const svc = SERVICES.find(s => s.id === orderData.serviceId);
+            const pkg = PACKAGES.find(p => p.id === orderData.packageId);
+            
+            document.getElementById('rev_service').textContent = svc.name;
+            document.getElementById('rev_package').textContent = pkg.name;
+            document.getElementById('rev_name').textContent = orderData.brief.name;
+            document.getElementById('rev_area').textContent = orderData.brief.area;
+            
+            document.getElementById('rev_budget').textContent = 'Rp ' + pkg.adsBudget.toLocaleString('id-ID');
+            document.getElementById('rev_fee').textContent = 'Rp ' + pkg.fee.toLocaleString('id-ID');
+            document.getElementById('rev_total').textContent = 'Rp ' + pkg.price.toLocaleString('id-ID');
+            
+            document.getElementById('pay_total').textContent = 'Rp ' + pkg.price.toLocaleString('id-ID');
+
+            // SLA calculation (e.g. +2 working days)
+            let date = new Date();
+            date.setDate(date.getDate() + 2);
+            document.getElementById('rev_sla_date').textContent = date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // PAYMENT ADAPTER & FINALIZATION
+        const PaymentAdapter = {
+            generateOrderId: () => 'ORD-BP-' + Math.floor(1000 + Math.random() * 9000) + '-' + Date.now().toString().slice(-4),
+            createPaymentPayload: (data) => {
+                const svc = SERVICES.find(s => s.id === data.serviceId);
+                const pkg = PACKAGES.find(p => p.id === data.packageId);
+                
+                // Construct the AI-friendly Draft WO
+                return {
+                    id: PaymentAdapter.generateOrderId(),
+                    clientData: { 
+                        name: data.brief.name, 
+                        whatsapp: data.brief.wa, 
+                        email: data.brief.email,
+                        memberId: data.brief.memberId 
+                    },
+                    service: { id: svc.id, name: svc.name, category: svc.category },
+                    package: { id: pkg.id, name: pkg.name },
+                    status: "draft",
+                    finances: { total: pkg.price, adsBudget: pkg.adsBudget, fee: pkg.fee },
+                    brief: {
+                        product: { value: data.brief.product, _aiMeta: "product_focus" },
+                        objective: { value: data.brief.objective, _aiMeta: "campaign_goal" },
+                        area: { value: data.brief.area, _aiMeta: "target_location" },
+                        promo: { value: data.brief.promo, _aiMeta: "offer_details" },
+                        notes: { value: data.brief.notes, _aiMeta: "extra_notes" },
+                        assetsUrl: { value: data.brief.assetUrl, _aiMeta: "creative_assets" }
+                    },
+                    timestamps: {
+                        createdAt: new Date().toISOString(),
+                        estimatedStartAt: document.getElementById('rev_sla_date').textContent // Text format for dummy
+                    }
+                };
+            }
+        };
+
+        
+        function processPayment() {
+            // Generate Payload
+            const payload = PaymentAdapter.createPaymentPayload(orderData);
+            console.log("DRAFT WORK ORDER GENERATED:", payload);
+            
+            // Create Draft Work Order via Engine
+            if(window.LogaritmaWorkOrderEngine) {
+                window.LogaritmaWorkOrderEngine.createDraft(payload);
+            }
+            
+            // Generate Mayar Invoice
+            const invoice = window.LogaritmaMayarAdapter.createInvoice(payload);
+            
+            // Show in UI
+            document.getElementById('pay_id').textContent = invoice.invoice_id;
+            
+            Swal.fire({
+                title: 'Draft Order Dibuat!',
+                text: 'Order berhasil disimpan dengan status DRAFT. Anda akan diarahkan ke provider pembayaran.',
+                icon: 'success',
+                background: '#0f172a',
+                color: '#fff',
+                confirmButtonText: 'Simulasi Bayar di Mayar',
+                confirmButtonColor: '#3b82f6',
+                showCancelButton: true,
+                cancelButtonText: 'Tunda',
+                cancelButtonColor: '#475569'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Start Simulation UI
+                    document.getElementById('step-5').innerHTML = `
+                        <div class="text-center max-w-md mx-auto py-8">
+                            <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                            <h3 class="text-2xl font-bold font-heading text-white mb-2">Menunggu Pembayaran...</h3>
+                            <p class="text-sm text-slate-400 mb-6">Simulasi: Silakan tunggu 5 detik. Webhook dari Mayar akan dikirim otomatis ke EventBus.</p>
+                        </div>
+                    `;
+                    
+                    // Simulate Webhook Delay (5 seconds)
+                    setTimeout(() => {
+                        if(window.LogaritmaMockWebhook) {
+                            window.LogaritmaMockWebhook.simulatePaymentSuccess(payload.id, invoice.invoice_id);
+                        }
+                        
+                        // Update UI for Customer
+                        document.getElementById('step-5').innerHTML = `
+                            <div class="text-center max-w-md mx-auto py-8">
+                                <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold font-heading text-white mb-2">Pembayaran Sukses!</h3>
+                                <p class="text-sm text-slate-400 mb-6">Webhook berhasil diterima. Status order Anda telah berubah menjadi <strong>Waiting Setup</strong> dan AI Logaritma sedang membuat summary.</p>
+                                <a href="../../admin/index.html" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition inline-block shadow-lg shadow-blue-500/20">Lihat Dashboard Admin</a>
+                            </div>
+                        `;
+                    }, 5000);
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

@@ -40,6 +40,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    
+    // Command Palette Logic
+    const cmdPalette = document.getElementById('command-palette-overlay');
+    const cmdInput = document.getElementById('command-input');
+    const floatingAiBtn = document.getElementById('floating-ai-btn');
+    
+    function toggleCommandPalette() {
+        if(cmdPalette) {
+            if(cmdPalette.classList.contains('hidden')) {
+                cmdPalette.classList.remove('hidden');
+                if(cmdInput) setTimeout(() => cmdInput.focus(), 50);
+            } else {
+                cmdPalette.classList.add('hidden');
+                if(cmdInput) cmdInput.blur();
+            }
+        }
+    }
+    
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+        // Ctrl + Space or Alt + K
+        if((e.ctrlKey && e.code === 'Space') || (e.altKey && e.key.toLowerCase() === 'k')) {
+            e.preventDefault(); // Prevent default browser behavior
+            toggleCommandPalette();
+        }
+        // Esc to close
+        if(e.key === 'Escape' && cmdPalette && !cmdPalette.classList.contains('hidden')) {
+            toggleCommandPalette();
+        }
+    });
+    
+    // Floating Button
+    if(floatingAiBtn) {
+        floatingAiBtn.addEventListener('click', () => {
+            toggleCommandPalette();
+        });
+    }
+    
+    // Close on outside click
+    if(cmdPalette) {
+        cmdPalette.addEventListener('click', (e) => {
+            if(e.target === cmdPalette) {
+                toggleCommandPalette();
+            }
+        });
+    }
+
+
     // Error Modal Logic
     const errorModal = document.getElementById('error-modal');
     const closeErrorModalBtn = document.getElementById('close-error-modal-btn');
@@ -886,7 +934,14 @@ document.addEventListener("DOMContentLoaded", function() {
         const navs = {
             'dashboard': { btn: document.getElementById('nav-dashboard'), view: document.getElementById('view-dashboard') },
             'leads': { btn: document.getElementById('nav-leads'), view: document.getElementById('view-leads') },
-            'premium': { btn: document.getElementById('nav-premium'), view: document.getElementById('view-premium') }
+            'premium': { btn: document.getElementById('nav-premium'), view: document.getElementById('view-premium') },
+            'campaigns': { btn: document.getElementById('nav-campaigns'), view: document.getElementById('view-campaigns') },
+            'ai': { btn: document.getElementById('nav-ai'), view: document.getElementById('view-ai') },
+            'reg-service': { btn: document.getElementById('nav-reg-service'), view: document.getElementById('view-reg-service') },
+            'reg-workflow': { btn: document.getElementById('nav-reg-workflow'), view: document.getElementById('view-reg-workflow') },
+            'reg-checklist': { btn: document.getElementById('nav-reg-checklist'), view: document.getElementById('view-reg-checklist') },
+            'reg-pricing': { btn: document.getElementById('nav-reg-pricing'), view: document.getElementById('view-reg-pricing') },
+            'reg-payment': { btn: document.getElementById('nav-reg-payment'), view: document.getElementById('view-reg-payment') }
         };
 
         function switchTab(tabId) {

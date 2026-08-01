@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Logaritma.id</title>
     
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,8 +34,45 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../core/events/eventBus.js"></script>
+    <script src="../core/storage/localStorage.js"></script>
+    <!-- AI Architecture -->
+    <script src="../core/ai/aiMemory.js"></script>
+    <script src="../core/ai/promptRegistry.js"></script>
+    <script src="../core/ai/aiLogger.js"></script>
+    <script src="../core/ai/aiWorkers.js"></script>
+    <script src="../core/ai/aiDispatcher.js"></script>
+    <script src="../core/ai/aiEngine.js"></script>
+    <script src="../core/ai/aiContext.js"></script>
+    <script src="../core/ai/index.js"></script>
+    
+    
+    <!-- System Configuration -->
+    <script src="../core/system/environment.js"></script>
+    <script src="../core/system/featureFlags.js"></script>
+    <script src="../core/system/errorCenter.js"></script>
+    <script src="../core/system/healthMonitor.js"></script>
+    <script src="../core/system/auditCenter.js"></script>
+    <script src="../core/events/notifications.js"></script>
+
+    <!-- Registries (Data) -->
+    <script src="../core/registry/services.js"></script>
+    <script src="../core/registry/workflows.js"></script>
+    <script src="../core/registry/checklists.js"></script>
+    <script src="../core/registry/pricing.js"></script>
+    <script src="../core/registry/payment.js"></script>
+    <script src="../core/registry/roles.js"></script>
+    <script src="../core/registry/index.js"></script>
+    
+    <!-- Engines (Logic) -->
+    <script src="../core/engine/registryEngine.js"></script>
+    <script src="../core/engine/workflowEngine.js"></script>
+    <script src="../core/engine/loggingEngine.js"></script>
+    <script src="../core/engine/workOrderEngine.js"></script>
+    <script src="../js/registry_ui.js"></script>
+    <script src="../js/ai_ui.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen flex selection:bg-blue-500/30 selection:text-blue-200">
     
@@ -103,6 +141,36 @@
                 </a>
                 <a href="#" id="nav-premium" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
                     <span>💳</span> Data Langganan
+                </a>
+                <a href="#" id="nav-campaigns" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
+                    <span>🚀</span> Work Orders
+                </a>
+                
+                <div class="pt-4 pb-2">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2">Intelligence</div>
+                </div>
+                <a href="#" id="nav-ai" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
+                    <i class="fa-solid fa-robot text-purple-400"></i> <span class="font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">Logaritma AI</span>
+                    <span class="ml-auto text-[8px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">BETA</span>
+                </a>
+                
+                <div class="pt-4 pb-2">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2">Settings</div>
+                </div>
+                <a href="#" id="nav-reg-service" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
+                    <i class="fa-solid fa-layer-group w-4 text-center"></i> Service Registry
+                </a>
+                <a href="#" id="nav-reg-workflow" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
+                    <i class="fa-solid fa-diagram-project w-4 text-center"></i> Workflow Registry
+                </a>
+                <a href="#" id="nav-reg-checklist" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
+                    <i class="fa-solid fa-list-check w-4 text-center"></i> Checklist Registry
+                </a>
+                <a href="#" id="nav-reg-pricing" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
+                    <i class="fa-solid fa-tag w-4 text-center"></i> Pricing Registry
+                </a>
+                <a href="#" id="nav-reg-payment" class="admin-nav-item flex items-center gap-3 px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg text-sm transition">
+                    <i class="fa-solid fa-credit-card w-4 text-center"></i> Payment Provider
                 </a>
             </nav>
         </div>
@@ -231,44 +299,733 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Logaritma AI View (Placeholder) -->
+            <div id="view-ai" class="admin-view hidden">
+                <div class="max-w-4xl mx-auto h-[calc(100vh-10rem)] border border-slate-800 bg-slate-900/50 rounded-2xl p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent pointer-events-none"></div>
+                    <div class="w-24 h-24 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl flex items-center justify-center mb-6 relative group">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-purple-600 to-blue-500 opacity-20 blur-xl group-hover:opacity-40 transition duration-500"></div>
+                        <i class="fa-solid fa-brain text-4xl text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-blue-400"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold font-heading text-white mb-4">Logaritma <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">AI Assistant</span></h2>
+                    <p class="text-slate-400 max-w-lg mx-auto mb-8 leading-relaxed">Sistem AI Agent otonom yang dapat menganalisa report campaign, memberikan saran optimasi budget, dan merespons query klien secara otomatis. (Infrastruktur UI disiapkan untuk integrasi API di fase berikutnya).</p>
+                    <button class="px-6 py-3 bg-slate-800 text-slate-500 font-bold rounded-xl cursor-not-allowed border border-slate-700" disabled>
+                        <i class="fa-solid fa-link mr-2"></i> Menunggu Koneksi Agent
+                    </button>
+                </div>
+            </div>
+
+            <!-- REGISTRY VIEWS -->
+            <div id="view-reg-service" class="admin-view hidden p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold font-heading text-white">Service Registry</h2>
+                    <button class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition">+ Tambah Service</button>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-800/50 text-xs uppercase text-slate-400">
+                            <tr><th class="px-6 py-4">ID</th><th class="px-6 py-4">Nama Layanan</th><th class="px-6 py-4">Kategori</th><th class="px-6 py-4">Status</th><th class="px-6 py-4 text-right">Aksi</th></tr>
+                        </thead>
+                        <tbody id="tbl-reg-services" class="divide-y divide-slate-800">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-reg-workflow" class="admin-view hidden p-6">
+                <h2 class="text-2xl font-bold font-heading text-white mb-6">Workflow Registry</h2>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-8 text-center text-slate-400">
+                    <i class="fa-solid fa-diagram-project text-4xl mb-4 text-slate-600"></i>
+                    <p>Konfigurasi Workflow dan State Machine Layanan (Coming Soon)</p>
+                </div>
+            </div>
+
+            <div id="view-reg-checklist" class="admin-view hidden p-6">
+                <h2 class="text-2xl font-bold font-heading text-white mb-6">Checklist Registry</h2>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-8 text-center text-slate-400">
+                    <i class="fa-solid fa-list-check text-4xl mb-4 text-slate-600"></i>
+                    <p>Standard Operating Procedure Checklists (Coming Soon)</p>
+                </div>
+            </div>
+
+            <div id="view-reg-pricing" class="admin-view hidden p-6">
+                <h2 class="text-2xl font-bold font-heading text-white mb-6">Pricing Registry</h2>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-8 text-center text-slate-400">
+                    <i class="fa-solid fa-tag text-4xl mb-4 text-slate-600"></i>
+                    <p>Paket Harga dan Budget Allocation (Coming Soon)</p>
+                </div>
+            </div>
+
+            <div id="view-reg-payment" class="admin-view hidden p-6">
+                <h2 class="text-2xl font-bold font-heading text-white mb-6">Payment Provider Registry</h2>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-8 text-center text-slate-400">
+                    <i class="fa-solid fa-credit-card text-4xl mb-4 text-slate-600"></i>
+                    <p>Integrasi Payment Gateway Adapter (Coming Soon)</p>
+                </div>
+            </div>
+
+            
+            <!-- WORK ORDERS VIEW -->
+            <div id="view-campaigns" class="admin-view hidden h-[calc(100vh-8rem)]">
+                <div class="flex flex-col h-full relative">
+                    <!-- Dashboard KPI Summary -->
+                    <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6 shrink-0">
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Rev Bulan Ini</p>
+                            <p class="text-xl font-bold text-emerald-400 mt-1" id="kpi-revenue">Rp 0</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Total Spent Ads</p>
+                            <p class="text-xl font-bold text-red-400 mt-1" id="kpi-spent">Rp 0</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Campaign Aktif</p>
+                            <p class="text-xl font-bold text-blue-400 mt-1" id="kpi-active">0</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Menunggu Brief</p>
+                            <p class="text-xl font-bold text-amber-400 mt-1" id="kpi-brief">0</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Completed</p>
+                            <p class="text-xl font-bold text-slate-200 mt-1" id="kpi-completed">0</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Avg CPL (All)</p>
+                            <p class="text-xl font-bold text-purple-400 mt-1" id="kpi-cpl">Rp 0</p>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar -->
+                    <div class="flex justify-between items-center mb-4 shrink-0">
+                        <div>
+                            <h2 class="text-xl font-bold text-white font-heading">Work Order Management</h2>
+                            <p class="text-sm text-slate-400">Pusat kontrol operasional layanan Logaritma</p>
+                        </div>
+                        <div class="flex gap-2 bg-slate-900 border border-slate-700 p-1 rounded-lg">
+                            <button id="btn-view-table" onclick="window.woSetViewMode('table')" class="px-3 py-1.5 text-xs font-bold rounded-md bg-slate-800 text-white transition">Table</button>
+                            <button id="btn-view-kanban" onclick="window.woSetViewMode('kanban')" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-400 hover:text-white transition">Kanban</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Content Area: Table / Kanban -->
+                    <div class="flex-1 overflow-hidden relative">
+                        <!-- TABLE VIEW -->
+                        <div id="wo-table-view" class="absolute inset-0 overflow-auto bg-slate-900 border border-slate-700 rounded-xl">
+                            <table class="w-full text-left text-sm text-slate-300">
+                                <thead class="text-xs text-slate-400 uppercase bg-slate-900/50 border-b border-slate-700 sticky top-0 z-10">
+                                    <tr>
+                                        <th class="px-4 py-3 font-bold">ID / Layanan</th>
+                                        <th class="px-4 py-3 font-bold">Klien</th>
+                                        <th class="px-4 py-3 font-bold">Status</th>
+                                        <th class="px-4 py-3 font-bold">Priority / SLA</th>
+                                        <th class="px-4 py-3 font-bold">PIC</th>
+                                        <th class="px-4 py-3 font-bold">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="wo-table-body" class="divide-y divide-slate-800">
+                                    <!-- Table Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- KANBAN VIEW -->
+                        <div id="wo-kanban-view" class="absolute inset-0 overflow-x-auto overflow-y-hidden hidden pb-4">
+                            <div class="flex gap-4 h-full min-w-max" id="wo-kanban-board">
+                                <!-- Kanban columns injected via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WORK ORDER DETAIL DRAWER (OFF-CANVAS) -->
+            <div id="wo-drawer-overlay" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[250] hidden transition-opacity opacity-0" onclick="window.woCloseDrawer()"></div>
+            <div id="wo-drawer" class="fixed inset-y-0 right-0 w-full md:w-[600px] bg-slate-900 border-l border-slate-800 shadow-2xl z-[300] transform translate-x-full transition-transform duration-300 flex flex-col">
+                <!-- Header -->
+                <div class="p-6 border-b border-slate-800 bg-slate-850 shrink-0 flex justify-between items-start">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-xs font-mono text-slate-500" id="drawer-wo-id">WO-000</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" id="drawer-wo-status">Status</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" id="drawer-wo-priority">Priority</span>
+                        </div>
+                        <h2 class="text-xl font-heading font-bold text-white" id="drawer-client-name">Nama Klien</h2>
+                        <p class="text-sm text-slate-400 mt-1" id="drawer-service-type">Layanan: -</p>
+                    </div>
+                    <button onclick="window.woCloseDrawer()" class="text-slate-400 hover:text-white p-2 bg-slate-800 rounded-lg">✕</button>
+                </div>
+                
+                <!-- Drawer Tabs -->
+                <div class="px-6 border-b border-slate-800 bg-slate-900 shrink-0 flex gap-6 overflow-x-auto text-sm font-bold hide-scrollbar">
+                    <button class="wo-tab-btn active border-b-2 border-blue-500 text-blue-400 py-3 px-1 whitespace-nowrap" data-target="tab-overview">Overview</button>
+                    <button class="wo-tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 py-3 px-1 whitespace-nowrap" data-target="tab-brief">Brief & Asset</button>
+                    <button class="wo-tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 py-3 px-1 whitespace-nowrap" data-target="tab-progress">Progress Checklist</button>
+                    <button class="wo-tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 py-3 px-1 whitespace-nowrap" data-target="tab-report">Report Metrics</button>
+                    <button class="wo-tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 py-3 px-1 whitespace-nowrap" data-target="tab-timeline">Activity Log</button>
+                </div>
+
+                <!-- Drawer Content -->
+                <div class="flex-1 overflow-y-auto p-6 bg-slate-950/50">
+                    
+                    <!-- TAB: OVERVIEW -->
+                    <div id="tab-overview" class="wo-tab-content block space-y-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col justify-between">
+                                <div>
+                                    <p class="text-xs text-slate-500 mb-1">Financial Summary</p>
+                                    <div class="space-y-1 mt-2 text-sm">
+                                        <div class="flex justify-between"><span class="text-slate-400">Total Harga:</span> <span class="text-white font-bold" id="drawer-fin-total">Rp 0</span></div>
+                                        <div class="flex justify-between"><span class="text-slate-400">Budget Ads:</span> <span class="text-white" id="drawer-fin-ads">Rp 0</span></div>
+                                        <div class="flex justify-between"><span class="text-slate-400">Fee Logaritma:</span> <span class="text-white" id="drawer-fin-fee">Rp 0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col items-center justify-center">
+                                <p class="text-xs text-slate-500 mb-1">SLA & Timing (Dummy)</p>
+                                <div class="inline-block px-4 py-2 bg-slate-800 rounded-lg text-emerald-400 font-bold font-mono tracking-widest text-xl" id="drawer-sla-timer">48:00:00</div>
+                            </div>
+                        </div>
+                        <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl">
+                            <p class="text-xs font-bold text-amber-500 uppercase tracking-wide mb-2">Internal Notes (Admin Only)</p>
+                            <textarea id="drawer-internal-notes" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-300 focus:outline-none focus:border-amber-500" rows="3" placeholder="Catatan internal tentang klien ini..."></textarea>
+                            <button onclick="window.woSaveNotes()" class="mt-2 text-xs bg-amber-600/20 text-amber-500 px-3 py-1.5 rounded font-bold hover:bg-amber-600/40 transition">Simpan Catatan</button>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Tindakan Selanjutnya</p>
+                            <div id="drawer-next-action-container" class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                                <!-- Action button injected here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: BRIEF & ASSET -->
+                    <div id="tab-brief" class="wo-tab-content hidden">
+                        <div class="space-y-4">
+                            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                                <div class="p-4 border-b border-slate-800 bg-slate-850"><h3 class="font-bold text-white text-sm">Brief Klien</h3></div>
+                                <div class="p-4 text-sm text-slate-300" id="drawer-brief-content">
+                                    <!-- Injected via JS -->
+                                </div>
+                            </div>
+                            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                                <div class="p-4 border-b border-slate-800 bg-slate-850"><h3 class="font-bold text-white text-sm">Asset (Copywriting & Visuals)</h3></div>
+                                <div class="p-4 text-sm text-slate-300" id="drawer-asset-content">
+                                    <!-- Injected via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: PROGRESS CHECKLIST -->
+                    <div id="tab-progress" class="wo-tab-content hidden">
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                            <div class="p-4 border-b border-slate-800 bg-slate-850 flex justify-between items-center">
+                                <h3 class="font-bold text-white text-sm">Checklist Operasional</h3>
+                                <span class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded" id="drawer-progress-percent">0%</span>
+                            </div>
+                            <div class="p-4 space-y-3" id="drawer-progress-content">
+                                <!-- Checkbox list injected via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: REPORT METRICS -->
+                    <div id="tab-report" class="wo-tab-content hidden">
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+                            <p class="text-xs text-slate-400 mb-2">Masukkan data metrik secara manual sebelum integrasi API tersedia.</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Spent Ads (Rp)</label><input type="number" id="inp-spent" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white"></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Leads / Hasil</label><input type="number" id="inp-leads" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white"></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Reach / Jangkauan</label><input type="number" id="inp-reach" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white"></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Impressions</label><input type="number" id="inp-impressions" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white"></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Link Clicks</label><input type="number" id="inp-clicks" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-white"></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-1">Report Dashboard URL</label><input type="text" id="inp-reporturl" class="w-full bg-slate-950 border border-slate-700 rounded p-2 text-sm text-blue-400" placeholder="https://datastudio..."></div>
+                            </div>
+                            <button onclick="window.woSaveReport()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded shadow transition">Simpan Metrik</button>
+                        </div>
+                    </div>
+
+                    <!-- TAB: TIMELINE & ACTIVITY -->
+                    <div id="tab-timeline" class="wo-tab-content hidden">
+                        <div class="relative border-l-2 border-slate-800 ml-3 pl-5 space-y-6" id="drawer-timeline-content">
+                            <!-- Timeline items injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </main>
 
-    <!-- Visitor History Modal -->
-    <div id="visitor-history-modal" class="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl max-w-4xl w-full mx-4 max-h-[85vh] flex flex-col">
-            <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                <div>
-                    <h2 class="text-xl font-heading font-bold text-white">Riwayat Pengunjung Detail</h2>
-                    <p class="text-sm text-slate-400 mt-1">Data IP Address, Wilayah, dan Perangkat</p>
+    <!-- Work Order Logic -->
+    <script>
+        // STATUS DEFINITIONS (7 Stages)
+        // WorkOrders are now managed by LogaritmaWorkOrderEngine
+        let workOrders = [];
+        const WO_STATUS = [
+            { id: "draft", label: "Draft", color: "slate", icon: "fa-file-lines" },
+            { id: "waiting_payment", label: "Menunggu Pembayaran", color: "amber", icon: "fa-clock" },
+            { id: "paid", label: "Pembayaran Diterima", color: "emerald", icon: "fa-check" },
+            { id: "waiting_setup", label: "Sedang Setup", color: "purple", icon: "fa-gears" },
+            { id: "waiting_approval", label: "Menunggu Approval", color: "orange", icon: "fa-hourglass-half" },
+            { id: "running", label: "Campaign Running", color: "blue", icon: "fa-rocket" },
+            { id: "completed", label: "Completed", color: "slate", icon: "fa-flag-checkered" }
+        ];
+        
+        function initAdminData() {
+            if(window.LogaritmaRegistryEngine) window.LogaritmaRegistryEngine.init();
+            if(window.LogaritmaWorkOrderEngine) workOrders = window.LogaritmaWorkOrderEngine.getAllWorkOrders();
+            
+            // Seed a dummy if empty for visual purposes
+            if(workOrders.length === 0 && window.LogaritmaWorkOrderEngine) {
+                window.LogaritmaWorkOrderEngine.createDraft({
+                    serviceId: 'SRV001',
+                    workflowId: 'WF001',
+                    checklistId: 'CHK001',
+                    priceId: 'PRICE001',
+                    status: 'draft',
+                    brief: { name: 'Demo Client', wa: '08123456789' }
+                });
+                workOrders = window.LogaritmaWorkOrderEngine.getAllWorkOrders();
+            }
+        }
+        
+        initAdminData();
+
+        // HELPER: Format Rupiah
+        const formatRp = (num) => "Rp " + (num || 0).toLocaleString('id-ID');
+
+        // HELPER: Get Status Config
+        const getStatusCfg = (st) => WO_STATUS.find(s => s.id === st) || WO_STATUS[0];
+        
+        // HELPER: Time Ago
+        const timeAgo = (dateStr) => {
+            const diff = Math.floor((new Date() - new Date(dateStr)) / 60000); // mins
+            if(diff < 60) return diff + "m ago";
+            if(diff < 1440) return Math.floor(diff/60) + "h ago";
+            return Math.floor(diff/1440) + "d ago";
+        };
+
+        let activeWoId = null;
+
+        // --- DASHBOARD RENDER ---
+        window.woRenderDashboard = function() {
+            // Calculate KPIs
+            let rev = 0, spent = 0, active = 0, brief = 0, completed = 0;
+            let totalLeads = 0, totalCplSpent = 0;
+            
+            workOrders.forEach(w => {
+                if(!w.finances) w.finances = { total: 0, adsBudget: 0, fee: 0 };
+                if(!w.metrics) w.metrics = { spent: 0, leads: 0, reach: 0, impressions: 0, clicks: 0, reportUrl: '' };
+                if(!w.checklist) w.checklist = [];
+                
+                rev += (w.finances.total || 0);
+                spent += (w.metrics.spent || 0);
+                if(w.status === 'active') active++;
+                if(w.status === 'awaiting_brief') brief++;
+                if(w.status === 'completed') completed++;
+                
+                if((w.metrics.leads || 0) > 0) {
+                    totalLeads += (w.metrics.leads || 0);
+                    totalCplSpent += (w.metrics.spent || 0);
+                }
+            });
+
+            const avgCpl = totalLeads > 0 ? totalCplSpent / totalLeads : 0;
+
+            if(document.getElementById('kpi-revenue')) {
+                document.getElementById('kpi-revenue').textContent = formatRp(rev);
+                document.getElementById('kpi-spent').textContent = formatRp(spent);
+                document.getElementById('kpi-active').textContent = active;
+                document.getElementById('kpi-brief').textContent = brief;
+                document.getElementById('kpi-completed').textContent = completed;
+                document.getElementById('kpi-cpl').textContent = formatRp(Math.floor(avgCpl));
+            }
+            
+            if(typeof window.woRenderTable === 'function') window.woRenderTable();
+            if(typeof window.woRenderKanban === 'function') window.woRenderKanban();
+        };
+        
+        // --- TABLE VIEW RENDER ---
+        window.woRenderTable = function() {
+            const tbody = document.getElementById('wo-table-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            workOrders.forEach(w => {
+                const st = getStatusCfg(w.status);
+                const prColor = w.priority === 'High' ? 'text-red-400 bg-red-400/10' : 'text-slate-400 bg-slate-800';
+                
+                const srv = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getService(w.serviceId) || {name: 'Unknown Service'} : {name: w.serviceType};
+                const pkg = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getRegistry('pricing').find(p => p.id === w.priceId) || {name: 'Unknown Package'} : {name: w.package};
+                const clientName = w.brief && w.brief.name ? w.brief.name : (w.clientName || 'Unassigned');
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/50 transition cursor-pointer';
+                tr.onclick = () => window.woOpenDrawer(w.id);
+                tr.innerHTML = `
+                    <td class="px-4 py-3">
+                        <p class="text-xs font-mono font-bold text-white mb-0.5">${w.id}</p>
+                        <p class="text-[10px] text-slate-400">${srv.name}</p>
+                    </td>
+                    <td class="px-4 py-3">
+                        <p class="text-sm font-bold text-slate-200">${clientName}</p>
+                        <p class="text-[10px] text-slate-500">${pkg.name}</p>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold bg-${st.color}-500/10 text-${st.color}-400 border border-${st.color}-500/20">
+                            <i class="fa-solid ${st.icon}"></i> ${st.label}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${prColor}">${w.priority || 'Normal'}</span>
+                    </td>
+                    <td class="px-4 py-3 text-xs text-slate-300">
+                        ${w.pic || '<span class="text-slate-600 italic">Unassigned</span>'}
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <button class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded transition">Detail</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        };
+
+        // --- KANBAN VIEW RENDER ---
+        window.woRenderKanban = function() {
+            const board = document.getElementById('wo-kanban-board');
+            if(!board) return;
+            board.innerHTML = '';
+
+            WO_STATUS.forEach(st => {
+                const col = document.createElement('div');
+                col.className = 'flex flex-col bg-slate-900/50 border border-slate-800 rounded-xl w-72 h-full shrink-0';
+                
+                const wosInStatus = workOrders.filter(w => w.status === st.id);
+                
+                col.innerHTML = `
+                    <div class="p-3 border-b border-slate-800 bg-slate-850/50 rounded-t-xl shrink-0 flex items-center justify-between">
+                        <h3 class="font-bold text-xs text-${st.color}-400"><i class="fa-solid ${st.icon}"></i> ${st.label}</h3>
+                        <span class="bg-slate-800 text-[10px] px-2 py-0.5 rounded-full text-slate-400">${wosInStatus.length}</span>
+                    </div>
+                    <div class="p-3 flex-1 overflow-y-auto space-y-3 custom-scrollbar"></div>
+                `;
+                
+                const colBody = col.querySelector('.custom-scrollbar');
+                wosInStatus.forEach(w => {
+                    const srv = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getService(w.serviceId) || {name: 'Unknown Service'} : {name: w.serviceType};
+                    const pkg = window.LogaritmaRegistryEngine ? window.LogaritmaRegistryEngine.getRegistry('pricing').find(p => p.id === w.priceId) || {name: 'Unknown Package'} : {name: w.package};
+                    const clientName = w.brief && w.brief.name ? w.brief.name : (w.clientName || 'Unassigned');
+                    const lastLog = w.activityLog && w.activityLog.length > 0 ? timeAgo(w.activityLog[w.activityLog.length-1].time) : 'Just now';
+
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-sm hover:border-slate-500 cursor-pointer transition';
+                    card.onclick = () => window.woOpenDrawer(w.id);
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-[10px] text-slate-500 font-mono">${w.id}</span>
+                            ${w.priority === 'High' ? '<span class="text-[10px] text-red-400 font-bold"><i class="fa-solid fa-fire"></i> HIGH</span>' : ''}
+                        </div>
+                        <h4 class="text-sm font-bold text-white mb-0.5">${clientName}</h4>
+                        <p class="text-[10px] text-slate-400 mb-2">${srv.name} • ${pkg.name}</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded">${w.pic || 'No PIC'}</span>
+                            <span class="text-[10px] text-slate-500">${lastLog}</span>
+                        </div>
+                    `;
+                    colBody.appendChild(card);
+                });
+                board.appendChild(col);
+            });
+        };
+
+        window.woSetViewMode = function(mode) {
+            const t = document.getElementById('wo-table-view');
+            const k = document.getElementById('wo-kanban-view');
+            const bt = document.getElementById('btn-view-table');
+            const bk = document.getElementById('btn-view-kanban');
+            
+            if(mode === 'table') {
+                t.classList.remove('hidden'); k.classList.add('hidden');
+                bt.className = 'px-3 py-1.5 text-xs font-bold rounded-md bg-slate-800 text-white transition';
+                bk.className = 'px-3 py-1.5 text-xs font-bold rounded-md text-slate-400 hover:text-white transition';
+            } else {
+                k.classList.remove('hidden'); t.classList.add('hidden');
+                bk.className = 'px-3 py-1.5 text-xs font-bold rounded-md bg-slate-800 text-white transition';
+                bt.className = 'px-3 py-1.5 text-xs font-bold rounded-md text-slate-400 hover:text-white transition';
+            }
+        };
+
+        // --- DRAWER LOGIC ---
+        window.woOpenDrawer = function(id) {
+            const w = workOrders.find(wo => wo.id === id);
+            if(!w) return;
+            activeWoId = id;
+
+            // Notify AI Panel
+            if(window.LogaritmaEventBus) {
+                window.LogaritmaEventBus.emit('context.changed', { type: w.status === 'draft' ? 'work_order_draft' : 'work_order_active', data: w });
+            }
+
+            // Update Header
+            document.getElementById('drawer-wo-id').textContent = w.id;
+            document.getElementById('drawer-client-name').textContent = w.clientName;
+            document.getElementById('drawer-service-type').textContent = `Layanan: ${w.serviceType} (${w.package})`;
+            
+            const st = getStatusCfg(w.status);
+            const dSt = document.getElementById('drawer-wo-status');
+            dSt.textContent = `${st.icon} ${st.label}`;
+            dSt.className = `text-[10px] font-bold px-2 py-0.5 rounded-full bg-${st.color}-500/20 text-${st.color}-400`;
+
+            const dPr = document.getElementById('drawer-wo-priority');
+            dPr.textContent = w.priority;
+            dPr.className = w.priority === 'High' ? 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/20 text-red-400' : 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300';
+
+            // Populate Overview
+            document.getElementById('drawer-fin-total').textContent = formatRp(w.finances.total);
+            document.getElementById('drawer-fin-ads').textContent = formatRp(w.finances.adsBudget);
+            document.getElementById('drawer-fin-fee').textContent = formatRp(w.finances.fee);
+            document.getElementById('drawer-internal-notes').value = w.internalNotes;
+
+            // Generate Next Action Button
+            const actContainer = document.getElementById('drawer-next-action-container');
+            let nextBtn = '';
+            if(w.status === 'pending_payment') nextBtn = `<button onclick="window.woChangeStatus('payment_verified')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded text-sm transition">Verifikasi Pembayaran Diterima</button>`;
+            else if(w.status === 'payment_verified') nextBtn = `<button onclick="window.woChangeStatus('awaiting_brief')" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 rounded text-sm transition">Kirim Form Brief Klien</button>`;
+            else if(w.status === 'awaiting_brief') nextBtn = `<button onclick="window.woChangeStatus('setup')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 rounded text-sm transition">Brief Diterima, Mulai Setup</button>`;
+            else if(w.status === 'setup') nextBtn = `<button onclick="window.woChangeStatus('pending_approval')" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 rounded text-sm transition">Minta Approval Klien</button>`;
+            else if(w.status === 'pending_approval') nextBtn = `<button onclick="window.woChangeStatus('active')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded text-sm transition">Jalankan Campaign!</button>`;
+            else if(w.status === 'active') nextBtn = `<button onclick="window.woChangeStatus('completed')" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 rounded text-sm transition">Selesaikan Campaign</button>`;
+            else nextBtn = `<p class="text-sm text-slate-400 text-center">Campaign Selesai.</p>`;
+            actContainer.innerHTML = nextBtn;
+
+            // Populate Brief & Asset
+            document.getElementById('drawer-brief-content').innerHTML = w.brief ? `<pre class="whitespace-pre-wrap font-sans text-xs">${JSON.stringify(w.brief, null, 2)}</pre>` : '<p class="text-slate-500 italic">Belum ada data brief.</p>';
+            document.getElementById('drawer-asset-content').innerHTML = w.assets ? `<pre class="whitespace-pre-wrap font-sans text-xs">${JSON.stringify(w.assets, null, 2)}</pre>` : '<p class="text-slate-500 italic">Belum ada data asset.</p>';
+
+            // Populate Progress Checklist
+            const chkContainer = document.getElementById('drawer-progress-content');
+            chkContainer.innerHTML = '';
+            let chkDone = 0;
+            w.checklist.forEach((chk, i) => {
+                if(chk.done) chkDone++;
+                chkContainer.innerHTML += `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="chk-${i}" ${chk.done ? 'checked' : ''} onchange="window.woToggleChecklist(${i}, this.checked)" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500">
+                        <label for="chk-${i}" class="text-sm ${chk.done ? 'text-slate-500 line-through' : 'text-slate-300'}">${chk.task}</label>
+                    </div>
+                `;
+            });
+            document.getElementById('drawer-progress-percent').textContent = w.checklist.length ? Math.round((chkDone / w.checklist.length) * 100) + '%' : '0%';
+
+            // Populate Report
+            document.getElementById('inp-spent').value = w.metrics.spent;
+            document.getElementById('inp-leads').value = w.metrics.leads;
+            document.getElementById('inp-reach').value = w.metrics.reach;
+            document.getElementById('inp-impressions').value = w.metrics.impressions;
+            document.getElementById('inp-clicks').value = w.metrics.clicks;
+            document.getElementById('inp-reporturl').value = w.metrics.reportUrl;
+
+            // Populate Timeline & Activity
+            const tlContainer = document.getElementById('drawer-timeline-content');
+            tlContainer.innerHTML = w.activityLog.slice().reverse().map(log => `
+                <div class="relative">
+                    <div class="absolute -left-[27px] w-3 h-3 ${log.type === 'system' ? 'bg-slate-600' : 'bg-blue-500'} rounded-full ring-4 ring-slate-950"></div>
+                    <p class="text-[10px] font-bold text-slate-500 mb-0.5">${new Date(log.time).toLocaleString('id-ID')}</p>
+                    <p class="text-sm text-slate-300">${log.msg}</p>
                 </div>
-                <button onclick="document.getElementById('visitor-history-modal').classList.add('hidden')" class="text-slate-400 hover:text-white p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+            `).join('');
+
+            // Open Drawer
+            document.getElementById('wo-drawer-overlay').classList.remove('hidden');
+            setTimeout(() => document.getElementById('wo-drawer-overlay').classList.remove('opacity-0'), 10);
+            document.getElementById('wo-drawer').classList.remove('translate-x-full');
+
+            // Default switch to overview tab
+            window.woSwitchDrawerTab('tab-overview');
+        };
+
+        window.woCloseDrawer = function() {
+            activeWoId = null;
+            document.getElementById('wo-drawer').classList.add('translate-x-full');
+            document.getElementById('wo-drawer-overlay').classList.add('opacity-0');
+            setTimeout(() => document.getElementById('wo-drawer-overlay').classList.add('hidden'), 300);
+        };
+
+        window.woSwitchDrawerTab = function(targetId) {
+            document.querySelectorAll('.wo-tab-content').forEach(el => { el.classList.remove('block'); el.classList.add('hidden'); });
+            document.querySelectorAll('.wo-tab-btn').forEach(el => { el.classList.remove('border-blue-500', 'text-blue-400'); el.classList.add('border-transparent', 'text-slate-400'); });
+            
+            document.getElementById(targetId).classList.remove('hidden');
+            document.getElementById(targetId).classList.add('block');
+            document.querySelector(`.wo-tab-btn[data-target="${targetId}"]`).classList.add('border-blue-500', 'text-blue-400');
+            document.querySelector(`.wo-tab-btn[data-target="${targetId}"]`).classList.remove('border-transparent', 'text-slate-400');
+        };
+
+        // Attach tab listeners
+        document.querySelectorAll('.wo-tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => window.woSwitchDrawerTab(e.target.dataset.target));
+        });
+
+        // --- ACTIONS ---
+        window.woChangeStatus = function(newStatus) {
+            if(!activeWoId) return;
+            const w = workOrders.find(wo => wo.id === activeWoId);
+            w.status = newStatus;
+            w.activityLog.push({ type: "system", msg: "Status changed to: " + getStatusCfg(newStatus).label, time: new Date().toISOString() });
+            window.woRenderDashboard();
+            window.woOpenDrawer(activeWoId); // Refresh drawer
+        };
+
+        window.woToggleChecklist = function(idx, isChecked) {
+            if(!activeWoId) return;
+            const w = workOrders.find(wo => wo.id === activeWoId);
+            w.checklist[idx].done = isChecked;
+            w.activityLog.push({ type: "user", msg: "Checklist diperbarui: " + w.checklist[idx].task, time: new Date().toISOString() });
+            window.woOpenDrawer(activeWoId); // Refresh drawer
+        };
+
+        window.woSaveNotes = function() {
+            if(!activeWoId) return;
+            const w = workOrders.find(wo => wo.id === activeWoId);
+            w.internalNotes = document.getElementById('drawer-internal-notes').value;
+            alert('Catatan Internal disimpan.');
+        };
+
+        window.woSaveReport = function() {
+            if(!activeWoId) return;
+            const w = workOrders.find(wo => wo.id === activeWoId);
+            w.metrics.spent = parseInt(document.getElementById('inp-spent').value) || 0;
+            w.metrics.leads = parseInt(document.getElementById('inp-leads').value) || 0;
+            w.metrics.reach = parseInt(document.getElementById('inp-reach').value) || 0;
+            w.metrics.impressions = parseInt(document.getElementById('inp-impressions').value) || 0;
+            w.metrics.clicks = parseInt(document.getElementById('inp-clicks').value) || 0;
+            w.metrics.reportUrl = document.getElementById('inp-reporturl').value;
+            w.activityLog.push({ type: "user", msg: "Memperbarui Data Report", time: new Date().toISOString() });
+            window.woRenderDashboard();
+            alert('Data Report berhasil disimpan!');
+        };
+
+        // INITIALIZE ON LOAD
+        document.addEventListener('DOMContentLoaded', () => {
+            if(document.getElementById('wo-table-view')) {
+                window.woRenderDashboard();
+                
+                // Add event listener to Navigation to trigger render if view is shown
+                const navCmp = document.getElementById('nav-campaigns');
+                if(navCmp) {
+                    navCmp.innerHTML = '<span>🚀</span> Work Orders'; // Update nav text
+                    navCmp.addEventListener('click', () => {
+                        setTimeout(() => window.woRenderDashboard(), 100);
+                    });
+                }
+            }
+        });
+    </script>
+<!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="../js/db.js?v=7"></script>
+    <script src="../js/main.js?v=9"></script>
+
+    <!-- AI Panel -->
+    <aside id="ai-panel" class="w-80 bg-slate-900 border-l border-slate-800 flex flex-col transition-all duration-300 relative shrink-0">
+        <div class="h-16 flex items-center justify-between px-4 border-b border-slate-800 shrink-0">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🤖</span>
+                <h2 class="font-bold font-heading text-white" id="ai-panel-title">Logaritma AI</h2>
             </div>
-            <div class="flex-1 overflow-auto p-0">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-slate-800/50 sticky top-0 z-10">
-                        <tr>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Waktu Kunjungan</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">IP Address</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Lokasi / Wilayah</th>
-                            <th class="px-6 py-4 font-bold text-slate-400 uppercase tracking-wider">Perangkat</th>
-                        </tr>
-                    </thead>
-                    <tbody id="visitor-logs-table" class="divide-y divide-slate-800">
-                        <tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Memuat data pengunjung...</td></tr>
-                    </tbody>
-                </table>
+            <button onclick="window.LogaritmaAIUI.togglePanel()" class="text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-angles-right" id="ai-toggle-icon"></i>
+            </button>
+        </div>
+        
+        <div id="ai-panel-content" class="flex-1 overflow-y-auto p-4 space-y-6">
+            <!-- Context Header -->
+            <div>
+                <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Active Context</p>
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
+                    <h3 id="ai-context-title" class="text-sm font-bold text-blue-400">Dashboard UMKM</h3>
+                    <p id="ai-context-role" class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-user-tie"></i> Owner Assistant</p>
+                </div>
+            </div>
+            
+            <!-- Insight Box -->
+            <div>
+                <div class="flex justify-between items-end mb-2">
+                    <p class="text-[10px] uppercase font-bold text-slate-500">Latest Insight</p>
+                    <span id="ai-confidence" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">90% Confidence</span>
+                </div>
+                <div id="ai-insight-box" class="bg-blue-900/10 border border-blue-500/20 rounded-lg p-3 text-sm text-slate-300">
+                    AI sedang menganalisis data...
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div>
+                <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">Quick Actions</p>
+                <div id="ai-actions-container" class="space-y-2">
+                    <!-- Dynamic Buttons Here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading Overlay -->
+        <div id="ai-loading" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center hidden z-10">
+            <div class="flex flex-col items-center gap-3">
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-500"></i>
+                <p class="text-xs font-bold text-blue-400 animate-pulse">AI sedang berpikir...</p>
+            </div>
+        </div>
+    </aside>
+
+
+    <!-- COMMAND PALETTE -->
+    <div id="command-palette-overlay" class="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-sm hidden flex items-start justify-center pt-20">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="flex items-center px-4 py-3 border-b border-slate-800">
+                <i class="fa-solid fa-magnifying-glass text-slate-500 mr-3"></i>
+                <input type="text" id="command-input" class="w-full bg-transparent text-slate-200 placeholder-slate-500 outline-none text-lg" placeholder="Search commands, tools, or ask AI... (Ctrl+Space)">
+                <span class="text-xs font-bold text-slate-600 bg-slate-800 px-2 py-1 rounded">ESC</span>
+            </div>
+            
+            <div id="command-results" class="max-h-96 overflow-y-auto p-2">
+                <!-- Recommendations / AI -->
+                <div class="px-3 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider">AI Capabilities</div>
+                <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 flex items-center gap-3 transition">
+                    <div class="w-6 text-center text-purple-400"><i class="fa-solid fa-pen-nib"></i></div>
+                    Generate Copywriting
+                </button>
+                <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 flex items-center gap-3 transition">
+                    <div class="w-6 text-center text-blue-400"><i class="fa-solid fa-chart-line"></i></div>
+                    Summarize Dashboard
+                </button>
+                <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 flex items-center gap-3 transition">
+                    <div class="w-6 text-center text-emerald-400"><i class="fa-solid fa-file-invoice"></i></div>
+                    Create Report
+                </button>
+
+                <div class="px-3 py-2 mt-2 text-xs font-bold text-slate-500 uppercase tracking-wider">Navigation</div>
+                <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 flex items-center gap-3 transition">
+                    <div class="w-6 text-center text-slate-400"><i class="fa-solid fa-folder-tree"></i></div>
+                    Open Service Registry
+                </button>
+                <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 flex items-center gap-3 transition">
+                    <div class="w-6 text-center text-slate-400"><i class="fa-solid fa-users"></i></div>
+                    Search Customer
+                </button>
             </div>
         </div>
     </div>
+    
+    <!-- FLOATING AI BUTTON -->
+    <button id="floating-ai-btn" class="fixed bottom-6 right-6 z-[90] w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center text-white text-xl hover:scale-110 transition-transform group">
+        <i class="fa-solid fa-robot group-hover:animate-pulse"></i>
+        <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-slate-900 rounded-full hidden" id="notif-badge"></div>
+    </button>
 
-    <!-- Firebase SDK (Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="/js/db.js?v=7"></script>
-    <script src="/js/main.js?v=8"></script>
 </body>
 

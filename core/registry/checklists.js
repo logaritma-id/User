@@ -1,0 +1,5 @@
+window.DefaultChecklists = [
+    { id: 'CHK001', name: 'Meta Ads', tasks: [{ task: 'Brief', done: false }, { task: 'Copywriting', done: false }, { task: 'Design', done: false }, { task: 'Approval', done: false }, { task: 'Launch', done: false }, { task: 'Report', done: false }], _ai: window.LogaritmaAI ? window.LogaritmaAI.generateMetadata('checklist') : {} },
+    { id: 'CHK002', name: 'Google Ads', tasks: [{ task: 'Brief', done: false }, { task: 'Keyword Research', done: false }, { task: 'Copywriting', done: false }, { task: 'Approval', done: false }, { task: 'Launch', done: false }, { task: 'Report', done: false }], _ai: window.LogaritmaAI ? window.LogaritmaAI.generateMetadata('checklist') : {} },
+    { id: 'CHK003', name: 'Website', tasks: [{ task: 'Wireframe', done: false }, { task: 'UI', done: false }, { task: 'Development', done: false }, { task: 'Testing', done: false }, { task: 'Launch', done: false }], _ai: window.LogaritmaAI ? window.LogaritmaAI.generateMetadata('checklist') : {} }
+];
