@@ -5,7 +5,7 @@
 
 const MayarAdapter = {
     // API Key di-obfuscate menggunakan Base64 (atob)
-    API_KEY: atob('ZXlKaGJHY2lPaUpTVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SjFjMlZ5U1dRaU9pSm1PR1poWmpoMk5DMDdOVGRrTFRSbE5UZ3RPV1V3TUMwNFpqYzBNelEwWlRBMk1HSWlMQ0poWTJOdmRXNTBTV1FpT2lKaU9EQmtZMjhpTmkwME9HVmxMVFEwTkRBdE9UUTFNaTA1WkRBME1HSTJNMEl3TldFaUxDSmpjbVZoZEdWa1FYSWlPaUl4TnpnMU5UY3lNel14TmpVd0lpd2ljbTlzWlNJNkltaGxkR2hsYm5Rb0lpd2ljMk52Y0dVaU9pSmZNV1ZqZFdWeWVTSTZJSFJ5ZFdVc0luZHlhWFJsSWpwYmJXRm5lU2I5LmliOWx2a2xub2xtRklYV0xibGhtX212ZzYyNmpvYkUxcWVHbzBiTkU1SDFmWW5wWWxObVRjWk0tdkxWM0Nrb00wTml6YW0yOG9tN2FwLUwyUWVZeV8yTW5tZDFYdWx4UEd4d3J2R3M0b19PcGNHb1FaUWxKcmZfbDBOMWRoWG1Qamw5Y3pWOG1XbmlPMjhsTVRIVmxEZnFZZG1rVW9NUXRUVlhOV1h5T1VlWDRGdmQzX0k1OEVzSjdtdU0wX3BRX0FwLXFTdXRfSUhzY21aX1dIUXpBcU9pUXZYTFN0MmpPajMyX012ck8xdE9yV0lJOTJ1Ums4cjdsYWNlUzlnQnVaWnF5eV9wUFVtb09lQmlrWVRRSm96U2N6MFlid01wNGhhMW9sSllmU2lPazB4V3J1OFAxV19HdVpkMWZPMDBpZVg4c2ZMVmRjVkhmQzdrYndPcjdaT2Zf'),
+    API_KEY: atob('ZXlKaGJHY2lPaUpTVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SjFjMlZ5U1dRaU9pSm1PR1poWmpjMk5DMHdOVGRrTFRSbE5UZ3RPV1V3TUMwNFpqYzBNelEwWlRBMk1HSWlMQ0poWTJOdmRXNTBTV1FpT2lKaU9EQmtZemhpTmkwME9HVmxMVFEwTkRBdE9UUTFNaTA1WkRBME1HSTJNRE13TldFaUxDSmpjbVZoZEdWa1FYUWlPaUl4TnpnMU5UY3lNek14TmpVd0lpd2ljbTlzWlNJNkltUmxkbVZzYjNCbGNpSXNJbk5qYjNCbElqcDdJbkpsWVdRaU9uUnlkV1VzSW5keWFYUmxJanAwY25WbGZTd2ljM1ZpSWpvaVlXUnRMbmRoY25WdWEyRnljMmxBWjIxaGFXd3VZMjl0SWl3aWJtRnRaU0k2SWxkQlVsVk9TeUJCVWxOSklpd2liR2x1YXlJNkltSmhhVzEzWVhKMWJtdGhjbk5wSWl3aWFYTlRaV3htUkc5dFlXbHVJanBtWVd4elpTd2lhV0YwSWpveE56ZzFOVGN5TXpNeGZRLlNPSlZtQXRseFlUNE1BNUQzMVNCRkx0NnVxaloyU1VGNmJybjRLUGtiejBjS1oyeEZWbzc2WmJDZElQNGlDaXBXbUdvdm91cjZEYl9zdzlrRGVwdmdIZlp6aWRuQktMUkhGbEotRmNlUTlnb0U0TzM4MWF5TUpnNk84ZUl5ZDh2Wl93b3B2Z0djUnIzb2NoaTQ0LThBWnNicjMxalV5bktWdzNzbHhva09Ka0JDNUo1bWxISWl3VC0yblhLeThNbmZPQl8wRVF0Y09reG5DWkRJQ2ZfRG5KT0lCZkRjakM5Y19YTVhTQ0dPN1I5REJaRzhLQXJ0b3hMbWx1TVdVU3JnQ3FjckdlbWR3dkVDUmk5S2hCVnhaNTl4RnR5U3JxV1NHNGlMdHU2dGd0dmtVODVoM0JlaWREeFREREMydHdoM09XUkRJUEE2ckowQUstY0Fpem04dw=='),
     BASE_URL: 'https://api.mayar.id/hl/v1',
 
     /**
@@ -33,7 +33,8 @@ const MayarAdapter = {
             });
 
             if (!response.ok) {
-                throw new Error(`Mayar API Error: ${response.statusText}`);
+                const errorText = await response.text();
+                throw new Error(`Mayar API Error (${response.status}): ${errorText}`);
             }
 
             const data = await response.json();
